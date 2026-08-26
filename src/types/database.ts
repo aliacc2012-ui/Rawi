@@ -22,17 +22,8 @@ export interface Database {
         Relationships: [];
       };
       workspaces: {
-        Row: {
-          id: string; owner_id: string; name: string; slug: string; logo_url: string | null;
-          accent_color: string; plan: Plan; storage_limit_bytes: number; storage_used_bytes: number;
-          instagram_url: string | null; tiktok_url: string | null; facebook_url: string | null; website_url: string | null;
-          created_at: string; updated_at: string;
-        };
-        Insert: {
-          owner_id: string; name: string; slug: string; id?: string; logo_url?: string | null;
-          accent_color?: string; plan?: Plan; storage_limit_bytes?: number; storage_used_bytes?: number;
-          instagram_url?: string | null; tiktok_url?: string | null; facebook_url?: string | null; website_url?: string | null;
-        };
+        Row: { id: string; owner_id: string; name: string; slug: string; logo_url: string | null; accent_color: string; plan: Plan; storage_limit_bytes: number; storage_used_bytes: number; instagram_url: string | null; tiktok_url: string | null; facebook_url: string | null; website_url: string | null; created_at: string; updated_at: string };
+        Insert: { owner_id: string; name: string; slug: string; id?: string; logo_url?: string | null; accent_color?: string; plan?: Plan; storage_limit_bytes?: number; storage_used_bytes?: number; instagram_url?: string | null; tiktok_url?: string | null; facebook_url?: string | null; website_url?: string | null };
         Update: Partial<Database["public"]["Tables"]["workspaces"]["Row"]>;
         Relationships: [];
       };
@@ -49,18 +40,8 @@ export interface Database {
         Relationships: [];
       };
       projects: {
-        Row: {
-          id: string; workspace_id: string; client_id: string | null; name: string; slug: string; description: string | null;
-          project_type: ProjectType; project_date: string | null; status: ProjectStatus; cover_media_id: string | null;
-          vehicle_make: string | null; vehicle_model: string | null; vehicle_generation: string | null; vehicle_year: number | null;
-          location: string | null; created_at: string; updated_at: string;
-        };
-        Insert: {
-          workspace_id: string; name: string; slug: string; id?: string; client_id?: string | null; description?: string | null;
-          project_type?: ProjectType; project_date?: string | null; status?: ProjectStatus; cover_media_id?: string | null;
-          vehicle_make?: string | null; vehicle_model?: string | null; vehicle_generation?: string | null; vehicle_year?: number | null;
-          location?: string | null;
-        };
+        Row: { id: string; workspace_id: string; client_id: string | null; name: string; slug: string; description: string | null; project_type: ProjectType; project_date: string | null; status: ProjectStatus; cover_media_id: string | null; vehicle_make: string | null; vehicle_model: string | null; vehicle_generation: string | null; vehicle_year: number | null; location: string | null; created_at: string; updated_at: string };
+        Insert: { workspace_id: string; name: string; slug: string; id?: string; client_id?: string | null; description?: string | null; project_type?: ProjectType; project_date?: string | null; status?: ProjectStatus; cover_media_id?: string | null; vehicle_make?: string | null; vehicle_model?: string | null; vehicle_generation?: string | null; vehicle_year?: number | null; location?: string | null };
         Update: Partial<Database["public"]["Tables"]["projects"]["Row"]>;
         Relationships: [
           { foreignKeyName: "projects_client_id_fkey"; columns: ["client_id"]; isOneToOne: false; referencedRelation: "clients"; referencedColumns: ["id"] },
@@ -105,6 +86,12 @@ export interface Database {
         Insert: { gallery_id: string; visitor_session: string; id?: string };
         Update: Partial<Database["public"]["Tables"]["gallery_views"]["Row"]>;
         Relationships: [];
+      };
+      gallery_approvals: {
+        Row: { id: string; gallery_id: string; visitor_session: string; client_name: string; status: "approved"; approved_at: string; created_at: string };
+        Insert: { gallery_id: string; visitor_session: string; client_name: string; id?: string; status?: "approved"; approved_at?: string; created_at?: string };
+        Update: Partial<Database["public"]["Tables"]["gallery_approvals"]["Row"]>;
+        Relationships: [{ foreignKeyName: "gallery_approvals_gallery_id_fkey"; columns: ["gallery_id"]; isOneToOne: false; referencedRelation: "galleries"; referencedColumns: ["id"] }];
       };
       subscriptions: {
         Row: { id: string; workspace_id: string; stripe_customer_id: string | null; stripe_subscription_id: string | null; plan: Plan; status: string; current_period_end: string | null; created_at: string; updated_at: string };
