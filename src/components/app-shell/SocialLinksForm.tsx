@@ -30,11 +30,13 @@ export function SocialLinksForm({ workspaceId, initialLinks }: { workspaceId: st
       const normalized = Object.fromEntries(
         Object.entries(links).map(([k, v]) => [k, normalizeUrl(v)])
       ) as Links;
+
       const result = await updateSocialLinks(workspaceId, normalized);
-      if ("error" in result) {
+      if ("error" in result && typeof result.error === "string") {
         setMessage(result.error);
         return;
       }
+
       setLinks(normalized);
       setMessage("Saved ✓");
     });
