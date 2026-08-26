@@ -53,19 +53,36 @@ export async function verifyGalleryPassword(galleryId: string, password: string)
 }
 
 export async function recordGalleryView(galleryId: string) {
-  const supabase = await createClient();
+  const access = await validateGalleryAccess(galleryId);
+  if ("error" in access) return { error: access.error };
+
+  const admin = createAdminClient();
   const session = await getVisitorSession();
-  await supabase.from("gallery_views").insert({ gallery_id: galleryId, visitor_session: session });
+  const { error } = await admin.from("gallery_views").insert({ gallery_id: galleryId, visitor_session: session });
+  if (error) return { error: "Couldn't record this gallery view." };
+  return { success: true };
 }
 
 export async function toggleFavorite(galleryId: string, mediaId: string, currentlyFavorited: boolean) {
-  const supabase = await createClient();
+  const access = await validateGalleryAccess(galleryId);
+  if ("error" in access) return { error: access.error };
+
+  const admin = createAdminClient();
+  const { data: media } = await admin
+    .from("media")
+    .select("id, gallery_sections!inner(gallery_id)")
+    .eq("id", mediaId)
+    .eq("gallery_sections.gallery_id", galleryId)
+    .single();
+  if (!media) return { error: "This photo isn't part of this gallery." };
+
   const session = await getVisitorSession();
   if (currentlyFavorited) {
-    await supabase.from("favorites").delete().eq("media_id", mediaId).eq("visitor_session", session);
+    const { error } = await admin.from("favorites").delete().eq("gallery_id", galleryId).eq("media_id", mediaId).eq("visitor_session", session);
+    if (error) return { error: "Couldn't update this favorite." };
     return { favorited: false };
   }
-  const { error } = await supabase.from("favorites").insert({ gallery_id: galleryId, media_id: mediaId, visitor_session: session });
+  const { error } = await admin.from("favorites").insert({ gallery_id: galleryId, media_id: mediaId, visitor_session: session });
   if (error) return { error: error.message };
   return { favorited: true };
 }
