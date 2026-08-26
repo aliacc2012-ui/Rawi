@@ -1,5 +1,6 @@
 import { getCurrentWorkspace } from "@/lib/workspace";
 import { BrandingForm } from "@/components/app-shell/BrandingForm";
+import { SocialLinksForm } from "@/components/app-shell/SocialLinksForm";
 
 export default async function SettingsPage() {
   const { workspace } = await getCurrentWorkspace();
@@ -24,13 +25,8 @@ export default async function SettingsPage() {
           </div>
 
           <div className="bg-white border border-gray-200 rounded-[22px] p-5 md:p-6 shadow-sm">
-            <div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-bold">Social presence</h2><p className="text-sm text-gray-400 mt-1">Connect the places where clients can discover your work.</p></div><span className="rounded-full bg-[#f5f5f3] px-3 py-1.5 text-[10px] font-bold text-gray-500">COMING NEXT</span></div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-5">
-              <Social name="Instagram" icon="◎" />
-              <Social name="TikTok" icon="♪" />
-              <Social name="Facebook" icon="f" />
-              <Social name="Website" icon="↗" />
-            </div>
+            <div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-bold">Social presence</h2><p className="text-sm text-gray-400 mt-1">Add your profiles so you can jump to each social page instantly.</p></div><span className="rounded-full bg-emerald-50 px-3 py-1.5 text-[10px] font-bold text-emerald-700">ACTIVE</span></div>
+            <SocialLinksForm workspaceId={workspace!.id} />
           </div>
 
           <div className="bg-white border border-gray-200 rounded-[22px] p-5 md:p-6 shadow-sm">
@@ -68,5 +64,4 @@ export default async function SettingsPage() {
   );
 }
 
-function Social({ name, icon }: { name: string; icon: string }) { return <div className="rounded-xl border border-gray-200 bg-[#fafafa] p-4"><div className="w-9 h-9 rounded-xl bg-white border border-gray-200 grid place-items-center font-bold">{icon}</div><div className="text-xs font-bold mt-3">{name}</div><div className="text-[10px] text-gray-400 mt-1">Not connected</div></div>; }
 function PreviewNote({ title, text }: { title: string; text: string }) { return <div className="rounded-xl bg-[#f7f7f5] p-3"><div className="text-xs font-bold">{title}</div><div className="text-[10px] text-gray-400 mt-1">{text}</div></div>; }
