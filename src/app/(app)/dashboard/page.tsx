@@ -1,22 +1,28 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
 
 export default async function DashboardPage() {
   const { profile, workspace } = await getCurrentWorkspace();
+
+  if (!workspace) {
+    redirect("/onboarding");
+  }
+
   const supabase = await createClient();
 
   const { data: projects } = await supabase
     .from("projects")
     .select("id, name, status, project_type, created_at")
-    .eq("workspace_id", workspace!.id)
+    .eq("workspace_id", workspace.id)
     .order("created_at", { ascending: false })
     .limit(5);
 
   const { count: projectCount } = await supabase
     .from("projects")
     .select("id", { count: "exact", head: true })
-    .eq("workspace_id", workspace!.id);
+    .eq("workspace_id", workspace.id);
 
   const firstName = profile?.full_name?.split(" ")[0] || "there";
   const hasProjects = (projects?.length ?? 0) > 0;
@@ -30,8 +36,8 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-4">
         <Stat label="Projects" value={String(projectCount ?? 0)} />
-        <Stat label="Storage used" value={`${((workspace!.storage_used_bytes || 0) / 1024 ** 3).toFixed(1)} GB`} />
-        <Stat label="Plan" value={workspace!.plan.toUpperCase()} />
+        <Stat label="Storage used" value={`${((workspace.storage_used_bytes || 0) / 1024 ** 3).toFixed(1)} GB`} />
+        <Stat label="Plan" value={workspace.plan.toUpperCase()} />
       </div>
 
       <div className="bg-white border border-gray-200 rounded-[20px] p-5.5 mt-4">
