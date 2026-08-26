@@ -2,6 +2,7 @@ import { getCurrentWorkspace } from "@/lib/workspace";
 import { createClient } from "@/lib/supabase/server";
 import { BrandingForm } from "@/components/app-shell/BrandingForm";
 import { SocialLinksForm } from "@/components/app-shell/SocialLinksForm";
+import { PlanCheckoutButton } from "@/components/billing/PlanCheckoutButton";
 
 export default async function SettingsPage() {
   const { workspace } = await getCurrentWorkspace();
@@ -115,9 +116,9 @@ export default async function SettingsPage() {
 
             <div className="lg:border-l lg:border-gray-100 lg:pl-8 grid grid-cols-2 lg:grid-cols-1 gap-3">
               <PlanMetric icon="◉" label="Total storage" value={`${limitGb.toFixed(1)} GB`} />
-              <PlanMetric icon="▧" label="Active galleries" value={`${activeGalleries} of 3`} />
-              <PlanMetric icon="□" label="Delivery time" value="Up to 7 days" />
-              <PlanMetric icon="◇" label="Branding" value="RAWI branding" />
+              <PlanMetric icon="▧" label="Active galleries" value={`${activeGalleries} of ${workspace!.plan === "free" ? "3" : "∞"}`} />
+              <PlanMetric icon="□" label="Delivery time" value={workspace!.plan === "free" ? "Up to 7 days" : "Flexible"} />
+              <PlanMetric icon="◇" label="Branding" value={workspace!.plan === "free" ? "RAWI branding" : "Custom branding"} />
             </div>
           </div>
         </div>
@@ -133,25 +134,25 @@ export default async function SettingsPage() {
             price="0"
             description="For trying RAWI with real work."
             features={["5 GB storage", "3 active galleries", "7-day delivery", "RAWI branding"]}
-            button="Choose Free"
             current={workspace!.plan === "free"}
+            workspaceId={workspace!.id}
           />
           <PlanCard
             name="Creator"
             price="49"
             description="For photographers and filmmakers."
             features={["100 GB storage", "Unlimited galleries", "Custom branding", "Password protection", "Download analytics"]}
-            button="Choose Creator"
             featured
             current={workspace!.plan === "creator"}
+            workspaceId={workspace!.id}
           />
           <PlanCard
             name="Pro"
             price="129"
             description="For serious creators and teams."
             features={["500 GB storage", "4K playback", "Custom domain", "Watermarks", "Client approvals"]}
-            button="Choose Pro"
             current={workspace!.plan === "pro"}
+            workspaceId={workspace!.id}
           />
         </div>
 
@@ -175,7 +176,7 @@ function PlanMetric({ icon, label, value }: { icon: string; label: string; value
   return <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-[#f7f7f5] grid place-items-center font-bold">{icon}</div><div><div className="text-xs text-gray-400">{label}</div><div className="text-sm font-bold mt-0.5">{value}</div></div></div>;
 }
 
-function PlanCard({ name, price, description, features, button, featured = false, current = false }: { name: string; price: string; description: string; features: string[]; button: string; featured?: boolean; current?: boolean }) {
+function PlanCard({ name, price, description, features, featured = false, current = false, workspaceId }: { name: "Free" | "Creator" | "Pro"; price: string; description: string; features: string[]; featured?: boolean; current?: boolean; workspaceId: string }) {
   return (
     <div className={`relative bg-white rounded-[22px] p-5 md:p-6 flex flex-col min-h-[430px] ${featured ? "border-2 border-black shadow-md" : "border border-gray-200 shadow-sm"}`}>
       {featured && <span className="absolute top-4 right-4 rounded-full bg-rawi-yellow text-black px-3 py-1.5 text-[9px] font-black tracking-wide">MOST POPULAR</span>}
@@ -185,7 +186,13 @@ function PlanCard({ name, price, description, features, button, featured = false
       <div className="mt-6 flex-1">
         {features.map((feature) => <div key={feature} className="flex items-center gap-2 py-2.5 border-b border-gray-100 text-sm"><span className="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center text-[11px] font-bold">✓</span><span>{feature}</span></div>)}
       </div>
-      <button disabled={current} className={`mt-6 w-full rounded-full px-5 py-3 text-sm font-extrabold transition ${featured ? "bg-rawi-yellow text-black hover:brightness-95" : "border border-gray-300 bg-white hover:bg-gray-50"} ${current ? "opacity-50 cursor-not-allowed" : ""}`}>{current ? "Current plan" : button}</button>
+      {current ? (
+        <button disabled className="mt-6 w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-sm font-extrabold opacity-50 cursor-not-allowed">Current plan</button>
+      ) : name === "Creator" || name === "Pro" ? (
+        <PlanCheckoutButton plan={name.toLowerCase() as "creator" | "pro"} workspaceId={workspaceId} featured={featured} />
+      ) : (
+        <button className="mt-6 w-full rounded-full border border-gray-300 bg-white px-5 py-3 text-sm font-extrabold hover:bg-gray-50">Choose Free</button>
+      )}
     </div>
   );
 }
