@@ -25,6 +25,7 @@ export function GalleryMediaGrid({ galleryId, sections, favoritesEnabled, downlo
 
   const allMedia = useMemo(() => sections.flatMap((section) => section.media), [sections]);
   const allIds = useMemo(() => allMedia.map((item) => item.id), [allMedia]);
+  const activeSlide = allMedia.at(slideIndex) ?? null;
 
   function changeView(mode: ViewMode) {
     setViewMode(mode);
@@ -89,12 +90,7 @@ export function GalleryMediaGrid({ galleryId, sections, favoritesEnabled, downlo
           <span className="text-[10px] font-extrabold tracking-[0.16em] text-white/35">VIEW</span>
           <div className="mt-2 flex flex-wrap gap-2">
             {VIEW_OPTIONS.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => changeView(option.id)}
-                className={`rounded-full border px-3.5 py-2 text-xs font-semibold transition ${viewMode === option.id ? "border-rawi-yellow bg-rawi-yellow text-black" : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"}`}
-              >
+              <button key={option.id} type="button" onClick={() => changeView(option.id)} className={`rounded-full border px-3.5 py-2 text-xs font-semibold transition ${viewMode === option.id ? "border-rawi-yellow bg-rawi-yellow text-black" : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"}`}>
                 <span className="mr-1.5">{option.icon}</span>{option.label}
               </button>
             ))}
@@ -129,10 +125,10 @@ export function GalleryMediaGrid({ galleryId, sections, favoritesEnabled, downlo
             <span>{allMedia.length ? `${slideIndex + 1} / ${allMedia.length}` : "0 / 0"}</span>
             <span>Use Previous / Next to browse</span>
           </div>
-          {allMedia.length > 0 && renderTile(allMedia[slideIndex], "slideshow")}
+          {activeSlide ? renderTile(activeSlide, "slideshow") : <div className="py-24 text-center text-white/40">No media to display.</div>}
           <div className="mt-4 flex items-center justify-center gap-3">
-            <button type="button" onClick={() => setSlideIndex((index) => (index - 1 + allMedia.length) % allMedia.length)} disabled={allMedia.length < 2} className="rounded-full border border-white/15 px-5 py-2.5 text-sm text-white disabled:opacity-30">← Previous</button>
-            <button type="button" onClick={() => setSlideIndex((index) => (index + 1) % allMedia.length)} disabled={allMedia.length < 2} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black disabled:opacity-30">Next →</button>
+            <button type="button" onClick={() => setSlideIndex((index) => allMedia.length ? (index - 1 + allMedia.length) % allMedia.length : 0)} disabled={allMedia.length < 2} className="rounded-full border border-white/15 px-5 py-2.5 text-sm text-white disabled:opacity-30">← Previous</button>
+            <button type="button" onClick={() => setSlideIndex((index) => allMedia.length ? (index + 1) % allMedia.length : 0)} disabled={allMedia.length < 2} className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black disabled:opacity-30">Next →</button>
           </div>
         </div>
       ) : (
@@ -144,7 +140,6 @@ export function GalleryMediaGrid({ galleryId, sections, favoritesEnabled, downlo
                 <span className="text-[11px] text-gray-500">{String(index + 1).padStart(2, "0")}</span>
                 <h4 className="text-2xl">{section.title}</h4>
               </div>
-
               {viewMode === "grid" && <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">{section.media.map((item) => renderTile(item, "grid"))}</div>}
               {viewMode === "masonry" && <div className="columns-1 sm:columns-2 md:columns-3 gap-3 [&>*]:mb-3 [&>*]:break-inside-avoid">{section.media.map((item) => renderTile(item, "masonry"))}</div>}
               {viewMode === "large" && <div className="mx-auto flex max-w-4xl flex-col gap-6">{section.media.map((item) => renderTile(item, "large"))}</div>}
