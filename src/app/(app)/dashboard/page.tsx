@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
+import { HomeSocialLinks } from "@/components/app-shell/HomeSocialLinks";
 
 export default async function DashboardPage() {
   const { profile, workspace } = await getCurrentWorkspace();
@@ -36,15 +37,7 @@ export default async function DashboardPage() {
             <Link href="/projects" className="bg-white border border-gray-200 rounded-xl px-5 py-3 font-bold text-sm">↥ Upload Media</Link>
           </div>
         </div>
-        <div>
-          <div className="text-[10px] text-gray-400 mb-2">SOCIAL PROFILES</div>
-          <div className="flex gap-2">
-            <Social label="◎" title="Instagram" />
-            <Social label="♪" title="TikTok" />
-            <Social label="f" title="Facebook" />
-            <Social label="↗" title="Website" />
-          </div>
-        </div>
+        <HomeSocialLinks workspaceId={workspace.id} />
       </header>
 
       <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-5">
@@ -124,6 +117,5 @@ export default async function DashboardPage() {
 function Stat({ icon, value, label, sub }: { icon: string; value: string; label: string; sub: string }) {
   return <div className="bg-white border border-gray-200 rounded-[20px] p-4 min-h-[126px] shadow-sm"><div className="w-9 h-9 rounded-xl bg-[#fff8df] grid place-items-center mb-3">{icon}</div><div className="text-2xl font-extrabold tracking-[-.04em]">{value}</div><div className="text-xs font-bold mt-1">{label}</div><div className="text-[10px] text-gray-400 mt-1">{sub}</div></div>;
 }
-function Social({ label, title }: { label: string; title: string }) { return <button title={title} className="w-10 h-10 rounded-xl border border-gray-200 bg-white grid place-items-center font-bold hover:bg-gray-50">{label}</button>; }
 function Activity({ icon, title, sub }: { icon: string; title: string; sub: string }) { return <div className="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0"><div className="w-9 h-9 rounded-xl bg-[#fff8df] grid place-items-center">{icon}</div><div><div className="text-sm font-bold">{title}</div><div className="text-xs text-gray-400 mt-0.5">{sub}</div></div></div>; }
 function ShareButton({ label }: { label: string }) { return <button className="rounded-xl border border-gray-200 px-3 py-2.5 text-xs font-bold hover:bg-gray-50">{label}</button>; }
