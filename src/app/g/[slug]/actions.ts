@@ -35,9 +35,7 @@ export async function verifyGalleryPassword(galleryId: string, password: string)
     .single();
 
   if (!gallery || gallery.status !== "published") return { error: "This gallery is unavailable." };
-  if (gallery.expiry_date && new Date(gallery.expiry_date) < new Date()) {
-    return { error: "This gallery has expired." };
-  }
+  if (gallery.expiry_date && new Date(gallery.expiry_date) < new Date()) return { error: "This gallery has expired." };
   if (!gallery.password_hash) return { success: true };
 
   const valid = await bcrypt.compare(password, gallery.password_hash);
@@ -80,7 +78,6 @@ export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
 
   if (forDownload) {
     const session = await getVisitorSession();
-    // Look up the gallery to confirm downloads are enabled before tracking + signing.
     const { data: section } = await admin
       .from("gallery_sections")
       .select("gallery_id, galleries(downloads_enabled)")
@@ -88,9 +85,7 @@ export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
       .single();
 
     const downloadsEnabled = (section?.galleries as unknown as { downloads_enabled?: boolean } | null)?.downloads_enabled;
-    if (section && downloadsEnabled === false) {
-      return { error: "Downloads are turned off for this gallery." };
-    }
+    if (section && downloadsEnabled === false) return { error: "Downloads are turned off for this gallery." };
     if (section?.gallery_id) {
       await admin.from("downloads").insert({ gallery_id: section.gallery_id, media_id: mediaId, download_type: "original", visitor_session: session });
     }
@@ -102,4 +97,55 @@ export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
 
   if (error || !data) return { error: "Couldn't prepare that file. Try again." };
   return { url: data.signedUrl };
+}
+
+export async function getBulkDownloadUrls(galleryId: string, mediaIds: string[]) {
+  if (mediaIds.length === 0) return { files: [] as { id: string; name: string; url: string }[] };
+  if (mediaIds.length > 100) return { error: "You can download up to 100 files at a time." };
+
+  const admin = createAdminClient();
+  const session = await getVisitorSession();
+
+  const { data: gallery } = await admin
+    .from("galleries")
+    .select("id, status, expiry_date, downloads_enabled")
+    .eq("id", galleryId)
+    .single();
+
+  if (!gallery || gallery.status !== "published") return { error: "This gallery is unavailable." };
+  if (gallery.expiry_date && new Date(gallery.expiry_date) < new Date()) return { error: "This gallery has expired." };
+  if (!gallery.downloads_enabled) return { error: "Downloads are turned off for this gallery." };
+
+  const { data: media, error: mediaError } = await admin
+    .from("media")
+    .select("id, storage_path, original_name, gallery_section_id, gallery_sections!inner(gallery_id)")
+    .in("id", mediaIds)
+    .eq("gallery_sections.gallery_id", galleryId);
+
+  if (mediaError) return { error: "Couldn't prepare the selected files." };
+
+  const files = await Promise.all(
+    (media ?? []).map(async (item) => {
+      const { data, error } = await admin.storage.from("media").createSignedUrl(item.storage_path, 60 * 10, {
+        download: item.original_name,
+      });
+      if (error || !data) return null;
+      return { id: item.id, name: item.original_name, url: data.signedUrl };
+    })
+  );
+
+  const readyFiles = files.filter((file): file is { id: string; name: string; url: string } => Boolean(file));
+
+  if (readyFiles.length > 0) {
+    await admin.from("downloads").insert(
+      readyFiles.map((file) => ({
+        gallery_id: galleryId,
+        media_id: file.id,
+        download_type: "original" as const,
+        visitor_session: session,
+      }))
+    );
+  }
+
+  return { files: readyFiles };
 }
