@@ -5,226 +5,121 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 function slugify(input: string) {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 60) || crypto.randomUUID().slice(0, 8);
+  return input.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 60) || crypto.randomUUID().slice(0, 8);
 }
 
-export async function createWorkspace(formData: FormData) {
+async function requireUser() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+  return { supabase, user };
+}
 
+async function ownsWorkspace(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, workspaceId: string) {
+  const { data } = await supabase.from("workspaces").select("id").eq("id", workspaceId).eq("owner_id", userId).maybeSingle();
+  return Boolean(data);
+}
+
+async function ownsProject(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, projectId: string) {
+  const { data } = await supabase.from("projects").select("id, workspaces!inner(owner_id)").eq("id", projectId).eq("workspaces.owner_id", userId).maybeSingle();
+  return Boolean(data);
+}
+
+async function ownsGallery(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, galleryId: string) {
+  const { data } = await supabase.from("galleries").select("id, projects!inner(workspaces!inner(owner_id))").eq("id", galleryId).eq("projects.workspaces.owner_id", userId).maybeSingle();
+  return Boolean(data);
+}
+
+export async function createWorkspace(formData: FormData) {
+  const { supabase, user } = await requireUser();
   const name = String(formData.get("studioName") || "").trim();
   if (!name) return { error: "Studio name is required." };
-
-  const baseSlug = slugify(name);
-  const slug = `${baseSlug}-${user.id.slice(0, 6)}`;
-
-  const { error } = await supabase.from("workspaces").insert({
-    owner_id: user.id,
-    name,
-    slug,
-  });
-
+  const slug = `${slugify(name)}-${user.id.slice(0, 6)}`;
+  const { error } = await supabase.from("workspaces").insert({ owner_id: user.id, name, slug });
   if (error) return { error: error.message };
-
   revalidatePath("/dashboard");
   redirect("/dashboard");
 }
 
 export async function createClientRecord(workspaceId: string, formData: FormData) {
-  const supabase = await createClient();
+  const { supabase, user } = await requireUser();
+  if (!(await ownsWorkspace(supabase, user.id, workspaceId))) return { error: "You don't have access to this workspace." };
   const name = String(formData.get("clientName") || "").trim();
   if (!name) return { error: "Client name is required." };
-
-  const { data, error } = await supabase
-    .from("clients")
-    .insert({
-      workspace_id: workspaceId,
-      name,
-      email: String(formData.get("clientEmail") || "") || undefined,
-    })
-    .select("id")
-    .single();
-
+  const { data, error } = await supabase.from("clients").insert({ workspace_id: workspaceId, name, email: String(formData.get("clientEmail") || "") || undefined }).select("id").single();
   if (error) return { error: error.message };
   return { id: data.id };
 }
 
 export async function createProject(workspaceId: string, formData: FormData) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
+  const { supabase, user } = await requireUser();
+  if (!(await ownsWorkspace(supabase, user.id, workspaceId))) return { error: "You don't have access to this workspace." };
   const name = String(formData.get("projectName") || "").trim();
   if (!name) return { error: "Project name is required." };
-
   let clientId = String(formData.get("clientId") || "") || null;
+  if (clientId) {
+    const { data: client } = await supabase.from("clients").select("id").eq("id", clientId).eq("workspace_id", workspaceId).maybeSingle();
+    if (!client) return { error: "That client doesn't belong to this workspace." };
+  }
   const newClientName = String(formData.get("newClientName") || "").trim();
   if (!clientId && newClientName) {
-    const { data: client, error: clientError } = await supabase
-      .from("clients")
-      .insert({ workspace_id: workspaceId, name: newClientName })
-      .select("id")
-      .single();
+    const { data: client, error: clientError } = await supabase.from("clients").insert({ workspace_id: workspaceId, name: newClientName }).select("id").single();
     if (clientError) return { error: clientError.message };
     clientId = client.id;
   }
-
   const slug = `${slugify(name)}-${Date.now().toString(36)}`;
-
-  const { data: project, error } = await supabase
-    .from("projects")
-    .insert({
-      workspace_id: workspaceId,
-      client_id: clientId,
-      name,
-      slug,
-      project_type: (String(formData.get("projectType") || "photography")) as never,
-      project_date: String(formData.get("projectDate") || "") || null,
-      description: String(formData.get("description") || "") || null,
-    })
-    .select("id")
-    .single();
-
+  const { data: project, error } = await supabase.from("projects").insert({ workspace_id: workspaceId, client_id: clientId, name, slug, project_type: String(formData.get("projectType") || "photography") as never, project_date: String(formData.get("projectDate") || "") || null, description: String(formData.get("description") || "") || null }).select("id").single();
   if (error) return { error: error.message };
-
-  const { data: gallery, error: galleryError } = await supabase
-    .from("galleries")
-    .insert({
-      project_id: project.id,
-      title: name,
-      slug: `${slug}-${crypto.randomUUID().slice(0, 8)}`,
-    })
-    .select("id")
-    .single();
-
+  const { data: gallery, error: galleryError } = await supabase.from("galleries").insert({ project_id: project.id, title: name, slug: `${slug}-${crypto.randomUUID().slice(0, 8)}` }).select("id").single();
   if (galleryError) return { error: galleryError.message };
-
-  const { error: sectionError } = await supabase.from("gallery_sections").insert({
-    gallery_id: gallery.id,
-    title: "Gallery",
-    section_type: "grid",
-    sort_order: 0,
-  });
-
+  const { error: sectionError } = await supabase.from("gallery_sections").insert({ gallery_id: gallery.id, title: "Gallery", section_type: "grid", sort_order: 0 });
   if (sectionError) return { error: sectionError.message };
-
-  revalidatePath("/projects");
-  revalidatePath("/dashboard");
-  redirect(`/projects/${project.id}`);
+  revalidatePath("/projects"); revalidatePath("/dashboard"); redirect(`/projects/${project.id}`);
 }
 
-export async function recordMediaUpload(params: {
-  projectId: string;
-  fileName: string;
-  originalName: string;
-  mimeType: string;
-  fileSize: number;
-  storagePath: string;
-  mediaType: "image" | "video" | "raw";
-}) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: gallery, error: galleryError } = await supabase
-    .from("galleries")
-    .select("id")
-    .eq("project_id", params.projectId)
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
+export async function recordMediaUpload(params: { projectId: string; fileName: string; originalName: string; mimeType: string; fileSize: number; storagePath: string; mediaType: "image" | "video" | "raw"; }) {
+  const { supabase, user } = await requireUser();
+  if (!(await ownsProject(supabase, user.id, params.projectId))) return { error: "You don't have access to this project." };
+  const { data: gallery, error: galleryError } = await supabase.from("galleries").select("id").eq("project_id", params.projectId).order("created_at", { ascending: true }).limit(1).maybeSingle();
   if (galleryError) return { error: galleryError.message };
-
   let sectionId: string | null = null;
-
   if (gallery) {
-    const { data: existingSection, error: sectionLookupError } = await supabase
-      .from("gallery_sections")
-      .select("id")
-      .eq("gallery_id", gallery.id)
-      .order("sort_order", { ascending: true })
-      .limit(1)
-      .maybeSingle();
-
+    const { data: existingSection, error: sectionLookupError } = await supabase.from("gallery_sections").select("id").eq("gallery_id", gallery.id).order("sort_order", { ascending: true }).limit(1).maybeSingle();
     if (sectionLookupError) return { error: sectionLookupError.message };
-
-    if (existingSection) {
-      sectionId = existingSection.id;
-    } else {
-      const { data: createdSection, error: sectionCreateError } = await supabase
-        .from("gallery_sections")
-        .insert({
-          gallery_id: gallery.id,
-          title: "Gallery",
-          section_type: "grid",
-          sort_order: 0,
-        })
-        .select("id")
-        .single();
-
+    if (existingSection) sectionId = existingSection.id;
+    else {
+      const { data: createdSection, error: sectionCreateError } = await supabase.from("gallery_sections").insert({ gallery_id: gallery.id, title: "Gallery", section_type: "grid", sort_order: 0 }).select("id").single();
       if (sectionCreateError) return { error: sectionCreateError.message };
       sectionId = createdSection.id;
     }
   }
-
-  const { error } = await supabase.from("media").insert({
-    project_id: params.projectId,
-    gallery_section_id: sectionId,
-    uploader_id: user.id,
-    file_name: params.fileName,
-    original_name: params.originalName,
-    media_type: params.mediaType,
-    mime_type: params.mimeType,
-    file_size: params.fileSize,
-    storage_path: params.storagePath,
-    processing_status: params.mediaType === "video" ? "pending" : "ready",
-  });
-
+  const { error } = await supabase.from("media").insert({ project_id: params.projectId, gallery_section_id: sectionId, uploader_id: user.id, file_name: params.fileName, original_name: params.originalName, media_type: params.mediaType, mime_type: params.mimeType, file_size: params.fileSize, storage_path: params.storagePath, processing_status: params.mediaType === "video" ? "pending" : "ready" });
   if (error) return { error: error.message };
-  revalidatePath(`/projects/${params.projectId}`);
-  revalidatePath(`/projects`);
-  return { success: true };
+  revalidatePath(`/projects/${params.projectId}`); revalidatePath("/projects"); return { success: true };
 }
 
 export async function addSection(galleryId: string, title: string) {
-  const supabase = await createClient();
+  const { supabase, user } = await requireUser();
+  if (!(await ownsGallery(supabase, user.id, galleryId))) return { error: "You don't have access to this gallery." };
   const { error } = await supabase.from("gallery_sections").insert({ gallery_id: galleryId, title });
   if (error) return { error: error.message };
-  revalidatePath("/projects");
-  return { success: true };
+  revalidatePath("/projects"); return { success: true };
 }
 
 export async function publishGallery(galleryId: string, publish: boolean) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("galleries")
-    .update({ status: publish ? "published" : "unpublished", published_at: publish ? new Date().toISOString() : null })
-    .eq("id", galleryId);
+  const { supabase, user } = await requireUser();
+  if (!(await ownsGallery(supabase, user.id, galleryId))) return { error: "You don't have access to this gallery." };
+  const { error } = await supabase.from("galleries").update({ status: publish ? "published" : "unpublished", published_at: publish ? new Date().toISOString() : null }).eq("id", galleryId);
   if (error) return { error: error.message };
-  revalidatePath("/projects");
-  return { success: true };
+  revalidatePath("/projects"); return { success: true };
 }
 
 export async function updateBranding(workspaceId: string, formData: FormData) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("workspaces")
-    .update({
-      name: String(formData.get("studioName") || ""),
-      accent_color: String(formData.get("accentColor") || "#FFD400"),
-    })
-    .eq("id", workspaceId);
-
+  const { supabase, user } = await requireUser();
+  if (!(await ownsWorkspace(supabase, user.id, workspaceId))) return { error: "You don't have access to this workspace." };
+  const { error } = await supabase.from("workspaces").update({ name: String(formData.get("studioName") || ""), accent_color: String(formData.get("accentColor") || "#FFD400") }).eq("id", workspaceId).eq("owner_id", user.id);
   if (error) return { error: error.message };
-  revalidatePath("/settings");
-  return { success: true };
+  revalidatePath("/settings"); return { success: true };
 }
 
 export async function signOut() {
