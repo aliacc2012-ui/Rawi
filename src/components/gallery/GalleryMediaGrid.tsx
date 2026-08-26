@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getSignedMediaUrl } from "@/app/g/[slug]/actions";
+import { getBulkDownloadUrls } from "@/app/g/[slug]/actions";
 import { MediaTile } from "@/components/gallery/MediaTile";
 
 type MediaItem = {
@@ -28,6 +28,7 @@ export function GalleryMediaGrid({
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [downloading, setDownloading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState<string | null>(null);
 
   const allIds = useMemo(() => sections.flatMap((section) => section.media.map((item) => item.id)), [sections]);
@@ -39,66 +40,98 @@ export function GalleryMediaGrid({
       else next.add(mediaId);
       return next;
     });
+    setMessage(null);
   }
 
   function clearSelection() {
     setSelected(new Set());
+    setMessage(null);
   }
 
   function selectAll() {
-    setSelected(new Set(allIds));
+    setSelected(new Set(allIds.slice(0, 100)));
+    setMessage(allIds.length > 100 ? "Up to 100 files can be downloaded at once." : null);
   }
 
   async function downloadSelected() {
     if (selected.size === 0 || downloading) return;
     setDownloading(true);
-    setMessage(null);
+    setProgress(10);
+    setMessage("Preparing secure download links…");
 
-    const ids = Array.from(selected);
-    let completed = 0;
+    try {
+      const ids = Array.from(selected);
+      const result = await getBulkDownloadUrls(galleryId, ids);
 
-    for (const mediaId of ids) {
-      const result = await getSignedMediaUrl(mediaId, true);
-      if ("url" in result && result.url) {
-        const link = document.createElement("a");
-        link.href = result.url;
-        link.download = "";
-        link.target = "_blank";
-        link.rel = "noopener";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        completed += 1;
-        await new Promise((resolve) => setTimeout(resolve, 180));
+      if ("error" in result) {
+        setMessage(result.error ?? "Couldn't prepare the selected files.");
+        return;
       }
-    }
 
-    setDownloading(false);
-    setMessage(completed === ids.length ? `${completed} files started downloading.` : `${completed} of ${ids.length} files started downloading.`);
+      const files = result.files ?? [];
+      if (files.length === 0) {
+        setMessage("No files were available to download.");
+        return;
+      }
+
+      setProgress(55);
+      setMessage(`Starting ${files.length} download${files.length === 1 ? "" : "s"}…`);
+
+      files.forEach((file, index) => {
+        window.setTimeout(() => {
+          const link = document.createElement("a");
+          link.href = file.url;
+          link.download = file.name || "download";
+          link.rel = "noopener";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          setProgress(Math.round(55 + ((index + 1) / files.length) * 45));
+        }, index * 60);
+      });
+
+      window.setTimeout(() => {
+        setMessage(`${files.length} file${files.length === 1 ? "" : "s"} sent to your downloads.`);
+        setProgress(100);
+        setSelected(new Set());
+      }, files.length * 60 + 250);
+    } catch {
+      setMessage("Something went wrong while preparing the download.");
+    } finally {
+      window.setTimeout(() => setDownloading(false), 400);
+    }
   }
 
   return (
     <div>
       {downloadsEnabled && (
-        <div className="sticky top-3 z-30 mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/80 px-4 py-3 backdrop-blur-xl">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold">{selected.size} selected</span>
-            <button type="button" onClick={selectAll} className="text-xs text-white/60 hover:text-white">Select all</button>
-            {selected.size > 0 && (
-              <button type="button" onClick={clearSelection} className="text-xs text-white/60 hover:text-white">Clear</button>
-            )}
+        <div className="sticky top-3 z-30 mb-6 overflow-hidden rounded-2xl border border-white/10 bg-black/85 backdrop-blur-xl shadow-2xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold">{selected.size} selected</span>
+              <button type="button" onClick={selectAll} disabled={downloading} className="text-xs text-white/60 hover:text-white disabled:opacity-40">Select all</button>
+              {selected.size > 0 && (
+                <button type="button" onClick={clearSelection} disabled={downloading} className="text-xs text-white/60 hover:text-white disabled:opacity-40">Clear</button>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              {message && <span className="hidden md:inline text-xs text-white/50">{message}</span>}
+              <button
+                type="button"
+                onClick={downloadSelected}
+                disabled={selected.size === 0 || downloading}
+                className="min-w-[150px] rounded-full bg-rawi-yellow px-4 py-2 text-xs font-extrabold text-black transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {downloading ? "Preparing…" : `Download selected${selected.size ? ` (${selected.size})` : ""}`}
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            {message && <span className="hidden sm:inline text-xs text-white/50">{message}</span>}
-            <button
-              type="button"
-              onClick={downloadSelected}
-              disabled={selected.size === 0 || downloading}
-              className="rounded-full bg-rawi-yellow px-4 py-2 text-xs font-extrabold text-black disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {downloading ? "Preparing…" : `Download selected${selected.size ? ` (${selected.size})` : ""}`}
-            </button>
-          </div>
+          {downloading && (
+            <div className="h-1 bg-white/10">
+              <div className="h-full bg-rawi-yellow transition-all duration-200" style={{ width: `${progress}%` }} />
+            </div>
+          )}
+          {message && <div className="px-4 pb-3 text-xs text-white/50 md:hidden">{message}</div>}
         </div>
       )}
 
