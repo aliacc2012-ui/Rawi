@@ -11,10 +11,21 @@ type UploadItem = {
   message?: string;
 };
 
+const MAX_FILE_SIZE = 500 * 1024 * 1024;
+
 function mediaTypeFor(mime: string): "image" | "video" | "raw" {
   if (mime.startsWith("image/")) return "image";
   if (mime.startsWith("video/")) return "video";
   return "raw";
+}
+
+function validateFile(file: File): string | null {
+  if (file.size <= 0) return "This file is empty.";
+  if (file.size > MAX_FILE_SIZE) return "File is larger than the 500 MB limit.";
+  if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+    return "Only photo and video files are supported.";
+  }
+  return null;
 }
 
 export function MediaUploader({ workspaceId, projectId }: { workspaceId: string; projectId: string }) {
@@ -35,10 +46,17 @@ export function MediaUploader({ workspaceId, projectId }: { workspaceId: string;
 
     for (const file of Array.from(files)) {
       const id = crypto.randomUUID();
+      const validationError = validateFile(file);
+
+      if (validationError) {
+        setItems((prev) => [...prev, { id, name: file.name, status: "error", message: validationError }]);
+        continue;
+      }
+
       setItems((prev) => [...prev, { id, name: file.name, status: "uploading" }]);
 
       const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-      const path = `${workspaceId}/${projectId}/${Date.now()}-${safeName}`;
+      const path = `${workspaceId}/${projectId}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
 
       const { error: uploadError } = await supabase.storage.from("media").upload(path, file, {
         cacheControl: "3600",
@@ -60,16 +78,19 @@ export function MediaUploader({ workspaceId, projectId }: { workspaceId: string;
         mediaType: mediaTypeFor(file.type || ""),
       });
 
-      setItems((prev) =>
-        prev.map((i) =>
-          i.id === id
-            ? "error" in result
-              ? { ...i, status: "error", message: result.error }
-              : { ...i, status: "done" }
-            : i
-        )
-      );
+      if ("error" in result) {
+        const { error: cleanupError } = await supabase.storage.from("media").remove([path]);
+        const message = cleanupError
+          ? `${result.error} Upload cleanup also failed; please retry or contact support.`
+          : result.error;
+        setItems((prev) => prev.map((i) => (i.id === id ? { ...i, status: "error", message } : i)));
+        continue;
+      }
+
+      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, status: "done" } : i)));
     }
+
+    if (inputRef.current) inputRef.current.value = "";
   }
 
   if (notConfigured) {
@@ -91,7 +112,7 @@ export function MediaUploader({ workspaceId, projectId }: { workspaceId: string;
         }}
       >
         <strong className="text-sm">Drop files here</strong>
-        <span className="text-xs text-gray-400">Photos • Video • RAW</span>
+        <span className="text-xs text-gray-400">Photos • Video · up to 500 MB each</span>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -112,12 +133,12 @@ export function MediaUploader({ workspaceId, projectId }: { workspaceId: string;
       {items.length > 0 && (
         <ul className="mt-3 space-y-1.5">
           {items.map((item) => (
-            <li key={item.id} className="flex items-center justify-between text-xs bg-gray-50 rounded-lg px-3 py-2">
+            <li key={item.id} className="flex items-center justify-between gap-3 text-xs bg-gray-50 rounded-lg px-3 py-2">
               <span className="truncate">{item.name}</span>
               <span
-                className={
+                className={`shrink-0 ${
                   item.status === "done" ? "text-green-700" : item.status === "error" ? "text-red-600" : "text-gray-400"
-                }
+                }`}
               >
                 {item.status === "uploading" ? "Uploading…" : item.status === "done" ? "Uploaded" : item.message || "Failed"}
               </span>
