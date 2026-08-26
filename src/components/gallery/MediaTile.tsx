@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getMediaRating, getSignedMediaUrl, rateMedia, toggleFavorite } from "@/app/g/[slug]/actions";
+import { getSignedMediaUrl, toggleFavorite } from "@/app/g/[slug]/actions";
 
 type DisplayMode = "grid" | "masonry" | "large" | "slideshow";
 
@@ -13,19 +13,16 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
   const [error, setError] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [ratingSaving, setRatingSaving] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getSignedMediaUrl(mediaId, false), getMediaRating(galleryId, mediaId)]).then(([res, ratingRes]) => {
+    getSignedMediaUrl(mediaId, false).then((res) => {
       if (cancelled) return;
-      if ("url" in res && res.url) setUrl(res.url); else setError(("error" in res && res.error) || "Couldn't load this file.");
-      setRating(ratingRes.rating ?? 0);
+      if ("url" in res && res.url) setUrl(res.url);
+      else setError(("error" in res && res.error) || "Couldn't load this file.");
     });
     return () => { cancelled = true; };
-  }, [mediaId, galleryId]);
+  }, [mediaId]);
 
   useEffect(() => {
     if (!viewerOpen) return;
@@ -45,17 +42,6 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
     if (!("error" in result)) setFavorited(Boolean(result.favorited));
   }
 
-  async function handleRating(value: number) {
-    if (ratingSaving) return;
-    const previous = rating;
-    setRating(value);
-    setRatingSaving(true);
-    const result = await rateMedia(galleryId, mediaId, value);
-    if ("error" in result) { setRating(previous); setError(result.error ?? "Couldn't save rating."); }
-    else setRating(result.rating ?? value);
-    setRatingSaving(false);
-  }
-
   async function handleDownload() {
     const result = await getSignedMediaUrl(mediaId, true);
     if ("error" in result) { setError(result.error ?? null); return; }
@@ -64,14 +50,6 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
 
   function openViewer() { if (!url || mediaType === "raw") return; setZoom(1); setViewerOpen(true); }
   function closeViewer() { setViewerOpen(false); setZoom(1); }
-
-  const Stars = ({ large = false }: { large?: boolean }) => (
-    <div className="flex items-center gap-0.5" onMouseLeave={() => setHoverRating(0)}>
-      {[1, 2, 3, 4, 5].map((value) => (
-        <button key={value} type="button" disabled={ratingSaving} onMouseEnter={() => setHoverRating(value)} onClick={(event) => { event.stopPropagation(); handleRating(value); }} aria-label={`Rate ${value} star${value === 1 ? "" : "s"}`} title={`${value} star${value === 1 ? "" : "s"}`} className={`${large ? "text-2xl w-8 h-8" : "text-lg w-6 h-6"} grid place-items-center transition hover:scale-110 disabled:opacity-60 ${(hoverRating || rating) >= value ? "text-rawi-yellow" : "text-white/35"}`}>★</button>
-      ))}
-    </div>
-  );
 
   const isFluid = displayMode === "masonry" || displayMode === "large";
   const isShowcase = displayMode === "large" || displayMode === "slideshow";
@@ -90,12 +68,11 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
           {favoritesEnabled && <button type="button" onClick={handleFavorite} aria-label={favorited ? "Remove favorite" : "Favorite"} className={`w-8 h-8 rounded-full grid place-items-center text-sm backdrop-blur ${favorited ? "bg-rawi-yellow text-black" : "bg-black/50 text-white"}`}>{favorited ? "♥" : "♡"}</button>}
           {downloadsEnabled && <button type="button" onClick={handleDownload} aria-label="Download" className="w-8 h-8 rounded-full grid place-items-center text-sm bg-black/50 text-white backdrop-blur">↓</button>}
         </div>
-        <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/65 px-2 py-1 backdrop-blur ${isShowcase ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100"} transition-opacity`}><Stars /></div>
       </div>
 
       {viewerOpen && url && <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col" role="dialog" aria-modal="true" aria-label="Media viewer" onClick={closeViewer}>
         <div className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-white/10">
-          <div className="flex items-center gap-3" onClick={(event) => event.stopPropagation()}><span className="text-white/60 text-xs">RAWI Viewer</span><Stars large /></div>
+          <span className="text-white/60 text-xs">RAWI Viewer</span>
           <div className="flex items-center gap-2" onClick={(event) => event.stopPropagation()}>
             {mediaType === "image" && <><button type="button" onClick={() => setZoom((v) => Math.max(0.5, v - 0.25))} className="h-9 min-w-9 px-3 rounded-full bg-white/10 text-white">−</button><button type="button" onClick={() => setZoom(1)} className="h-9 px-3 rounded-full bg-white/10 text-white text-xs">{Math.round(zoom * 100)}%</button><button type="button" onClick={() => setZoom((v) => Math.min(3, v + 0.25))} className="h-9 min-w-9 px-3 rounded-full bg-white/10 text-white">+</button></>}
             {downloadsEnabled && <button type="button" onClick={handleDownload} className="h-9 px-4 rounded-full bg-white/10 text-white text-xs">Download</button>}
