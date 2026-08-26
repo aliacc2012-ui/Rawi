@@ -1,5 +1,6 @@
 import { Nav } from "@/components/landing/Nav";
-import { Hero, Strip, Features, GalleryDemo, Pricing, ClosingCTA } from "@/components/landing/Sections";
+import { Hero, Strip, GalleryDemo, Pricing, ClosingCTA } from "@/components/landing/Sections";
+import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
 
 export default function LandingPage() {
   return (
@@ -7,7 +8,7 @@ export default function LandingPage() {
       <Nav />
       <Hero />
       <Strip />
-      <Features />
+      <EnhancedFeatures />
       <GalleryDemo />
       <Pricing />
       <ClosingCTA />
