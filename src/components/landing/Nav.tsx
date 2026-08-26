@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export function Nav() {
-  const { dict, toggleLocale } = useLocale();
+  const { dict, locale, setLocale } = useLocale();
 
   return (
     <header className="h-[82px] flex items-center justify-between gap-6 relative z-10 w-[min(1180px,calc(100%-40px))] mx-auto">
@@ -22,14 +22,26 @@ export function Nav() {
         <a href="#pricing" className="hover:opacity-55 transition-opacity">{dict.nav.pricing}</a>
       </nav>
 
-      <div className="flex gap-2.5">
-        <button
-          type="button"
-          onClick={toggleLocale}
-          className="hidden sm:inline-flex border border-gray-300 rounded-full px-[19px] py-[13px] hover:bg-gray-50 transition-colors"
-        >
-          {dict.nav.switch}
-        </button>
+      <div className="flex items-center gap-3">
+        <div className="hidden sm:inline-flex items-center gap-2 text-[13px] font-extrabold tracking-[0.04em]" aria-label="Language selector">
+          <button
+            type="button"
+            onClick={() => setLocale("ar")}
+            aria-pressed={locale === "ar"}
+            className={`transition-colors ${locale === "ar" ? "text-rawi-yellow" : "text-gray-400 hover:text-black"}`}
+          >
+            AR
+          </button>
+          <span className="text-gray-300 font-medium">/</span>
+          <button
+            type="button"
+            onClick={() => setLocale("en")}
+            aria-pressed={locale === "en"}
+            className={`transition-colors ${locale === "en" ? "text-rawi-yellow" : "text-gray-400 hover:text-black"}`}
+          >
+            ENG
+          </button>
+        </div>
         <Link
           href="/login"
           className="bg-rawi-yellow text-black font-extrabold rounded-full px-[15px] py-[10px] text-sm shadow-[0_8px_24px_rgba(255,212,0,0.18)] hover:-translate-y-px transition-transform inline-flex items-center"
