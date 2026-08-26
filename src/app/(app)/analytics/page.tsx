@@ -5,64 +5,120 @@ export default async function AnalyticsPage() {
   const { workspace } = await getCurrentWorkspace();
   const supabase = await createClient();
 
-  const { data: projectIds } = await supabase
+  const { data: projects } = await supabase
     .from("projects")
-    .select("id")
+    .select("id, name")
     .eq("workspace_id", workspace!.id);
 
-  const ids = (projectIds ?? []).map((p) => p.id);
-
-  let galleryIds: string[] = [];
-  if (ids.length > 0) {
-    const { data: galleries } = await supabase.from("galleries").select("id").in("project_id", ids);
-    galleryIds = (galleries ?? []).map((g) => g.id);
+  const projectIds = (projects ?? []).map((p) => p.id);
+  let galleries: { id: string; project_id: string; title: string; status: string }[] = [];
+  if (projectIds.length > 0) {
+    const { data } = await supabase.from("galleries").select("id, project_id, title, status").in("project_id", projectIds);
+    galleries = data ?? [];
   }
 
-  let views = 0;
-  let downloads = 0;
-  let favorites = 0;
+  const galleryIds = galleries.map((g) => g.id);
+  let viewsRows: { gallery_id: string }[] = [];
+  let downloadsRows: { gallery_id: string }[] = [];
+  let favoritesRows: { gallery_id: string }[] = [];
 
   if (galleryIds.length > 0) {
     const [viewsRes, downloadsRes, favoritesRes] = await Promise.all([
-      supabase.from("gallery_views").select("id", { count: "exact", head: true }).in("gallery_id", galleryIds),
-      supabase.from("downloads").select("id", { count: "exact", head: true }).in("gallery_id", galleryIds),
-      supabase.from("favorites").select("id", { count: "exact", head: true }).in("gallery_id", galleryIds),
+      supabase.from("gallery_views").select("gallery_id").in("gallery_id", galleryIds),
+      supabase.from("downloads").select("gallery_id").in("gallery_id", galleryIds),
+      supabase.from("favorites").select("gallery_id").in("gallery_id", galleryIds),
     ]);
-    views = viewsRes.count ?? 0;
-    downloads = downloadsRes.count ?? 0;
-    favorites = favoritesRes.count ?? 0;
+    viewsRows = viewsRes.data ?? [];
+    downloadsRows = downloadsRes.data ?? [];
+    favoritesRows = favoritesRes.data ?? [];
   }
 
-  const hasActivity = views + downloads + favorites > 0;
+  const views = viewsRows.length;
+  const downloads = downloadsRows.length;
+  const favorites = favoritesRows.length;
+  const published = galleries.filter((g) => g.status === "published").length;
+  const engagement = views > 0 ? Math.round(((downloads + favorites) / views) * 100) : 0;
+
+  const byGallery = galleries.map((gallery) => ({
+    id: gallery.id,
+    title: gallery.title,
+    views: viewsRows.filter((r) => r.gallery_id === gallery.id).length,
+    downloads: downloadsRows.filter((r) => r.gallery_id === gallery.id).length,
+    favorites: favoritesRows.filter((r) => r.gallery_id === gallery.id).length,
+  })).sort((a, b) => (b.views + b.downloads + b.favorites) - (a.views + a.downloads + a.favorites));
+
+  const top = byGallery[0];
+  const maxActivity = Math.max(1, ...byGallery.map((g) => g.views + g.downloads + g.favorites));
 
   return (
-    <div>
-      <div className="mb-8">
-        <span className="text-[11px] font-extrabold tracking-[0.17em] text-gray-400">CREATOR WORKSPACE</span>
-        <h1 className="text-[28px] md:text-[34px] tracking-[-0.04em] mt-1.5">Analytics</h1>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mb-4">
-        <Stat label="Gallery views" value={String(views)} />
-        <Stat label="Downloads" value={String(downloads)} />
-        <Stat label="Favorites" value={String(favorites)} />
-      </div>
-
-      {!hasActivity && (
-        <div className="bg-white border border-dashed border-gray-300 rounded-[20px] py-16 text-center text-gray-500 text-sm">
-          No activity yet. Once you publish a gallery and share it with a client, views, downloads and
-          favorites will show up here.
+    <div className="max-w-[1500px] mx-auto pb-8">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-7">
+        <div>
+          <span className="text-[11px] font-extrabold tracking-[0.18em] text-gray-400">CREATOR WORKSPACE</span>
+          <h1 className="text-[34px] md:text-[42px] tracking-[-0.05em] leading-none mt-3">Analytics</h1>
+          <p className="text-gray-400 mt-2">See how clients engage with your galleries and delivered work.</p>
         </div>
-      )}
+        <div className="rounded-full bg-white border border-gray-200 px-4 py-2 text-xs font-bold shadow-sm">All time ▾</div>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-5">
+        <Stat label="Gallery views" value={views} icon="◉" />
+        <Stat label="Downloads" value={downloads} icon="↓" />
+        <Stat label="Favorites" value={favorites} icon="♡" />
+        <Stat label="Published" value={published} icon="●" />
+        <Stat label="Engagement" value={`${engagement}%`} icon="↗" accent />
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-[1.25fr_.75fr] gap-5">
+        <div className="bg-white border border-gray-200 rounded-[22px] p-5 shadow-sm">
+          <div className="flex items-start justify-between gap-3 mb-6">
+            <div><h2 className="text-xl font-bold">Gallery performance</h2><p className="text-xs text-gray-400 mt-1">Relative activity across your published work.</p></div>
+            <span className="text-[10px] text-gray-400">VIEWS + DOWNLOADS + FAVORITES</span>
+          </div>
+          {byGallery.length > 0 ? (
+            <div className="space-y-5">
+              {byGallery.slice(0, 8).map((g) => {
+                const activity = g.views + g.downloads + g.favorites;
+                return (
+                  <div key={g.id}>
+                    <div className="flex items-center justify-between text-sm mb-2"><span className="font-bold">{g.title}</span><span className="text-gray-400 text-xs">{g.views} views · {g.downloads} ↓ · {g.favorites} ♡</span></div>
+                    <div className="h-2 bg-[#f0f0ee] rounded-full overflow-hidden"><div className="h-full rounded-full bg-black" style={{ width: `${Math.max(5, (activity / maxActivity) * 100)}%` }} /></div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Empty text="Publish and share a gallery to start collecting performance data." />
+          )}
+        </div>
+
+        <div className="space-y-5">
+          <div className="rounded-[22px] bg-black text-white p-5 min-h-[220px] flex flex-col justify-between shadow-sm">
+            <div><span className="text-[10px] tracking-[.17em] text-rawi-yellow font-bold">TOP GALLERY</span><h2 className="text-3xl tracking-[-.04em] mt-3">{top?.title ?? "No activity yet"}</h2></div>
+            <div className="grid grid-cols-3 gap-2 mt-8">
+              <DarkMetric label="Views" value={top?.views ?? 0} />
+              <DarkMetric label="Downloads" value={top?.downloads ?? 0} />
+              <DarkMetric label="Favorites" value={top?.favorites ?? 0} />
+            </div>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-[22px] p-5 shadow-sm">
+            <h2 className="text-xl font-bold">What to watch</h2>
+            <div className="mt-4 space-y-3">
+              <Insight icon="◉" title="Views" text="How many times clients opened your galleries." />
+              <Insight icon="↓" title="Downloads" text="A strong signal that delivery is complete." />
+              <Insight icon="♡" title="Favorites" text="Shows which work connects most with clients." />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="bg-white border border-gray-200 rounded-[20px] p-5.5 flex flex-col gap-1.5">
-      <span className="text-[11px] text-gray-400">{label}</span>
-      <strong className="text-[34px] tracking-[-0.05em]">{value}</strong>
-    </div>
-  );
+function Stat({ label, value, icon, accent = false }: { label: string; value: string | number; icon: string; accent?: boolean }) {
+  return <div className={`rounded-[18px] border p-4 shadow-sm ${accent ? "bg-rawi-yellow border-rawi-yellow" : "bg-white border-gray-200"}`}><div className="flex items-center justify-between"><span className="text-[11px] text-gray-500">{label}</span><span>{icon}</span></div><div className="text-3xl font-extrabold tracking-[-.05em] mt-4">{value}</div></div>;
 }
+function DarkMetric({ label, value }: { label: string; value: number }) { return <div className="rounded-xl bg-white/10 p-3"><div className="text-[10px] text-white/50">{label}</div><div className="text-xl font-bold mt-1">{value}</div></div>; }
+function Insight({ icon, title, text }: { icon: string; title: string; text: string }) { return <div className="flex gap-3"><div className="w-9 h-9 rounded-xl bg-[#fff8df] grid place-items-center shrink-0">{icon}</div><div><div className="text-sm font-bold">{title}</div><div className="text-xs text-gray-400 mt-0.5 leading-relaxed">{text}</div></div></div>; }
+function Empty({ text }: { text: string }) { return <div className="py-16 text-center text-sm text-gray-400 border border-dashed border-gray-200 rounded-2xl">{text}</div>; }
