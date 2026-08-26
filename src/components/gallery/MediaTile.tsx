@@ -5,10 +5,36 @@ import { getSignedMediaUrl, toggleFavorite } from "@/app/g/[slug]/actions";
 
 type DisplayMode = "grid" | "masonry" | "large" | "slideshow";
 
+const mediaUrlCache = new Map<string, string>();
+const mediaUrlRequests = new Map<string, Promise<string | null>>();
+
+async function getCachedMediaUrl(mediaId: string) {
+  const cached = mediaUrlCache.get(mediaId);
+  if (cached) return cached;
+
+  const existingRequest = mediaUrlRequests.get(mediaId);
+  if (existingRequest) return existingRequest;
+
+  const request = getSignedMediaUrl(mediaId, false)
+    .then((res) => {
+      if ("url" in res && res.url) {
+        mediaUrlCache.set(mediaId, res.url);
+        return res.url;
+      }
+      return null;
+    })
+    .finally(() => {
+      mediaUrlRequests.delete(mediaId);
+    });
+
+  mediaUrlRequests.set(mediaId, request);
+  return request;
+}
+
 export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, downloadsEnabled, initiallyFavorited, selectable = false, selected = false, onToggleSelect, displayMode = "grid" }: {
   mediaId: string; galleryId: string; mediaType: "image" | "video" | "raw"; favoritesEnabled: boolean; downloadsEnabled: boolean; initiallyFavorited: boolean; selectable?: boolean; selected?: boolean; onToggleSelect?: () => void; displayMode?: DisplayMode;
 }) {
-  const [url, setUrl] = useState<string | null>(null);
+  const [url, setUrl] = useState<string | null>(() => mediaUrlCache.get(mediaId) ?? null);
   const [favorited, setFavorited] = useState(initiallyFavorited);
   const [error, setError] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -16,13 +42,30 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
 
   useEffect(() => {
     let cancelled = false;
-    getSignedMediaUrl(mediaId, false).then((res) => {
+
+    const cached = mediaUrlCache.get(mediaId);
+    if (cached) {
+      setUrl(cached);
+      return () => { cancelled = true; };
+    }
+
+    getCachedMediaUrl(mediaId).then((signedUrl) => {
       if (cancelled) return;
-      if ("url" in res && res.url) setUrl(res.url);
-      else setError(("error" in res && res.error) || "Couldn't load this file.");
+      if (!signedUrl) {
+        setError("Couldn't load this file.");
+        return;
+      }
+
+      setUrl(signedUrl);
+
+      if (mediaType === "image") {
+        const image = new Image();
+        image.src = signedUrl;
+      }
     });
+
     return () => { cancelled = true; };
-  }, [mediaId]);
+  }, [mediaId, mediaType]);
 
   useEffect(() => {
     if (!viewerOpen) return;
@@ -59,7 +102,7 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
   return (
     <>
       <div className={`${shellClass} ${selected ? "ring-2 ring-rawi-yellow" : "ring-0"}`}>
-        {url ? mediaType === "video" ? <video src={url} controls className={isFluid ? "w-full h-auto" : "w-full h-full object-cover"} /> : mediaType === "raw" ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}>RAW file</div> : <button type="button" onClick={openViewer} aria-label="View image" className={`block w-full ${isFluid ? "h-auto" : "h-full"} cursor-zoom-in`}><img src={url} alt="" loading="lazy" className={mediaClass} /></button> : error ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-xs text-gray-500 p-2 text-center`}>{error}</div> : <div className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`} />}
+        {url ? mediaType === "video" ? <video src={url} controls preload="metadata" className={isFluid ? "w-full h-auto" : "w-full h-full object-cover"} /> : mediaType === "raw" ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}>RAW file</div> : <button type="button" onClick={openViewer} aria-label="View image" className={`block w-full ${isFluid ? "h-auto" : "h-full"} cursor-zoom-in`}><img src={url} alt="" loading={displayMode === "slideshow" ? "eager" : "lazy"} decoding="async" className={mediaClass} /></button> : error ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-xs text-gray-500 p-2 text-center`}>{error}</div> : <div className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`} />}
 
         {selectable && <button type="button" onClick={(event) => { event.stopPropagation(); onToggleSelect?.(); }} aria-label={selected ? "Deselect file" : "Select file"} className={`absolute top-2 left-2 z-10 w-8 h-8 rounded-full grid place-items-center border text-sm font-black backdrop-blur transition ${selected ? "bg-rawi-yellow border-rawi-yellow text-black" : "bg-black/50 border-white/40 text-white hover:border-white"}`}>{selected ? "✓" : ""}</button>}
 
