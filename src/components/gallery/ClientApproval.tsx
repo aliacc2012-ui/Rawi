@@ -18,7 +18,10 @@ export function ClientApproval({ galleryId, initialApproval }: { galleryId: stri
     setError("");
     startTransition(async () => {
       const result = await approveGalleryDelivery(galleryId, name);
-      if ("error" in result) { setError(result.error); return; }
+      if ("error" in result) {
+        setError(typeof result.error === "string" ? result.error : "Couldn't record your approval. Please try again.");
+        return;
+      }
       setApproval({ client_name: result.clientName, approved_at: result.approvedAt });
     });
   }
