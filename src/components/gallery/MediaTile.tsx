@@ -11,30 +11,20 @@ const mediaUrlRequests = new Map<string, Promise<string | null>>();
 async function getCachedMediaUrl(mediaId: string) {
   const cached = mediaUrlCache.get(mediaId);
   if (cached) return cached;
-
   const existingRequest = mediaUrlRequests.get(mediaId);
   if (existingRequest) return existingRequest;
-
-  const request = getSignedMediaUrl(mediaId, false)
-    .then((res) => {
-      if ("url" in res && res.url) {
-        mediaUrlCache.set(mediaId, res.url);
-        return res.url;
-      }
-      return null;
-    })
-    .finally(() => {
-      mediaUrlRequests.delete(mediaId);
-    });
-
+  const request = getSignedMediaUrl(mediaId, false).then((res) => {
+    if ("url" in res && res.url) { mediaUrlCache.set(mediaId, res.url); return res.url; }
+    return null;
+  }).finally(() => mediaUrlRequests.delete(mediaId));
   mediaUrlRequests.set(mediaId, request);
   return request;
 }
 
-export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, downloadsEnabled, initiallyFavorited, selectable = false, selected = false, onToggleSelect, displayMode = "grid" }: {
-  mediaId: string; galleryId: string; mediaType: "image" | "video" | "raw"; favoritesEnabled: boolean; downloadsEnabled: boolean; initiallyFavorited: boolean; selectable?: boolean; selected?: boolean; onToggleSelect?: () => void; displayMode?: DisplayMode;
+export function MediaTile({ mediaId, galleryId, mediaType, initialUrl, favoritesEnabled, downloadsEnabled, initiallyFavorited, selectable = false, selected = false, onToggleSelect, displayMode = "grid" }: {
+  mediaId: string; galleryId: string; mediaType: "image" | "video" | "raw"; initialUrl?: string | null; favoritesEnabled: boolean; downloadsEnabled: boolean; initiallyFavorited: boolean; selectable?: boolean; selected?: boolean; onToggleSelect?: () => void; displayMode?: DisplayMode;
 }) {
-  const [url, setUrl] = useState<string | null>(() => mediaUrlCache.get(mediaId) ?? null);
+  const [url, setUrl] = useState<string | null>(() => initialUrl || mediaUrlCache.get(mediaId) || null);
   const [favorited, setFavorited] = useState(initiallyFavorited);
   const [error, setError] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
@@ -42,30 +32,16 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
 
   useEffect(() => {
     let cancelled = false;
-
+    if (initialUrl) { mediaUrlCache.set(mediaId, initialUrl); setUrl(initialUrl); return () => { cancelled = true; }; }
     const cached = mediaUrlCache.get(mediaId);
-    if (cached) {
-      setUrl(cached);
-      return () => { cancelled = true; };
-    }
-
+    if (cached) { setUrl(cached); return () => { cancelled = true; }; }
     getCachedMediaUrl(mediaId).then((signedUrl) => {
       if (cancelled) return;
-      if (!signedUrl) {
-        setError("Couldn't load this file.");
-        return;
-      }
-
+      if (!signedUrl) { setError("Couldn't load this file."); return; }
       setUrl(signedUrl);
-
-      if (mediaType === "image") {
-        const image = new Image();
-        image.src = signedUrl;
-      }
     });
-
     return () => { cancelled = true; };
-  }, [mediaId, mediaType]);
+  }, [mediaId, initialUrl]);
 
   useEffect(() => {
     if (!viewerOpen) return;
@@ -84,13 +60,11 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
     const result = await toggleFavorite(galleryId, mediaId, favorited);
     if (!("error" in result)) setFavorited(Boolean(result.favorited));
   }
-
   async function handleDownload() {
     const result = await getSignedMediaUrl(mediaId, true);
     if ("error" in result) { setError(result.error ?? null); return; }
     window.location.href = result.url!;
   }
-
   function openViewer() { if (!url || mediaType === "raw") return; setZoom(1); setViewerOpen(true); }
   function closeViewer() { setViewerOpen(false); setZoom(1); }
 
@@ -99,31 +73,19 @@ export function MediaTile({ mediaId, galleryId, mediaType, favoritesEnabled, dow
   const shellClass = isFluid ? "relative rounded-xl overflow-hidden bg-[#111] group ring-offset-2 ring-offset-[#090909] transition" : `relative rounded-xl overflow-hidden bg-[#111] ${displayMode === "slideshow" ? "aspect-[16/10] md:aspect-[16/9]" : "aspect-[4/3]"} group ring-offset-2 ring-offset-[#090909] transition`;
   const mediaClass = isFluid ? "w-full h-auto object-contain" : "w-full h-full object-cover";
 
-  return (
-    <>
-      <div className={`${shellClass} ${selected ? "ring-2 ring-rawi-yellow" : "ring-0"}`}>
-        {url ? mediaType === "video" ? <video src={url} controls preload="metadata" className={isFluid ? "w-full h-auto" : "w-full h-full object-cover"} /> : mediaType === "raw" ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}>RAW file</div> : <button type="button" onClick={openViewer} aria-label="View image" className={`block w-full ${isFluid ? "h-auto" : "h-full"} cursor-zoom-in`}><img src={url} alt="" loading={displayMode === "slideshow" ? "eager" : "lazy"} decoding="async" className={mediaClass} /></button> : error ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-xs text-gray-500 p-2 text-center`}>{error}</div> : <div className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`} />}
-
-        {selectable && <button type="button" onClick={(event) => { event.stopPropagation(); onToggleSelect?.(); }} aria-label={selected ? "Deselect file" : "Select file"} className={`absolute top-2 left-2 z-10 w-8 h-8 rounded-full grid place-items-center border text-sm font-black backdrop-blur transition ${selected ? "bg-rawi-yellow border-rawi-yellow text-black" : "bg-black/50 border-white/40 text-white hover:border-white"}`}>{selected ? "✓" : ""}</button>}
-
-        <div className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}>
-          {url && mediaType !== "raw" && <button type="button" onClick={openViewer} aria-label="View" className="w-8 h-8 rounded-full grid place-items-center text-sm bg-black/50 text-white backdrop-blur">⛶</button>}
-          {favoritesEnabled && <button type="button" onClick={handleFavorite} aria-label={favorited ? "Remove favorite" : "Favorite"} className={`w-8 h-8 rounded-full grid place-items-center text-sm backdrop-blur ${favorited ? "bg-rawi-yellow text-black" : "bg-black/50 text-white"}`}>{favorited ? "♥" : "♡"}</button>}
-          {downloadsEnabled && <button type="button" onClick={handleDownload} aria-label="Download" className="w-8 h-8 rounded-full grid place-items-center text-sm bg-black/50 text-white backdrop-blur">↓</button>}
-        </div>
+  return <>
+    <div className={`${shellClass} ${selected ? "ring-2 ring-rawi-yellow" : "ring-0"}`}>
+      {url ? mediaType === "video" ? <video src={url} controls preload="metadata" className={isFluid ? "w-full h-auto" : "w-full h-full object-cover"} /> : mediaType === "raw" ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}>RAW file</div> : <button type="button" onClick={openViewer} aria-label="View image" className={`block w-full ${isFluid ? "h-auto" : "h-full"} cursor-zoom-in`}><img src={url} alt="" loading={displayMode === "slideshow" ? "eager" : "lazy"} decoding="async" className={mediaClass} /></button> : error ? <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-xs text-gray-500 p-2 text-center`}>{error}</div> : <div className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`} />}
+      {selectable && <button type="button" onClick={(event) => { event.stopPropagation(); onToggleSelect?.(); }} aria-label={selected ? "Deselect file" : "Select file"} className={`absolute top-2 left-2 z-10 w-8 h-8 rounded-full grid place-items-center border text-sm font-black backdrop-blur transition ${selected ? "bg-rawi-yellow border-rawi-yellow text-black" : "bg-black/50 border-white/40 text-white hover:border-white"}`}>{selected ? "✓" : ""}</button>}
+      <div className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}>
+        {url && mediaType !== "raw" && <button type="button" onClick={openViewer} aria-label="View" className="w-8 h-8 rounded-full grid place-items-center text-sm bg-black/50 text-white backdrop-blur">⛶</button>}
+        {favoritesEnabled && <button type="button" onClick={handleFavorite} aria-label={favorited ? "Remove favorite" : "Favorite"} className={`w-8 h-8 rounded-full grid place-items-center text-sm backdrop-blur ${favorited ? "bg-rawi-yellow text-black" : "bg-black/50 text-white"}`}>{favorited ? "♥" : "♡"}</button>}
+        {downloadsEnabled && <button type="button" onClick={handleDownload} aria-label="Download" className="w-8 h-8 rounded-full grid place-items-center text-sm bg-black/50 text-white backdrop-blur">↓</button>}
       </div>
-
-      {viewerOpen && url && <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col" role="dialog" aria-modal="true" aria-label="Media viewer" onClick={closeViewer}>
-        <div className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-white/10">
-          <span className="text-white/60 text-xs">RAWI Viewer</span>
-          <div className="flex items-center gap-2" onClick={(event) => event.stopPropagation()}>
-            {mediaType === "image" && <><button type="button" onClick={() => setZoom((v) => Math.max(0.5, v - 0.25))} className="h-9 min-w-9 px-3 rounded-full bg-white/10 text-white">−</button><button type="button" onClick={() => setZoom(1)} className="h-9 px-3 rounded-full bg-white/10 text-white text-xs">{Math.round(zoom * 100)}%</button><button type="button" onClick={() => setZoom((v) => Math.min(3, v + 0.25))} className="h-9 min-w-9 px-3 rounded-full bg-white/10 text-white">+</button></>}
-            {downloadsEnabled && <button type="button" onClick={handleDownload} className="h-9 px-4 rounded-full bg-white/10 text-white text-xs">Download</button>}
-            <button type="button" onClick={closeViewer} className="h-9 min-w-9 px-3 rounded-full bg-white text-black font-bold">×</button>
-          </div>
-        </div>
-        <div className="flex-1 overflow-auto grid place-items-center p-4 md:p-8" onClick={(event) => event.stopPropagation()}>{mediaType === "video" ? <video src={url} controls autoPlay className="max-w-full max-h-[calc(100vh-7rem)]" /> : <img src={url} alt="" draggable={false} style={{ transform: `scale(${zoom})` }} className="max-w-full max-h-[calc(100vh-7rem)] object-contain transition-transform duration-150 origin-center select-none" />}</div>
-      </div>}
-    </>
-  );
+    </div>
+    {viewerOpen && url && <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col" role="dialog" aria-modal="true" aria-label="Media viewer" onClick={closeViewer}>
+      <div className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-white/10"><span className="text-white/60 text-xs">RAWI Viewer</span><div className="flex items-center gap-2" onClick={(event) => event.stopPropagation()}>{mediaType === "image" && <><button type="button" onClick={() => setZoom((v) => Math.max(0.5, v - 0.25))} className="h-9 min-w-9 px-3 rounded-full bg-white/10 text-white">−</button><button type="button" onClick={() => setZoom(1)} className="h-9 px-3 rounded-full bg-white/10 text-white text-xs">{Math.round(zoom * 100)}%</button><button type="button" onClick={() => setZoom((v) => Math.min(3, v + 0.25))} className="h-9 min-w-9 px-3 rounded-full bg-white/10 text-white">+</button></>}{downloadsEnabled && <button type="button" onClick={handleDownload} className="h-9 px-4 rounded-full bg-white/10 text-white text-xs">Download</button>}<button type="button" onClick={closeViewer} className="h-9 min-w-9 px-3 rounded-full bg-white text-black font-bold">×</button></div></div>
+      <div className="flex-1 overflow-auto grid place-items-center p-4 md:p-8" onClick={(event) => event.stopPropagation()}>{mediaType === "video" ? <video src={url} controls autoPlay className="max-w-full max-h-[calc(100vh-7rem)]" /> : <img src={url} alt="" draggable={false} style={{ transform: `scale(${zoom})` }} className="max-w-full max-h-[calc(100vh-7rem)] object-contain transition-transform duration-150 origin-center select-none" />}</div>
+    </div>}
+  </>;
 }
