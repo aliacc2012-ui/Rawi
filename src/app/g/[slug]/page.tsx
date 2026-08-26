@@ -1,10 +1,9 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { hasGalleryAccess, recordGalleryView } from "@/app/g/[slug]/actions";
+import { hasGalleryAccess } from "@/app/g/[slug]/actions";
 import { PasswordGate } from "@/components/gallery/PasswordGate";
 import { MediaTile } from "@/components/gallery/MediaTile";
 
-// Reads live gallery state (publish status, expiry, password) and writes a
-// view record on every load — never statically prerendered or cached.
+// Reads live gallery state (publish status, expiry, password) and is never statically prerendered or cached.
 export const dynamic = "force-dynamic";
 
 export default async function ClientGalleryPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -35,8 +34,6 @@ export default async function ClientGalleryPage({ params }: { params: Promise<{ 
       return <PasswordGate galleryId={gallery.id} title={gallery.title} />;
     }
   }
-
-  await recordGalleryView(gallery.id);
 
   const { data: sections } = await admin
     .from("gallery_sections")
