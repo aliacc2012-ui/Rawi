@@ -3,34 +3,24 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
 import { NewProjectForm } from "@/components/app-shell/NewProjectForm";
 
+type DashboardStats={project_count:number;photo_count:number;published_count:number;download_count:number;favorite_count:number;new_feedback_count:number;feedback_by_project:Record<string,number>};
+
 export default async function ProjectsPage() {
   const { workspace } = await getCurrentWorkspace();
   const supabase = await createClient();
 
-  const [{ data: projects }, { data: clients }] = await Promise.all([
+  const [{ data: projects }, { data: clients }, {data:statsData}] = await Promise.all([
     supabase.from("projects").select("id, name, status, project_type, created_at").eq("workspace_id", workspace!.id).order("created_at", { ascending: false }),
     supabase.from("clients").select("id, name").eq("workspace_id", workspace!.id).order("name"),
+    supabase.rpc("rawi_dashboard_stats",{target_workspace_id:workspace!.id}),
   ]);
 
-  const projectIds = (projects ?? []).map((p) => p.id);
-  const newFeedbackByProject: Record<string, number> = {};
-  if (projectIds.length) {
-    const { data: galleries } = await supabase.from("galleries").select("id,project_id").in("project_id", projectIds);
-    const galleryIds = (galleries ?? []).map((g) => g.id);
-    if (galleryIds.length) {
-      const { data: comments } = await supabase.from("gallery_comments").select("gallery_id").in("gallery_id", galleryIds).eq("status", "new");
-      const galleryProject = new Map((galleries ?? []).map((g) => [g.id, g.project_id]));
-      for (const comment of comments ?? []) {
-        const projectId = galleryProject.get(comment.gallery_id);
-        if (projectId) newFeedbackByProject[projectId] = (newFeedbackByProject[projectId] ?? 0) + 1;
-      }
-    }
-  }
-
+  const stats=(statsData??{}) as Partial<DashboardStats>;
+  const newFeedbackByProject=stats.feedback_by_project??{};
   const total = projects?.length ?? 0;
   const published = (projects ?? []).filter((p) => p.status === "published").length;
   const drafts = total - published;
-  const totalNewFeedback = Object.values(newFeedbackByProject).reduce((a, b) => a + b, 0);
+  const totalNewFeedback = stats.new_feedback_count ?? 0;
 
   return <div className="max-w-[1500px] mx-auto pb-8"><div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7"><div><span className="text-[11px] font-extrabold tracking-[0.18em] text-gray-400">CREATOR WORKSPACE</span><h1 className="text-[34px] md:text-[42px] tracking-[-0.05em] leading-none mt-3">Projects</h1><p className="text-gray-400 mt-2">Create, publish and manage every client delivery from one place.</p></div><NewProjectForm workspaceId={workspace!.id} clients={clients ?? []}/></div><div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-5"><MiniStat label="All projects" value={total} icon="▢"/><MiniStat label="Published" value={published} icon="●" accent/><MiniStat label="Drafts" value={drafts} icon="○"/><MiniStat label="New feedback" value={totalNewFeedback} icon="💬" alert={totalNewFeedback>0}/></div><div className="bg-white border border-gray-200 rounded-[22px] p-4 md:p-5 shadow-sm"><div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5"><div><h2 className="text-xl font-bold">Your work</h2><p className="text-xs text-gray-400 mt-1">Open a project to upload media, configure the gallery and share it.</p></div><div className="flex gap-2 text-xs"><span className="rounded-full bg-[#f5f5f3] border border-gray-200 px-3 py-2">Newest first</span><span className="rounded-full bg-[#f5f5f3] border border-gray-200 px-3 py-2">{total} total</span></div></div>{projects&&projects.length>0?<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">{projects.map((p,index)=>{const newCount=newFeedbackByProject[p.id]??0;return <div key={p.id} className="group overflow-hidden rounded-[18px] border border-gray-200 bg-white hover:-translate-y-0.5 hover:shadow-lg transition-all"><div className="relative h-[210px] bg-[radial-gradient(circle_at_70%_55%,rgba(255,212,0,.16),transparent_25%),linear-gradient(145deg,#353535,#0b0b0b_58%,#262626)] overflow-hidden"><Link prefetch href={`/projects/${p.id}`} className="absolute inset-0 z-0" aria-label={`Open ${p.name}`}/><div className="absolute inset-0 opacity-40 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,.12)_48%,transparent_49%)] group-hover:scale-105 transition-transform duration-500"/><span className={`absolute top-3 left-3 rounded-full px-3 py-1.5 text-[10px] font-extrabold tracking-wide ${p.status==="published"?"bg-emerald-500/90 text-white":"bg-black/60 text-white"}`}>{p.status==="published"?"● PUBLISHED":"○ DRAFT"}</span><div className="absolute top-3 right-3 z-10 flex items-center gap-2">{newCount>0&&<Link prefetch href={`/projects/${p.id}#feedback`} className="rounded-full bg-rawi-yellow px-3 py-1.5 text-[10px] font-extrabold text-black shadow-lg hover:scale-105 transition">💬 {newCount} NEW</Link>}<span className="rounded-full bg-black/50 text-white/80 px-2.5 py-1.5 text-[10px]">#{String(index+1).padStart(2,"0")}</span></div><div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-black/85 via-black/30 to-transparent text-white"><div className="text-[10px] tracking-[.16em] text-white/55 mb-2">{p.project_type.replace("_"," ").toUpperCase()}</div><h3 className="text-2xl tracking-[-.035em]">{p.name}</h3></div></div><div className="p-4"><div className="flex items-center justify-between gap-3"><div><div className="text-xs text-gray-400">Created</div><div className="text-sm font-bold mt-0.5">{new Date(p.created_at).toLocaleDateString("en-AE",{day:"2-digit",month:"short",year:"numeric"})}</div></div><Link prefetch href={`/projects/${p.id}`} className="rounded-full bg-black text-white px-4 py-2 text-xs font-bold group-hover:bg-rawi-yellow group-hover:text-black transition-colors">Open project →</Link></div></div></div>})}</div>:<div className="rounded-[20px] border border-dashed border-gray-300 bg-[#fafafa] py-20 text-center"><div className="w-14 h-14 rounded-2xl bg-black text-rawi-yellow grid place-items-center mx-auto text-2xl mb-4">▢</div><h3 className="text-2xl font-bold">Create your first story.</h3><p className="text-sm text-gray-400 max-w-md mx-auto mt-2 mb-6">Start a project, upload your work and publish a client-ready gallery in minutes.</p><NewProjectForm workspaceId={workspace!.id} clients={clients ?? []}/></div>}</div></div>;
 }
