@@ -55,28 +55,6 @@ export async function toggleFavorite(galleryId: string, mediaId: string, current
   return { favorited: true };
 }
 
-export async function getMediaRating(galleryId: string, mediaId: string) {
-  const admin = createAdminClient();
-  const session = await getVisitorSession();
-  const { data, error } = await admin.from("media_ratings").select("rating").eq("gallery_id", galleryId).eq("media_id", mediaId).eq("visitor_session", session).maybeSingle();
-  if (error) return { rating: 0 };
-  return { rating: data?.rating ?? 0 };
-}
-
-export async function rateMedia(galleryId: string, mediaId: string, rating: number) {
-  if (!Number.isInteger(rating) || rating < 1 || rating > 5) return { error: "Rating must be between 1 and 5." };
-  const admin = createAdminClient();
-  const session = await getVisitorSession();
-  const { data: gallery } = await admin.from("galleries").select("status, expiry_date").eq("id", galleryId).single();
-  if (!gallery || gallery.status !== "published") return { error: "This gallery is unavailable." };
-  if (gallery.expiry_date && new Date(gallery.expiry_date) < new Date()) return { error: "This gallery has expired." };
-  const { data: media } = await admin.from("media").select("id, gallery_sections!inner(gallery_id)").eq("id", mediaId).eq("gallery_sections.gallery_id", galleryId).maybeSingle();
-  if (!media) return { error: "This media is unavailable." };
-  const { error } = await admin.from("media_ratings").upsert({ gallery_id: galleryId, media_id: mediaId, visitor_session: session, rating, updated_at: new Date().toISOString() }, { onConflict: "media_id,visitor_session" });
-  if (error) return { error: "Couldn't save your rating." };
-  return { rating };
-}
-
 export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
   const admin = createAdminClient();
   const { data: media } = await admin.from("media").select("storage_path, original_name, gallery_section_id").eq("id", mediaId).single();
