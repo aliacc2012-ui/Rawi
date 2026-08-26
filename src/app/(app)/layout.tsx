@@ -2,8 +2,6 @@ import { redirect } from "next/navigation";
 import { getCurrentWorkspace } from "@/lib/workspace";
 import { Sidebar } from "@/components/app-shell/Sidebar";
 
-export const dynamic = "force-dynamic";
-
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, workspace } = await getCurrentWorkspace();
   if (!user) redirect("/login");
