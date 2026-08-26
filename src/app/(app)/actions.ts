@@ -93,11 +93,26 @@ export async function createProject(workspaceId: string, formData: FormData) {
 
   if (error) return { error: error.message };
 
-  await supabase.from("galleries").insert({
-    project_id: project.id,
-    title: name,
-    slug: `${slug}-${crypto.randomUUID().slice(0, 8)}`,
+  const { data: gallery, error: galleryError } = await supabase
+    .from("galleries")
+    .insert({
+      project_id: project.id,
+      title: name,
+      slug: `${slug}-${crypto.randomUUID().slice(0, 8)}`,
+    })
+    .select("id")
+    .single();
+
+  if (galleryError) return { error: galleryError.message };
+
+  const { error: sectionError } = await supabase.from("gallery_sections").insert({
+    gallery_id: gallery.id,
+    title: "Gallery",
+    section_type: "grid",
+    sort_order: 0,
   });
+
+  if (sectionError) return { error: sectionError.message };
 
   revalidatePath("/projects");
   revalidatePath("/dashboard");
@@ -117,8 +132,51 @@ export async function recordMediaUpload(params: {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const { data: gallery, error: galleryError } = await supabase
+    .from("galleries")
+    .select("id")
+    .eq("project_id", params.projectId)
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (galleryError) return { error: galleryError.message };
+
+  let sectionId: string | null = null;
+
+  if (gallery) {
+    const { data: existingSection, error: sectionLookupError } = await supabase
+      .from("gallery_sections")
+      .select("id")
+      .eq("gallery_id", gallery.id)
+      .order("sort_order", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (sectionLookupError) return { error: sectionLookupError.message };
+
+    if (existingSection) {
+      sectionId = existingSection.id;
+    } else {
+      const { data: createdSection, error: sectionCreateError } = await supabase
+        .from("gallery_sections")
+        .insert({
+          gallery_id: gallery.id,
+          title: "Gallery",
+          section_type: "grid",
+          sort_order: 0,
+        })
+        .select("id")
+        .single();
+
+      if (sectionCreateError) return { error: sectionCreateError.message };
+      sectionId = createdSection.id;
+    }
+  }
+
   const { error } = await supabase.from("media").insert({
     project_id: params.projectId,
+    gallery_section_id: sectionId,
     uploader_id: user.id,
     file_name: params.fileName,
     original_name: params.originalName,
@@ -130,6 +188,7 @@ export async function recordMediaUpload(params: {
   });
 
   if (error) return { error: error.message };
+  revalidatePath(`/projects/${params.projectId}`);
   revalidatePath(`/projects`);
   return { success: true };
 }
