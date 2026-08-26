@@ -1,0 +1,67 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+type SocialKey = "instagram" | "tiktok" | "facebook" | "website";
+type Links = Record<SocialKey, string>;
+
+const EMPTY: Links = { instagram: "", tiktok: "", facebook: "", website: "" };
+
+const items: { key: SocialKey; name: string; icon: React.ReactNode }[] = [
+  { key: "instagram", name: "Instagram", icon: <InstagramIcon /> },
+  { key: "tiktok", name: "TikTok", icon: <TikTokIcon /> },
+  { key: "facebook", name: "Facebook", icon: <FacebookIcon /> },
+  { key: "website", name: "Website", icon: <WebsiteIcon /> },
+];
+
+function normalizeUrl(value: string) {
+  const clean = value.trim();
+  if (!clean) return "";
+  return /^https?:\/\//i.test(clean) ? clean : `https://${clean}`;
+}
+
+export function HomeSocialLinks({ workspaceId }: { workspaceId: string }) {
+  const storageKey = `rawi-social-links-${workspaceId}`;
+  const [links, setLinks] = useState<Links>(EMPTY);
+
+  useEffect(() => {
+    try {
+      const existing = window.localStorage.getItem(storageKey);
+      if (existing) setLinks({ ...EMPTY, ...JSON.parse(existing) });
+    } catch {}
+  }, [storageKey]);
+
+  return (
+    <div>
+      <div className="text-[10px] text-gray-400 mb-2 tracking-wide">SOCIAL PROFILES</div>
+      <div className="flex gap-2">
+        {items.map((item) => {
+          const url = normalizeUrl(links[item.key]);
+          const classes = "w-11 h-11 rounded-xl border border-gray-200 bg-white grid place-items-center text-black shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
+          return url ? (
+            <a key={item.key} href={url} target="_blank" rel="noreferrer" title={`Open ${item.name}`} aria-label={`Open ${item.name}`} className={classes}>
+              {item.icon}
+            </a>
+          ) : (
+            <a key={item.key} href="/settings" title={`Add ${item.name} link`} aria-label={`Add ${item.name} link`} className={`${classes} opacity-45 hover:opacity-100`}>
+              {item.icon}
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function InstagramIcon() {
+  return <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>;
+}
+function TikTokIcon() {
+  return <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor" aria-hidden="true"><path d="M15.6 3c.3 2.1 1.5 3.5 3.6 3.9v3.2a8.1 8.1 0 0 1-3.6-1.1v6.3a6.3 6.3 0 1 1-5.5-6.2v3.3a3.1 3.1 0 1 0 2.3 3V3h3.2Z"/></svg>;
+}
+function FacebookIcon() {
+  return <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor" aria-hidden="true"><path d="M13.7 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5H17V3.6c-.8-.1-1.6-.2-2.4-.2-2.4 0-4.1 1.5-4.1 4.2v2.3H7.8V13h2.7v8h3.2Z"/></svg>;
+}
+function WebsiteIcon() {
+  return <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21M12 3c-2.3 2.5-3.5 5.5-3.5 9S9.7 18.5 12 21"/></svg>;
+}
