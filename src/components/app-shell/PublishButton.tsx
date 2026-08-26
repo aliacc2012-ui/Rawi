@@ -1,22 +1,26 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { publishGallery } from "@/app/(app)/actions";
 
 export function PublishButton({ galleryId, isPublished }: { galleryId: string; isPublished: boolean }) {
+  const router = useRouter();
   const [published, setPublished] = useState(isPublished);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   function toggle() {
     setError(null);
+    const nextPublished = !published;
     startTransition(async () => {
-      const result = await publishGallery(galleryId, !published);
+      const result = await publishGallery(galleryId, nextPublished);
       if (result && "error" in result) {
         setError(result.error ?? "Something went wrong.");
         return;
       }
-      setPublished(!published);
+      setPublished(nextPublished);
+      router.refresh();
     });
   }
 
