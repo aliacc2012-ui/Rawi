@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/projects", label: "Projects", icon: "□" },
   { href: "/analytics", label: "Analytics", icon: "⌁" },
   { href: "/settings", label: "Branding", icon: "◉" },
+  { href: "/admin", label: "Admin", icon: "⚙" },
 ];
 
 export function Sidebar({ storageUsedBytes, storageLimitBytes }: { storageUsedBytes: number; storageLimitBytes: number }) {
@@ -23,7 +24,7 @@ export function Sidebar({ storageUsedBytes, storageLimitBytes }: { storageUsedBy
       <div className="mt-auto"><div className="text-[10px] text-gray-400 flex justify-between mb-2"><span>Storage</span><span>{gb(storageUsedBytes)} / {gb(storageLimitBytes)} GB</span></div><div className="h-1.5 bg-[#292929] rounded-full overflow-hidden mb-4"><div className="h-full bg-rawi-yellow" style={{ width: `${pct}%` }} /></div><Link href="/settings" className="flex items-center gap-2 text-xs text-gray-300 py-3 border-t border-white/10"><span className="text-rawi-yellow">♛</span> Upgrade plan</Link><form action={signOut}><button type="submit" className="w-full text-gray-300 border border-[#333] rounded-full px-4 py-2.5 text-sm hover:bg-[#1d1d1d]">Sign out</button></form></div>
     </aside>
 
-    <nav className="md:hidden fixed inset-x-3 bottom-3 z-50 grid grid-cols-4 rounded-2xl border border-white/10 bg-[#111]/95 p-1.5 text-white shadow-2xl backdrop-blur-xl" aria-label="Mobile navigation">
+    <nav className="md:hidden fixed inset-x-3 bottom-3 z-50 grid grid-cols-5 rounded-2xl border border-white/10 bg-[#111]/95 p-1.5 text-white shadow-2xl backdrop-blur-xl" aria-label="Mobile navigation">
       {LINKS.map((link) => { const active = pathname.startsWith(link.href); return <Link key={link.href} href={link.href} className={`flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold transition ${active ? "bg-white/10 text-white" : "text-white/45"}`}><span className={`text-base leading-none ${active ? "text-rawi-yellow" : ""}`}>{link.icon}</span><span className="truncate">{link.label}</span></Link>; })}
     </nav>
   </>;
