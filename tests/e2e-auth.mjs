@@ -11,10 +11,19 @@ try {
   await page.goto(`${base}/login`, { waitUntil: "domcontentloaded", timeout: 30000 });
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
-  await Promise.all([
-    page.waitForURL(url => !url.pathname.includes("/login"), { timeout: 30000 }),
-    page.getByRole("button", { name: "Sign in" }).click(),
-  ]);
+  await page.getByRole("button", { name: "Sign in" }).click();
+
+  try {
+    await page.waitForFunction(() => !window.location.pathname.includes("/login") || Boolean(document.querySelector('[class*="text-red"], [role="alert"]')), null, { timeout: 30000 });
+  } catch {
+    const body = (await page.locator("body").innerText()).replace(/\s+/g, " ").slice(0, 800);
+    throw new Error(`Sign-in did not leave /login within 30s. Current URL: ${page.url()}. Page says: ${body}`);
+  }
+
+  if (page.url().includes("/login")) {
+    const body = (await page.locator("body").innerText()).replace(/\s+/g, " ").slice(0, 800);
+    throw new Error(`RAWI sign-in failed. Page says: ${body}`);
+  }
 
   if (page.url().includes("/onboarding")) {
     throw new Error("E2E account signed in but has no RAWI workspace. Complete onboarding once for the test account.");
@@ -24,6 +33,7 @@ try {
     const response = await page.goto(`${base}${route}`, { waitUntil: "domcontentloaded", timeout: 30000 });
     if (!response || !response.ok()) throw new Error(`${route} returned ${response?.status() ?? "no response"}`);
     if (page.url().includes("/login")) throw new Error(`${route} unexpectedly redirected to login.`);
+    if (page.url().includes("/onboarding")) throw new Error(`${route} redirected to onboarding; complete workspace setup for the E2E account.`);
   }
 
   console.log("RAWI authenticated E2E smoke passed.");
