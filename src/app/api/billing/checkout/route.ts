@@ -1,20 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { PLAN_CONFIG } from "@/lib/plans";
 
-const PRICE_ENV: Record<"creator" | "pro", string> = {
-  creator: "STRIPE_CREATOR_PRICE_ID",
-  pro: "STRIPE_PRO_PRICE_ID",
-};
+type PaidPlan = "creator" | "pro";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Please sign in again." }, { status: 401 });
 
-  const body = (await request.json().catch(() => null)) as { plan?: "creator" | "pro"; workspaceId?: string } | null;
+  const body = (await request.json().catch(() => null)) as { plan?: PaidPlan; workspaceId?: string } | null;
   if (!body?.plan || !body.workspaceId || !["creator", "pro"].includes(body.plan)) {
     return NextResponse.json({ error: "Invalid plan selection." }, { status: 400 });
   }
@@ -30,45 +25,52 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "You don't have permission to manage billing." }, { status: 403 });
   }
 
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-  const priceId = process.env[PRICE_ENV[body.plan]];
-  if (!secretKey || !priceId) {
+  const accessToken = process.env.ZIINA_ACCESS_TOKEN;
+  if (!accessToken) {
     return NextResponse.json(
-      { error: "Stripe isn't connected yet.", code: "BILLING_NOT_CONFIGURED" },
+      { error: "Ziina isn't connected yet.", code: "BILLING_NOT_CONFIGURED" },
       { status: 503 }
     );
   }
 
+  const plan = PLAN_CONFIG[body.plan];
   const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
   const origin = configuredAppUrl || request.nextUrl.origin;
-  const params = new URLSearchParams();
-  params.set("mode", "subscription");
-  params.set("line_items[0][price]", priceId);
-  params.set("line_items[0][quantity]", "1");
-  params.set("success_url", `${origin}/settings?billing=success`);
-  params.set("cancel_url", `${origin}/settings?billing=cancelled`);
-  params.set("client_reference_id", body.workspaceId);
-  params.set("metadata[workspace_id]", body.workspaceId);
-  params.set("metadata[plan]", body.plan);
-  params.set("subscription_data[metadata][workspace_id]", body.workspaceId);
-  params.set("subscription_data[metadata][plan]", body.plan);
-  params.set("allow_promotion_codes", "true");
-  if (user.email) params.set("customer_email", user.email);
+  const expiry = String(Date.now() + 30 * 60 * 1000);
 
-  const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+  const ziinaResponse = await fetch("https://api-v2.ziina.com/api/payment_intent", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${secretKey}`,
-      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
-    body: params,
+    body: JSON.stringify({
+      amount: plan.priceAed * 100,
+      currency_code: "AED",
+      message: `RAWI ${plan.name} plan - 30 days | workspace:${body.workspaceId} | plan:${body.plan}`,
+      success_url: `${origin}/settings?billing=success`,
+      cancel_url: `${origin}/settings?billing=cancelled`,
+      failure_url: `${origin}/settings?billing=failed`,
+      test: process.env.ZIINA_TEST_MODE !== "false",
+      expiry,
+      allow_tips: false,
+    }),
     cache: "no-store",
   });
 
-  const session = (await stripeResponse.json()) as { url?: string; error?: { message?: string } };
-  if (!stripeResponse.ok || !session.url) {
-    return NextResponse.json({ error: session.error?.message || "Couldn't create Stripe checkout." }, { status: 502 });
+  const payment = (await ziinaResponse.json().catch(() => ({}))) as {
+    id?: string;
+    redirect_url?: string;
+    latest_error?: { message?: string };
+    message?: string;
+  };
+
+  if (!ziinaResponse.ok || !payment.redirect_url) {
+    return NextResponse.json(
+      { error: payment.latest_error?.message || payment.message || "Couldn't create Ziina checkout." },
+      { status: 502 }
+    );
   }
 
-  return NextResponse.json({ url: session.url });
+  return NextResponse.json({ url: payment.redirect_url, paymentIntentId: payment.id });
 }
