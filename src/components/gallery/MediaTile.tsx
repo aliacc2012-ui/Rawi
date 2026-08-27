@@ -168,6 +168,14 @@ export function MediaTile({
 
   const isFluid = displayMode === "masonry" || displayMode === "large";
   const isShowcase = displayMode === "large" || displayMode === "slideshow";
+  const thumbnailLoading = displayMode === "slideshow" ? "eager" : "lazy";
+  const thumbnailPriority = displayMode === "slideshow" ? "high" : "low";
+  const thumbnailSizes =
+    displayMode === "large" || displayMode === "slideshow"
+      ? "(max-width: 768px) 100vw, 90vw"
+      : displayMode === "masonry"
+        ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw";
   const shellClass = isFluid
     ? "relative rounded-xl overflow-hidden bg-[#111] group ring-offset-2 ring-offset-[#090909] transition"
     : `relative rounded-xl overflow-hidden bg-[#111] ${
@@ -178,6 +186,10 @@ export function MediaTile({
   const mediaClass = isFluid
     ? "w-full h-auto object-contain"
     : "w-full h-full object-cover";
+  const offscreenStyle =
+    displayMode === "slideshow"
+      ? undefined
+      : { contentVisibility: "auto" as const, containIntrinsicSize: "320px" };
 
   const videoPoster =
     mediaType === "video" && displayUrl ? (
@@ -190,8 +202,10 @@ export function MediaTile({
         <img
           src={displayUrl}
           alt=""
-          loading={displayMode === "slideshow" ? "eager" : "lazy"}
+          loading={thumbnailLoading}
+          fetchPriority={thumbnailPriority}
           decoding="async"
+          sizes={thumbnailSizes}
           className={mediaClass}
         />
         <span className="absolute inset-0 grid place-items-center bg-black/10 transition group-hover:bg-black/20">
@@ -204,7 +218,10 @@ export function MediaTile({
 
   return (
     <>
-      <div className={`${shellClass} ${selected ? "ring-2 ring-rawi-yellow" : "ring-0"}`}>
+      <div
+        className={`${shellClass} ${selected ? "ring-2 ring-rawi-yellow" : "ring-0"}`}
+        style={offscreenStyle}
+      >
         {mediaType === "video" ? (
           videoPoster || (
             <button
@@ -232,8 +249,10 @@ export function MediaTile({
               <img
                 src={displayUrl}
                 alt=""
-                loading={displayMode === "slideshow" ? "eager" : "lazy"}
+                loading={thumbnailLoading}
+                fetchPriority={thumbnailPriority}
                 decoding="async"
+                sizes={thumbnailSizes}
                 className={mediaClass}
               />
             </button>
@@ -420,6 +439,8 @@ export function MediaTile({
                 src={url}
                 alt=""
                 draggable={false}
+                decoding="async"
+                fetchPriority="high"
                 style={{ transform: `scale(${zoom})` }}
                 className="max-w-full max-h-[calc(100vh-7rem)] object-contain transition-transform"
               />
