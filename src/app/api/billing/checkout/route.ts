@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     body: JSON.stringify({
       amount: plan.priceAed * 100,
       currency_code: "AED",
-      message: `RAWI ${plan.name} plan - 30 days | workspace:${body.workspaceId} | plan:${body.plan}`,
+      message: `RAWI ${plan.name} - 30 days`,
       success_url: `${origin}/settings?billing=success`,
       cancel_url: `${origin}/settings?billing=cancelled`,
       failure_url: `${origin}/settings?billing=failed`,
