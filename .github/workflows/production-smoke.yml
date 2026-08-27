@@ -1,0 +1,22 @@
+name: RAWI Production Smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run production smoke checks
+        env:
+          RAWI_BASE_URL: https://rawi-five.vercel.app
+        run: node scripts/smoke.mjs
