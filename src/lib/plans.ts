@@ -35,10 +35,10 @@ export const PLAN_CONFIG:Record<PlanId,PlanConfig>={
     id:"pro",
     name:"Pro",
     priceAed:129,
-    storageBytes:2*1024**4,
+    storageBytes:1*1024**4,
     activeGalleryLimit:null,
     availabilityDays:null,
-    features:["2 TB storage","4K playback","Custom domain","Watermarks","Client approvals"],
+    features:["1 TB storage","4K playback","Custom domain","Watermarks","Client approvals"],
   },
 };
 
