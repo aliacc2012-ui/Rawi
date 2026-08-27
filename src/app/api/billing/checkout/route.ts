@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
   const configuredAppUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
   const origin = configuredAppUrl || request.nextUrl.origin;
   const expiry = String(Date.now() + 30 * 60 * 1000);
+  const testMode = process.env.ZIINA_TEST_MODE === "true";
 
   const ziinaResponse = await fetch("https://api-v2.ziina.com/api/payment_intent", {
     method: "POST",
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
       success_url: `${origin}/settings?billing=success&payment_intent_id={PAYMENT_INTENT_ID}`,
       cancel_url: `${origin}/settings?billing=cancelled`,
       failure_url: `${origin}/settings?billing=failed`,
-      test: process.env.ZIINA_TEST_MODE !== "false",
+      test: testMode,
       expiry,
       allow_tips: false,
     }),
@@ -55,5 +56,5 @@ export async function POST(request: NextRequest) {
   }, { onConflict: "workspace_id" });
 
   if (billingError) return NextResponse.json({ error: "Couldn't prepare RAWI billing state. Please try again." }, { status: 500 });
-  return NextResponse.json({ url: payment.redirect_url, paymentIntentId: payment.id });
+  return NextResponse.json({ url: payment.redirect_url, paymentIntentId: payment.id, testMode });
 }
