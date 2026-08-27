@@ -38,7 +38,7 @@ export const PLAN_CONFIG:Record<PlanId,PlanConfig>={
     storageBytes:1*1024**4,
     activeGalleryLimit:null,
     availabilityDays:null,
-    features:["1 TB storage","Unlimited galleries","Custom branding","Password protection","Download analytics","4K playback"],
+    features:["1 TB storage","Unlimited galleries","Custom branding","Password protection","Download analytics"],
   },
 };
 
