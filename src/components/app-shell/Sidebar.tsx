@@ -24,6 +24,11 @@ export function Sidebar({ storageUsedBytes, storageLimitBytes }: { storageUsedBy
       <div className="mt-auto"><div className="text-[10px] text-gray-400 flex justify-between mb-2"><span>Storage</span><span>{gb(storageUsedBytes)} / {gb(storageLimitBytes)} GB</span></div><div className="h-1.5 bg-[#292929] rounded-full overflow-hidden mb-4"><div className="h-full bg-rawi-yellow" style={{ width: `${pct}%` }} /></div><Link href="/settings" className="flex items-center gap-2 text-xs text-gray-300 py-3 border-t border-white/10"><span className="text-rawi-yellow">♛</span> Upgrade plan</Link><form action={signOut}><button type="submit" className="w-full text-gray-300 border border-[#333] rounded-full px-4 py-2.5 text-sm hover:bg-[#1d1d1d]">Sign out</button></form></div>
     </aside>
 
+    <div className="md:hidden sticky top-0 z-40 -mx-4 -mt-4 mb-4 flex items-center justify-between border-b border-black/5 bg-[#f4f4f2]/95 px-4 py-3 backdrop-blur-xl sm:-mx-5 sm:-mt-5 sm:px-5">
+      <Link href="/dashboard" className="flex items-center gap-2 font-extrabold" aria-label="RAWI dashboard"><span className="w-[28px] h-[28px] rounded-[50%_50%_50%_8px] bg-rawi-yellow grid place-items-center text-black font-black -rotate-[8deg]">R</span><span className="tracking-[0.12em]">RAWI</span></Link>
+      <form action={signOut}><button type="submit" className="rounded-full border border-black/10 bg-white px-3.5 py-2 text-xs font-extrabold shadow-sm active:scale-[.98]">Sign out</button></form>
+    </div>
+
     <nav className="md:hidden fixed inset-x-3 bottom-3 z-50 grid grid-cols-5 rounded-2xl border border-white/10 bg-[#111]/95 p-1.5 text-white shadow-2xl backdrop-blur-xl" aria-label="Mobile navigation">
       {LINKS.map((link) => { const active = pathname.startsWith(link.href); return <Link key={link.href} href={link.href} className={`flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold transition ${active ? "bg-white/10 text-white" : "text-white/45"}`}><span className={`text-base leading-none ${active ? "text-rawi-yellow" : ""}`}>{link.icon}</span><span className="truncate">{link.label}</span></Link>; })}
     </nav>
