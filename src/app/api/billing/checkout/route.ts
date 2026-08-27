@@ -41,11 +41,9 @@ export async function POST(request: NextRequest) {
     cache: "no-store",
   });
 
-  const payment = (await ziinaResponse.json().catch(() => ({}))) as { id?: string; redirect_url?: string; latest_error?: { message?: string }; message?: string };
-  if (!ziinaResponse.ok || !payment.redirect_url || !payment.id) return NextResponse.json({ error: payment.latest_error?.message || payment.message || "Couldn't create Ziina checkout." }, { status: 502 });
+  const payment = (await ziinaResponse.json().catch(() => ({}))) as { id?: string; redirect_url?: string; embedded_url?: string; latest_error?: { message?: string }; message?: string };
+  if (!ziinaResponse.ok || !payment.embedded_url || !payment.id) return NextResponse.json({ error: payment.latest_error?.message || payment.message || "Couldn't create Ziina embedded checkout." }, { status: 502 });
 
-  // Record the requested plan against Ziina's immutable payment-intent ID before redirecting.
-  // The webhook uses this server-side mapping instead of trusting browser query parameters.
   const admin = createAdminClient();
   const { error: billingError } = await admin.from("subscriptions").upsert({
     workspace_id: body.workspaceId,
@@ -57,5 +55,5 @@ export async function POST(request: NextRequest) {
   }, { onConflict: "workspace_id" });
 
   if (billingError) return NextResponse.json({ error: "Couldn't prepare RAWI billing state. Please try again." }, { status: 500 });
-  return NextResponse.json({ url: payment.redirect_url, paymentIntentId: payment.id });
+  return NextResponse.json({ url: payment.embedded_url, paymentIntentId: payment.id, checkoutMode: "embedded" });
 }
