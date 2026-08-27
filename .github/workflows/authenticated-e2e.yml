@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "30 */6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "tests/e2e-auth.mjs"
+      - ".github/workflows/authenticated-e2e.yml"
 
 jobs:
   e2e:
