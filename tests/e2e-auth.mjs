@@ -1,5 +1,7 @@
 import { chromium } from "playwright";
 
+// Triggered after the dedicated RAWI E2E account is configured.
+
 const base = process.env.RAWI_BASE_URL || "https://rawi-five.vercel.app";
 const email = process.env.RAWI_E2E_EMAIL;
 const password = process.env.RAWI_E2E_PASSWORD;
