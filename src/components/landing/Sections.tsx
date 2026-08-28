@@ -85,8 +85,8 @@ function ActivityLine({ icon, text }: { icon: string; text: string }) { return <
 export function Strip() { return <section className="bg-rawi-yellow overflow-hidden py-3 md:py-3.5"><div className="flex gap-5 md:gap-8 justify-center text-[11px] md:text-base font-black tracking-[0.08em] whitespace-nowrap"><span>UPLOAD</span><b>•</b><span>PRESENT</span><b>•</b><span>DELIVER</span><b>•</b><span>RAWI</span><b>•</b></div></section>; }
 
 const FEATURES = [
-  { icon: "↥", title: "Resumable uploads", body: "Designed for massive photo sets and 4K files without restarting from zero." },
-  { icon: "▶", title: "Cinematic playback", body: "Beautiful streaming previews while original master files remain available to download." },
+  { icon: "↥", title: "Resumable uploads", body: "Resumable delivery for supported photo and video files, with progress that can continue after interruption." },
+  { icon: "▶", title: "Gallery previews", body: "Polished client previews while original uploaded files remain available to download." },
   { icon: "✦", title: "Creator branding", body: "Your logo, accent and cover. RAWI stays quietly in the background." },
   { icon: "⌁", title: "WhatsApp sharing", body: "Send a polished gallery link to clients in the channel UAE creators already use most." },
   { icon: "♡", title: "Client selections", body: "Let clients favorite photos and make final selections in one place." },

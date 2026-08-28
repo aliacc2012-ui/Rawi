@@ -17,7 +17,7 @@ const SUPPORTING_FEATURES = [
     number: "05",
     icon: "✦",
     title: "Your brand, your way.",
-    body: "Add your logo, colors, cover and custom domain. RAWI stays quietly in the background.",
+    body: "Add your logo, colors and gallery cover. RAWI stays quietly in the background.",
     badge: "✓ Creator Branding",
   },
   {
@@ -45,7 +45,7 @@ export function EnhancedFeatures() {
               RAWI handles the delivery, presentation, feedback and downloads — so your work feels premium until the very last click.
             </p>
             <div className="grid grid-cols-3 gap-2 mt-7 sm:gap-4 max-w-[560px]">
-              <MiniBenefit icon="⚡" title="4K Ready" body="Ultra high quality" />
+              <MiniBenefit icon="▣" title="Photo + video" body="Up to 500 MB/file" />
               <MiniBenefit icon="↥" title="Resumable" body="Never restart" />
               <MiniBenefit icon="◇" title="Secure" body="Files protected" />
             </div>
@@ -57,16 +57,16 @@ export function EnhancedFeatures() {
             number="01"
             eyebrow="FAST DELIVERY"
             title={<>Fast delivery,<br /><span className="text-[#e5b800]">zero interruptions.</span></>}
-            body="Resumable uploads for huge photo sets and 4K videos. Pick up exactly where you left off — always."
-            badges={["✓ Resume Uploads", "✓ 4K & RAW Support"]}
+            body="Resumable uploads for photo sets and supported video files up to 500 MB each. Pick up where you left off."
+            badges={["✓ Resumable Uploads", "✓ Photos + Video"]}
             visual={<UploadVisual />}
           />
           <HeroFeature
             number="02"
             eyebrow="CLIENT EXPERIENCE"
             title={<>Beautiful galleries<br />that <span className="text-[#e5b800]">impress.</span></>}
-            body="Cinematic previews with fast performance, while original master files remain ready to download."
-            badges={["✓ Cinematic Playback", "✓ Originals Download"]}
+            body="Polished gallery previews for clients, while original uploaded files remain ready to download."
+            badges={["✓ Gallery Preview", "✓ Original Downloads"]}
             visual={<GalleryVisual />}
           />
         </div>
