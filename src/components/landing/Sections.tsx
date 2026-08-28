@@ -18,76 +18,36 @@ const DEMO_PROJECTS = [
 ];
 
 export function Hero() {
-  const { dict, locale, setLocale } = useLocale();
+  const { dict } = useLocale();
 
   return (
-    <section className="bg-[#fbf6ef]">
-      <div className="hidden md:block">
-        <div className="relative mx-auto w-full max-w-[1755px] overflow-hidden pt-5">
-          <img
-            src="/rawi-home-hero-sharp.jpg"
-            alt="RAWI turns camera, film and drone work into cinematic branded client galleries"
-            width={1755}
-            height={896}
-            className="block h-auto w-full"
-            fetchPriority="high"
-          />
-          <nav aria-label="Homepage" className="absolute inset-0">
-            <a href="#features" aria-label="Features" className="absolute left-[38%] top-[4%] h-[8%] w-[8%]" />
-            <a href="#gallery" aria-label="Gallery" className="absolute left-[45%] top-[4%] h-[8%] w-[8%]" />
-            <a href="#pricing" aria-label="Pricing" className="absolute left-[52%] top-[4%] h-[8%] w-[8%]" />
-            <Link href="/login" aria-label="Open RAWI" className="absolute right-[4%] top-[3%] h-[8%] w-[10%] rounded-full" />
-            <Link href="/signup" aria-label="Start free" className="absolute left-[4.5%] top-[72%] h-[10%] w-[11%] rounded-xl" />
-            <a href="#gallery" aria-label="View demo gallery" className="absolute left-[17%] top-[72%] h-[10%] w-[14%]" />
-          </nav>
+    <section className="mx-auto grid min-h-0 w-[min(1240px,calc(100%-32px))] items-center gap-10 overflow-hidden pb-14 pt-8 md:min-h-[760px] md:w-[min(1240px,calc(100%-40px))] md:grid-cols-[.92fr_1.08fr] md:gap-[58px] md:pb-[80px] md:pt-10">
+      <div>
+        <div className="inline-flex items-center gap-2.5 rounded-full border border-black/[.06] bg-white px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-gray-600 shadow-sm md:text-[11px]">
+          <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
+          {dict.hero.eyebrow}
+        </div>
+        <h1 className="my-6 text-[48px] font-medium leading-[.96] tracking-[-.062em] sm:text-[56px] md:text-[88px]">
+          {dict.hero.titlePre}
+          <span className="bg-gradient-to-r from-rawi-yellow to-[#ffeb80] px-[0.06em]">{dict.hero.titleHighlight}</span>
+          {dict.hero.titlePost}
+        </h1>
+        <p className="max-w-[590px] text-base leading-relaxed text-gray-500 md:text-xl">{dict.hero.body}</p>
+        <div className="mt-8 flex flex-wrap items-center gap-5 md:gap-7">
+          <Link href="/signup" className="rounded-xl bg-rawi-yellow px-6 py-4 text-sm font-extrabold shadow-[0_12px_30px_rgba(255,200,0,.22)] md:px-7 md:text-base">{dict.hero.startFree}</Link>
+          <a href="#gallery" className="border-b border-black pb-1 text-sm font-bold md:text-base">{dict.hero.viewDemo} <span>↘</span></a>
+        </div>
+        <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-gray-400">
+          {dict.hero.trust.map((item) => <span key={item}>✓ {item}</span>)}
         </div>
       </div>
-
-      <div className="overflow-hidden px-4 pb-10 pt-3 md:hidden">
-        <header className="flex h-14 items-center justify-between">
-          <Link href="#top" aria-label="RAWI home" className="flex items-center gap-2 font-black">
-            <span className="grid h-9 w-9 -rotate-[8deg] place-items-center rounded-[50%_50%_50%_8px] bg-rawi-yellow text-sm">R</span>
-            <span className="tracking-[.12em]">RAWI</span>
-            <span className="font-arabic text-[11px] text-gray-400">راوي</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-[10px] font-black">
-              <button type="button" onClick={() => setLocale("ar")} className={locale === "ar" ? "text-[#d4aa00]" : "text-gray-400"}>AR</button>
-              <span className="text-gray-300">/</span>
-              <button type="button" onClick={() => setLocale("en")} className={locale === "en" ? "text-[#d4aa00]" : "text-gray-400"}>ENG</button>
-            </div>
-            <Link href="/login" className="rounded-full bg-rawi-yellow px-3 py-2 text-[11px] font-black">{dict.nav.open}</Link>
-          </div>
-        </header>
-
-        <div className="pt-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-black/[.06] bg-white px-3 py-2 text-[9px] font-extrabold tracking-[.11em] text-gray-600 shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-rawi-yellow" />
-            UAE-BORN • MADE FOR CREATORS
-          </div>
-          <h1 className="mt-6 text-[47px] font-medium leading-[.96] tracking-[-.062em]">
-            Your work deserves <span className="bg-rawi-yellow/70 px-[.04em]">more</span> than a Drive link.
-          </h1>
-          <p className="mt-6 max-w-[360px] text-base leading-relaxed text-gray-600">
-            Deliver photos and films through cinematic, branded client galleries.
-          </p>
-          <div className="mt-7 flex items-center gap-5">
-            <Link href="/signup" className="rounded-xl bg-rawi-yellow px-5 py-3.5 text-sm font-extrabold shadow-[0_10px_24px_rgba(255,200,0,.18)]">Start free</Link>
-            <a href="#gallery" className="border-b border-black pb-1 text-sm font-bold">View demo ↗</a>
-          </div>
-        </div>
-
-        <div className="relative -mx-4 mt-6 h-[360px] overflow-hidden">
-          <div className="pointer-events-none absolute inset-10 rounded-full bg-rawi-yellow/10 blur-3xl" />
-          <img src="/rawi-mobile-hero-art.jpg" alt="RAWI media collection and gallery presentation workflow" width={1105} height={776} className="relative z-10 h-full w-full object-contain object-center" />
-        </div>
-      </div>
+      <ProductMockup />
     </section>
   );
 }
 
 function ProductMockup() {
-  return <div className="relative min-h-[640px] md:min-h-[700px]"><div className="absolute -inset-10 bg-[radial-gradient(circle_at_55%_45%,rgba(255,212,0,.20),transparent_34%)] blur-2xl pointer-events-none" /><div className="absolute left-0 top-10 z-20 w-[92%] rounded-[28px] border border-black/10 bg-[#111] p-2.5 shadow-[0_40px_100px_rgba(0,0,0,.24)] -rotate-[1.1deg]"><div className="rounded-[21px] bg-[#f6f5f1] overflow-hidden border border-white/10"><div className="h-9 bg-[#171717] flex items-center gap-2 px-4"><span className="w-2.5 h-2.5 rounded-full bg-white/20" /><span className="w-2.5 h-2.5 rounded-full bg-white/20" /><span className="w-2.5 h-2.5 rounded-full bg-rawi-yellow" /></div><div className="grid grid-cols-[128px_1fr] min-h-[500px]"><div className="bg-[#101010] text-white p-4 flex flex-col"><div className="flex items-center gap-2 font-black tracking-[.12em]"><span className="w-7 h-7 rounded-[50%_50%_50%_8px] bg-rawi-yellow grid place-items-center text-black -rotate-[8deg]">R</span><span className="text-sm">RAWI</span></div><div className="mt-8 space-y-2 text-[10px]"><div className="rounded-lg bg-white/10 px-3 py-2.5">Home</div><div className="px-3 py-2.5 text-white/45">Projects</div><div className="px-3 py-2.5 text-white/45">Analytics</div><div className="px-3 py-2.5 text-white/45">Branding</div></div><div className="mt-auto"><div className="text-[8px] text-white/35 flex justify-between"><span>Storage</span><span>68 / 250 GB</span></div><div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden"><div className="h-full w-[27%] bg-rawi-yellow" /></div></div></div><div className="p-5 md:p-6"><div className="flex justify-between gap-4"><div><div className="text-[8px] tracking-[.15em] text-gray-400 font-black">CREATOR WORKSPACE</div><h3 className="text-[22px] md:text-[28px] tracking-[-.04em] mt-1">Good morning, RAWI.</h3><p className="text-[10px] text-gray-400 mt-1">Here&apos;s what&apos;s happening with your projects.</p></div><div className="w-8 h-8 rounded-full bg-rawi-yellow grid place-items-center font-black text-xs">R</div></div><div className="grid grid-cols-4 gap-2 mt-5"><MiniStat value="24" label="Projects" /><MiniStat value="1,284" label="Photos" /><MiniStat value="36" label="Clients" /><MiniStat value="98.7K" label="Downloads" /></div><div className="mt-4 rounded-2xl border bg-white p-3 shadow-sm"><div className="flex items-center justify-between"><div><div className="text-[10px] font-black">Recent Projects</div><div className="text-[7px] text-gray-400 mt-0.5">Automotive galleries</div></div><span className="text-[7px] text-[#b88600] font-bold">View all</span></div><div className="grid grid-cols-4 gap-2 mt-3">{DEMO_PROJECTS.slice(0, 4).map((project) => <DemoProjectCard key={project.name} project={project} />)}</div></div><div className="grid grid-cols-[1fr_.78fr] gap-3 mt-3"><div className="rounded-2xl border bg-white p-3"><div className="text-[9px] font-bold">Client activity</div><div className="grid grid-cols-2 gap-2 mt-3"><ActivityLine icon="↓" text="M3 F80 Silver downloaded" /><ActivityLine icon="◉" text="M3 G80 Orange viewed" /><ActivityLine icon="♡" text="M2 CS Green favorited" /><ActivityLine icon="↓" text="GT3 RS shared" /></div></div><div className="rounded-2xl bg-black text-white p-3"><div className="text-[8px] text-white/45">TODAY DRIVE</div><div className="text-sm mt-1">Gallery is live.</div><div className="grid grid-cols-2 gap-1.5 mt-3"><span className="rounded-lg bg-white/10 px-2 py-2 text-[7px] text-center">Copy link</span><span className="rounded-lg bg-rawi-yellow text-black px-2 py-2 text-[7px] text-center font-bold">WhatsApp</span></div></div></div></div></div></div></div><div className="absolute -right-3 -bottom-10 z-30 w-[37%] min-w-[175px] max-w-[230px] rounded-[34px] border-[7px] border-[#111] bg-[#111] shadow-[-18px_30px_70px_rgba(0,0,0,.30)] rotate-[3deg] overflow-hidden"><div className="rounded-[25px] overflow-hidden bg-[#090909] text-white min-h-[420px]"><div className="relative h-[245px] p-4 flex flex-col justify-between bg-cover bg-center" style={{ backgroundImage: `linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.82)),url('${HERO_IMAGE}')` }}><div className="flex items-center gap-2"><span className="w-7 h-7 rounded-[50%_50%_50%_8px] bg-rawi-yellow text-black grid place-items-center font-black -rotate-[8deg] text-xs">R</span><span className="font-black tracking-[.12em] text-[9px]">RAWI</span></div><div><div className="text-[7px] tracking-[.16em] text-rawi-yellow">AUTOMOTIVE</div><h4 className="text-[24px] leading-[.95] tracking-[-.05em] mt-2">Today<br />Drive</h4><button className="mt-3 bg-rawi-yellow text-black rounded-full px-3 py-2 text-[7px] font-bold">View gallery</button></div></div><div className="bg-white text-black p-3"><div className="text-[8px] font-bold">Featured collection</div><div className="grid grid-cols-2 gap-1.5 mt-3">{DEMO_PROJECTS.slice(4, 8).map((p) => <div key={p.name} className="h-20 rounded-lg bg-cover bg-center" title={p.name} style={{ backgroundImage: `url('${p.image}')` }} />)}</div></div></div></div><div className="absolute left-[9%] bottom-[3%] z-40 rounded-2xl bg-white border border-gray-200 shadow-xl p-3 w-[160px] rotate-[-4deg]"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">✓</div><div><div className="text-[9px] font-black">Client delivered</div><div className="text-[7px] text-gray-400 mt-0.5">12 files downloaded</div></div></div></div></div>;
+  return <div className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px]"><div className="absolute -inset-10 bg-[radial-gradient(circle_at_55%_45%,rgba(255,212,0,.20),transparent_34%)] blur-2xl pointer-events-none" /><div className="absolute left-0 top-10 z-20 w-[92%] rounded-[28px] border border-black/10 bg-[#111] p-2.5 shadow-[0_40px_100px_rgba(0,0,0,.24)] -rotate-[1.1deg]"><div className="rounded-[21px] bg-[#f6f5f1] overflow-hidden border border-white/10"><div className="h-9 bg-[#171717] flex items-center gap-2 px-4"><span className="w-2.5 h-2.5 rounded-full bg-white/20" /><span className="w-2.5 h-2.5 rounded-full bg-white/20" /><span className="w-2.5 h-2.5 rounded-full bg-rawi-yellow" /></div><div className="grid grid-cols-[128px_1fr] min-h-[500px]"><div className="bg-[#101010] text-white p-4 flex flex-col"><div className="flex items-center gap-2 font-black tracking-[.12em]"><span className="w-7 h-7 rounded-[50%_50%_50%_8px] bg-rawi-yellow grid place-items-center text-black -rotate-[8deg]">R</span><span className="text-sm">RAWI</span></div><div className="mt-8 space-y-2 text-[10px]"><div className="rounded-lg bg-white/10 px-3 py-2.5">Home</div><div className="px-3 py-2.5 text-white/45">Projects</div><div className="px-3 py-2.5 text-white/45">Analytics</div><div className="px-3 py-2.5 text-white/45">Branding</div></div><div className="mt-auto"><div className="text-[8px] text-white/35 flex justify-between"><span>Storage</span><span>68 / 200 GB</span></div><div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden"><div className="h-full w-[34%] bg-rawi-yellow" /></div></div></div><div className="p-5 md:p-6"><div className="flex justify-between gap-4"><div><div className="text-[8px] tracking-[.15em] text-gray-400 font-black">CREATOR WORKSPACE</div><h3 className="text-[22px] md:text-[28px] tracking-[-.04em] mt-1">Good morning, RAWI.</h3><p className="text-[10px] text-gray-400 mt-1">Here&apos;s what&apos;s happening with your projects.</p></div><div className="w-8 h-8 rounded-full bg-rawi-yellow grid place-items-center font-black text-xs">R</div></div><div className="grid grid-cols-4 gap-2 mt-5"><MiniStat value="24" label="Projects" /><MiniStat value="1,284" label="Photos" /><MiniStat value="36" label="Clients" /><MiniStat value="98.7K" label="Downloads" /></div><div className="mt-4 rounded-2xl border bg-white p-3 shadow-sm"><div className="flex items-center justify-between"><div><div className="text-[10px] font-black">Recent Projects</div><div className="text-[7px] text-gray-400 mt-0.5">Automotive galleries</div></div><span className="text-[7px] text-[#b88600] font-bold">View all</span></div><div className="grid grid-cols-4 gap-2 mt-3">{DEMO_PROJECTS.slice(0, 4).map((project) => <DemoProjectCard key={project.name} project={project} />)}</div></div><div className="grid grid-cols-[1fr_.78fr] gap-3 mt-3"><div className="rounded-2xl border bg-white p-3"><div className="text-[9px] font-bold">Client activity</div><div className="grid grid-cols-2 gap-2 mt-3"><ActivityLine icon="↓" text="M3 F80 Silver downloaded" /><ActivityLine icon="◉" text="M3 G80 Orange viewed" /><ActivityLine icon="♡" text="M2 CS Green favorited" /><ActivityLine icon="↓" text="GT3 RS shared" /></div></div><div className="rounded-2xl bg-black text-white p-3"><div className="text-[8px] text-white/45">TODAY DRIVE</div><div className="text-sm mt-1">Gallery is live.</div><div className="grid grid-cols-2 gap-1.5 mt-3"><span className="rounded-lg bg-white/10 px-2 py-2 text-[7px] text-center">Copy link</span><span className="rounded-lg bg-rawi-yellow text-black px-2 py-2 text-[7px] text-center font-bold">WhatsApp</span></div></div></div></div></div></div></div><div className="absolute -right-3 -bottom-10 z-30 w-[37%] min-w-[175px] max-w-[230px] rounded-[34px] border-[7px] border-[#111] bg-[#111] shadow-[-18px_30px_70px_rgba(0,0,0,.30)] rotate-[3deg] overflow-hidden"><div className="rounded-[25px] overflow-hidden bg-[#090909] text-white min-h-[420px]"><div className="relative h-[245px] p-4 flex flex-col justify-between bg-cover bg-center" style={{ backgroundImage: `linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.82)),url('${HERO_IMAGE}')` }}><div className="flex items-center gap-2"><span className="w-7 h-7 rounded-[50%_50%_50%_8px] bg-rawi-yellow text-black grid place-items-center font-black -rotate-[8deg] text-xs">R</span><span className="font-black tracking-[.12em] text-[9px]">RAWI</span></div><div><div className="text-[7px] tracking-[.16em] text-rawi-yellow">AUTOMOTIVE</div><h4 className="text-[24px] leading-[.95] tracking-[-.05em] mt-2">Today<br />Drive</h4><button className="mt-3 bg-rawi-yellow text-black rounded-full px-3 py-2 text-[7px] font-bold">View gallery</button></div></div><div className="bg-white text-black p-3"><div className="text-[8px] font-bold">Featured collection</div><div className="grid grid-cols-2 gap-1.5 mt-3">{DEMO_PROJECTS.slice(4, 8).map((p) => <div key={p.name} className="h-20 rounded-lg bg-cover bg-center" title={p.name} style={{ backgroundImage: `url('${p.image}')` }} />)}</div></div></div></div><div className="absolute left-[9%] bottom-[3%] z-40 rounded-2xl bg-white border border-gray-200 shadow-xl p-3 w-[160px] rotate-[-4deg]"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">✓</div><div><div className="text-[9px] font-black">Client delivered</div><div className="text-[7px] text-gray-400 mt-0.5">12 files downloaded</div></div></div></div></div>;
 }
 
 function DemoProjectCard({ project }: { project: { name: string; image: string; meta: string } }) { return <div className="overflow-hidden rounded-xl border bg-[#fafafa]"><div className="h-[78px] bg-cover bg-center" style={{ backgroundImage: `linear-gradient(180deg,transparent,rgba(0,0,0,.24)),url('${project.image}')` }} /><div className="p-1.5"><div className="text-[7px] font-black truncate">{project.name}</div><div className="text-[6px] text-gray-400 mt-0.5">{project.meta}</div><div className="text-[6px] text-emerald-600 mt-1">● Published</div></div></div>; }
