@@ -19,42 +19,24 @@ const DEMO_PROJECTS = [
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#fbf6ef]">
-      <div className="mx-auto grid min-h-[690px] w-[min(1380px,calc(100%-40px))] items-center gap-8 pb-14 pt-8 lg:grid-cols-[.82fr_1.18fr] lg:gap-4 lg:pb-16 lg:pt-4">
-        <div className="relative z-10 max-w-[660px]">
-          <div className="inline-flex items-center gap-3 rounded-full border border-black/[.06] bg-white/90 px-4 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-gray-600 shadow-[0_8px_24px_rgba(39,31,20,.08)] sm:text-[11px]">
-            <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
-            UAE-BORN • MADE FOR CREATORS
-          </div>
-          <h1 className="mt-8 text-[48px] font-medium leading-[.96] tracking-[-0.062em] text-black sm:text-[60px] lg:text-[clamp(58px,4.7vw,76px)]">
-            Your work<br />
-            deserves <span className="relative inline-block"><span className="relative z-10">better</span><span className="absolute inset-x-[-.06em] bottom-[.04em] top-[.56em] -z-0 bg-rawi-yellow/75" /></span><br />
-            than a Drive link.
-          </h1>
-          <p className="mt-8 max-w-[620px] text-[18px] leading-[1.55] text-[#596272] sm:text-[20px]">
-            Deliver photos and films through cinematic, branded client galleries built for the way creators actually work.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center gap-7">
-            <Link href="/signup" className="rounded-xl bg-rawi-yellow px-7 py-4 text-base font-bold text-black shadow-[0_12px_28px_rgba(255,200,0,.20)] transition-transform hover:-translate-y-0.5">
-              Start free
-            </Link>
-            <a href="#gallery" className="group inline-flex items-center gap-2 border-b border-black pb-1 text-base font-medium">
-              View demo gallery <span className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
-            </a>
-          </div>
-        </div>
-
-        <div className="relative min-h-[420px] lg:min-h-[650px]">
-          <div className="pointer-events-none absolute inset-8 rounded-full bg-rawi-yellow/[.08] blur-3xl" />
-          <img
-            src="/rawi-hero-art.jpg"
-            alt="RAWI collects camera, film and drone media into branded galleries for desktop and mobile"
-            width={1105}
-            height={776}
-            className="relative z-10 h-full w-full object-contain object-center"
-            fetchPriority="high"
-          />
-        </div>
+    <section className="bg-[#fbf6ef] pt-3 md:pt-5">
+      <div className="relative mx-auto w-full max-w-[1755px] overflow-hidden">
+        <img
+          src="/rawi-home-hero.webp"
+          alt="RAWI turns camera, film and drone work into cinematic branded client galleries"
+          width={1755}
+          height={896}
+          className="block h-auto w-full"
+          fetchPriority="high"
+        />
+        <nav aria-label="Homepage" className="absolute inset-0 hidden md:block">
+          <a href="#features" aria-label="Features" className="absolute left-[38%] top-[4%] h-[8%] w-[8%]" />
+          <a href="#gallery" aria-label="Gallery" className="absolute left-[45%] top-[4%] h-[8%] w-[8%]" />
+          <a href="#pricing" aria-label="Pricing" className="absolute left-[52%] top-[4%] h-[8%] w-[8%]" />
+          <Link href="/login" aria-label="Open RAWI" className="absolute right-[4%] top-[3%] h-[8%] w-[10%] rounded-full" />
+          <Link href="/signup" aria-label="Start free" className="absolute left-[4.5%] top-[72%] h-[10%] w-[11%] rounded-xl" />
+          <a href="#gallery" aria-label="View demo gallery" className="absolute left-[17%] top-[72%] h-[10%] w-[14%]" />
+        </nav>
       </div>
     </section>
   );
