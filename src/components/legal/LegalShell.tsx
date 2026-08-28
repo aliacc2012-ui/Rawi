@@ -22,7 +22,7 @@ export function LegalShell({ eyebrow, title, updated, children }: { eyebrow: str
           <nav className="flex gap-5" aria-label="Legal">
             <Link href="/terms">Terms</Link>
             <Link href="/privacy">Privacy</Link>
-            <a href="mailto:ali.acc2012@gmail.com">Contact</a>
+            <Link href="/support">Support</Link>
           </nav>
         </footer>
       </div>

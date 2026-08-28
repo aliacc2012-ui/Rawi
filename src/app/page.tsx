@@ -19,7 +19,7 @@ export default function LandingPage() {
           <nav className="flex flex-wrap gap-5" aria-label="Legal and support">
             <Link href="/terms" className="hover:text-black">Terms</Link>
             <Link href="/privacy" className="hover:text-black">Privacy</Link>
-            <a href="mailto:ali.acc2012@gmail.com" className="hover:text-black">Contact</a>
+            <Link href="/support" className="hover:text-black">Support</Link>
           </nav>
         </div>
       </footer>
