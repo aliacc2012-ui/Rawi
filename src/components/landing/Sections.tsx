@@ -68,23 +68,54 @@ const PLAN_DESCRIPTIONS = { free: "For trying RAWI with real work.", creator: "F
 export function Pricing() { return <section id="pricing" className="py-[110px] w-[min(1180px,calc(100%-40px))] mx-auto"><div className="max-w-[760px] mb-12"><div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">SIMPLE PRICING</div><h2 className="text-[36px] md:text-[68px] leading-[1.02] tracking-[-0.055em] my-3">Start free. Grow when your archive does.</h2></div><div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">{PLAN_ORDER.map((id) => { const p=PLAN_CONFIG[id]; return <article key={id} className={`rounded-[24px] p-7 flex flex-col justify-between min-h-[450px] relative border ${p.featured ? "border-2 border-black shadow-[0_20px_60px_rgba(0,0,0,0.08)]" : "border-gray-200"}`}>{p.featured && <div className="absolute top-3 right-3 text-[9px] bg-rawi-yellow px-2.5 py-1.5 rounded-full font-black tracking-[0.08em]">MOST POPULAR</div>}<div><span className="text-[11px] font-black tracking-[0.12em] text-gray-500">{p.name.toUpperCase()}</span><h3 className="text-[46px] md:text-[54px] my-4 tracking-[-0.06em]">{p.priceAed} <small className="text-[13px] text-gray-500 tracking-normal">{p.priceAed===0?"AED":"AED/mo"}</small></h3><p className="text-gray-500">{PLAN_DESCRIPTIONS[id]}</p><ul className="p-0 my-6 list-none">{p.features.map((f) => <li key={f} className="py-2.5 border-b border-gray-100 text-sm">{f}</li>)}</ul></div><Link href="/signup" className={`text-center rounded-full px-5 py-[13px] font-extrabold ${p.featured ? "bg-rawi-yellow text-black" : "bg-white border border-gray-300 text-black"}`}>Choose {p.name}</Link></article>; })}</div></section>; }
 
 export function ClosingCTA() {
+  const workflow = [
+    { number: "01", icon: "↥", label: "Collect", detail: "Upload every final" },
+    { number: "02", icon: "⊞", label: "Organize", detail: "Curate the story" },
+    { number: "03", icon: "▷", label: "Present", detail: "Deliver beautifully" },
+  ];
+
   return (
-    <section className="bg-[#fbf6ef] px-5 pb-10 pt-4 md:pb-16">
-      <div className="relative mx-auto w-full max-w-[1180px] overflow-hidden rounded-[32px] border border-[#e5ddd2] bg-white/70 px-7 py-12 shadow-[0_22px_70px_rgba(55,42,24,.07)] md:px-12 md:py-14">
-        <div className="pointer-events-none absolute -right-14 -top-16 h-44 w-44 rounded-full border-[28px] border-rawi-yellow/40" />
-        <div className="pointer-events-none absolute bottom-0 right-[25%] h-20 w-20 bg-[radial-gradient(circle,#d8c9b5_1.3px,transparent_1.3px)] bg-[size:10px_10px] opacity-45" />
-        <div className="relative z-10 flex flex-col items-start justify-between gap-9 md:flex-row md:items-center">
-          <div className="max-w-[820px]">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#e8dfd5] bg-[#fbf6ef] px-3 py-2 text-[10px] font-extrabold tracking-[.16em] text-gray-500">
+    <section className="bg-[#fbf6ef] px-5 pb-12 pt-5 md:pb-16">
+      <div className="relative mx-auto w-full max-w-[1380px] overflow-hidden rounded-[32px] border border-[#e4dbcf] bg-white/75 px-6 py-10 shadow-[0_24px_80px_rgba(55,42,24,.07)] backdrop-blur-sm md:px-10 md:py-12">
+        <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full border border-[#eadfce]" />
+        <div className="pointer-events-none absolute -right-10 -top-20 h-56 w-56 rounded-full border border-rawi-yellow/25" />
+        <div className="pointer-events-none absolute right-10 top-6 h-24 w-24 bg-[radial-gradient(circle,#d8c9b5_1.2px,transparent_1.2px)] bg-[size:10px_10px] opacity-35" />
+
+        <div className="relative z-10 grid items-center gap-10 xl:grid-cols-[.88fr_1.35fr_auto]">
+          <div className="max-w-[460px]">
+            <div className="flex items-center gap-2 text-[11px] font-black tracking-[.18em] text-gray-500">
+              <span>RAWI</span>
               <span className="h-2 w-2 rounded-full bg-rawi-yellow" />
-              RAWI • راوي
+              <span className="font-arabic tracking-normal">راوي</span>
             </div>
-            <h2 className="mt-5 text-[34px] leading-[1.02] tracking-[-0.055em] text-black md:text-[52px]">
-              Make delivery part of<br className="hidden sm:block" /> the creative work.
+            <h2 className="mt-5 text-[36px] leading-[1.02] tracking-[-0.055em] text-black md:text-[48px]">
+              Make delivery part of the creative work.
             </h2>
           </div>
-          <Link href="/signup" className="group inline-flex shrink-0 items-center gap-3 rounded-full bg-black px-6 py-4 font-extrabold text-white transition-transform hover:-translate-y-0.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
+
+          <div className="grid gap-3 sm:grid-cols-3">
+            {workflow.map((step, index) => (
+              <div key={step.number} className="group relative">
+                <article className="relative min-h-[190px] rounded-[24px] border border-white bg-white/80 p-5 shadow-[0_14px_40px_rgba(55,42,24,.09)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(55,42,24,.13)]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black text-[#d4aa00]">{step.number}</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-rawi-yellow" />
+                  </div>
+                  <div className="mt-5 grid h-12 w-12 place-items-center rounded-[15px] border border-[#eee5da] bg-[#fbf6ef] text-xl font-black text-black shadow-sm">
+                    {step.icon}
+                  </div>
+                  <h3 className="mt-5 text-base font-extrabold">{step.label}</h3>
+                  <p className="mt-1 text-[11px] text-gray-400">{step.detail}</p>
+                </article>
+                {index < workflow.length - 1 && (
+                  <span className="absolute -right-2 top-1/2 z-20 hidden -translate-y-1/2 text-[#c9bca9] sm:block">→</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <Link href="/signup" className="group inline-flex shrink-0 items-center justify-center gap-3 rounded-full bg-black px-6 py-4 text-sm font-extrabold text-white shadow-[0_14px_34px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5">
+            <span className="h-2 w-2 rounded-full bg-rawi-yellow" />
             Build your first gallery
             <span className="text-rawi-yellow transition-transform group-hover:translate-x-1">→</span>
           </Link>
