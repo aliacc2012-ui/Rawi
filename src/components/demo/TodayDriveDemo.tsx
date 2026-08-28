@@ -34,6 +34,8 @@ export function TodayDriveDemo() {
     setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   }
 
+  const selectedPhoto = selected === null ? null : PHOTOS[selected] ?? null;
+
   async function share() {
     await navigator.clipboard.writeText(window.location.href);
     setCopied(true);
@@ -56,7 +58,7 @@ export function TodayDriveDemo() {
       </header>
 
       <section className="relative min-h-[76vh] overflow-hidden pt-16">
-        <img src={PHOTOS[6].image} alt="Lamborghini Huracán STO" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={PHOTOS[6]!.image} alt="Lamborghini Huracán STO" className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-[#0b0b0b]" />
         <div className="relative mx-auto flex min-h-[calc(76vh-64px)] w-[min(1200px,calc(100%-32px))] items-end pb-12 md:pb-16">
           <div>
@@ -92,14 +94,14 @@ export function TodayDriveDemo() {
         </div>
       </section>
 
-      {selected !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4" role="dialog" aria-modal="true" aria-label={PHOTOS[selected].name}>
+      {selected !== null && selectedPhoto && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4" role="dialog" aria-modal="true" aria-label={selectedPhoto.name}>
           <button onClick={() => setSelected(null)} className="absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-black/50 text-xl" aria-label="Close preview">×</button>
           <button onClick={() => setSelected((selected - 1 + PHOTOS.length) % PHOTOS.length)} className="absolute left-3 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-black/50 text-xl md:left-6" aria-label="Previous photo">←</button>
-          <img src={PHOTOS[selected].image} alt={PHOTOS[selected].name} className="max-h-[86vh] max-w-[92vw] rounded-xl object-contain" />
+          <img src={selectedPhoto.image} alt={selectedPhoto.name} className="max-h-[86vh] max-w-[92vw] rounded-xl object-contain" />
           <button onClick={() => setSelected((selected + 1) % PHOTOS.length)} className="absolute right-3 z-10 grid h-11 w-11 place-items-center rounded-full border border-white/20 bg-black/50 text-xl md:right-6" aria-label="Next photo">→</button>
           <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full bg-black/70 px-4 py-2.5 text-xs backdrop-blur-md">
-            <span>{PHOTOS[selected].name}</span><span className="text-white/30">•</span><span>{selected + 1} / {PHOTOS.length}</span>
+            <span>{selectedPhoto.name}</span><span className="text-white/30">•</span><span>{selected + 1} / {PHOTOS.length}</span>
           </div>
         </div>
       )}
