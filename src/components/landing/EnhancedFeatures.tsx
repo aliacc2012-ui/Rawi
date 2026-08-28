@@ -31,12 +31,12 @@ const SUPPORTING_FEATURES = [
 
 export function EnhancedFeatures() {
   return (
-    <section id="features" className="bg-[#fbf6ef] pt-[110px] pb-0">
-      <div className="w-[min(1180px,calc(100%-40px))] mx-auto">
+    <section id="features" className="bg-[#fbf6ef] pt-[72px] pb-0 md:pt-[110px]">
+      <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.72fr_1.28fr] gap-10 lg:gap-14 items-end mb-10">
           <div>
             <div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">BUILT AROUND DELIVERY</div>
-            <h2 className="text-[42px] md:text-[68px] leading-[.98] tracking-[-0.06em] mt-4 max-w-[650px]">
+            <h2 className="text-[38px] sm:text-[42px] md:text-[68px] leading-[.98] tracking-[-0.06em] mt-4 max-w-[650px]">
               From final export<br />to <span className="text-[#e5b800]">happy client.</span>
             </h2>
           </div>
@@ -44,7 +44,7 @@ export function EnhancedFeatures() {
             <p className="text-lg leading-relaxed text-gray-500 max-w-[610px]">
               RAWI handles the delivery, presentation, feedback and downloads — so your work feels premium until the very last click.
             </p>
-            <div className="grid grid-cols-3 gap-4 mt-7 max-w-[560px]">
+            <div className="grid grid-cols-3 gap-2 mt-7 sm:gap-4 max-w-[560px]">
               <MiniBenefit icon="⚡" title="4K Ready" body="Ultra high quality" />
               <MiniBenefit icon="↥" title="Resumable" body="Never restart" />
               <MiniBenefit icon="◇" title="Secure" body="Files protected" />
@@ -75,7 +75,7 @@ export function EnhancedFeatures() {
           {SUPPORTING_FEATURES.map((feature) => (
             <article
               key={feature.number}
-              className="group rounded-[24px] border border-gray-200 bg-white p-6 min-h-[255px] shadow-[0_10px_35px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)]"
+              className="group rounded-[22px] border border-gray-200 bg-white p-5 sm:p-6 min-h-0 sm:min-h-[255px] shadow-[0_10px_35px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,.08)]"
             >
               <div className="flex items-start justify-between gap-4">
                 <span className="bg-rawi-yellow text-black rounded-md px-2 py-1 text-[9px] font-black">{feature.number}</span>
@@ -89,8 +89,8 @@ export function EnhancedFeatures() {
         </div>
       </div>
 
-      <div className="relative left-1/2 mt-20 w-screen -translate-x-1/2 overflow-hidden border-y border-[#e8dfd5] bg-[#fbf6ef] py-9">
-        <div className="mb-7 text-center text-[10px] font-extrabold tracking-[0.2em] text-gray-400">
+      <div className="relative left-1/2 mt-14 md:mt-20 w-screen -translate-x-1/2 overflow-hidden border-y border-[#e8dfd5] bg-[#fbf6ef] py-7 md:py-9">
+        <div className="mb-5 md:mb-7 text-center text-[10px] font-extrabold tracking-[0.2em] text-gray-400">
           PHOTOGRAPHY &amp; FILMMAKING GEAR
         </div>
         <div className="rawi-gear-track flex w-max items-center">
@@ -128,8 +128,8 @@ export function EnhancedFeatures() {
 
 function HeroFeature({ number, eyebrow, title, body, badges, visual }: { number: string; eyebrow: string; title: React.ReactNode; body: string; badges: string[]; visual: React.ReactNode }) {
   return (
-    <article className="group relative overflow-hidden rounded-[28px] border border-gray-200 bg-[#fcfcfb] min-h-[360px] p-7 md:p-8 shadow-[0_12px_40px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(0,0,0,.08)]">
-      <div className="grid md:grid-cols-[1.05fr_.95fr] gap-5 h-full items-center">
+    <article className="group relative overflow-hidden rounded-[24px] md:rounded-[28px] border border-gray-200 bg-[#fcfcfb] min-h-0 p-5 sm:p-7 md:min-h-[360px] md:p-8 shadow-[0_12px_40px_rgba(0,0,0,.045)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(0,0,0,.08)]">
+      <div className="grid md:grid-cols-[1.05fr_.95fr] gap-3 md:gap-5 h-full items-center">
         <div className="relative z-10">
           <div className="flex items-center gap-3">
             <span className="bg-rawi-yellow text-black rounded-md px-2 py-1 text-[9px] font-black">{number}</span>
@@ -139,7 +139,7 @@ function HeroFeature({ number, eyebrow, title, body, badges, visual }: { number:
           <p className="text-sm leading-relaxed text-gray-500 mt-4 max-w-[390px]">{body}</p>
           <div className="flex flex-wrap gap-2 mt-6">{badges.map((badge) => <span key={badge} className="rounded-full border border-gray-200 bg-white px-3 py-2 text-[10px] font-bold shadow-sm">{badge}</span>)}</div>
         </div>
-        <div className="relative min-h-[220px]">{visual}</div>
+        <div className="relative min-h-[180px] md:min-h-[220px]">{visual}</div>
       </div>
     </article>
   );
@@ -183,7 +183,7 @@ function GalleryVisual() {
 
 function MiniBenefit({ icon, title, body }: { icon: string; title: string; body: string }) {
   return (
-    <div className="border-l border-gray-200 first:border-l-0 first:pl-0 pl-4">
+    <div className="border-l border-gray-200 first:border-l-0 first:pl-0 pl-2 sm:pl-4">
       <div className="text-xl text-[#d4aa00]">{icon}</div>
       <div className="text-xs font-extrabold mt-2">{title}</div>
       <div className="text-[10px] text-gray-400 mt-1">{body}</div>
