@@ -89,16 +89,38 @@ export function EnhancedFeatures() {
         </div>
       </div>
 
-      <div className="w-[min(1180px,calc(100%-40px))] mx-auto mt-20 pt-10 border-t border-gray-200">
-        <div className="text-center text-[10px] font-extrabold tracking-[0.2em] text-gray-400">
-          MADE FOR THE GEAR CREATORS ALREADY LOVE
+      <div className="relative left-1/2 mt-20 w-screen -translate-x-1/2 overflow-hidden border-y border-gray-200 bg-white py-9">
+        <div className="mb-7 text-center text-[10px] font-extrabold tracking-[0.2em] text-gray-400">
+          PHOTOGRAPHY &amp; FILMMAKING GEAR
         </div>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-7 md:gap-x-20 text-gray-500/50 grayscale select-none" aria-label="Photography gear brands">
-          <span className="text-[26px] md:text-[30px] font-black tracking-[-0.08em]">SONY</span>
-          <span className="text-[24px] md:text-[28px] font-black tracking-[0.02em] italic">SIGMA</span>
-          <span className="text-[26px] md:text-[30px] font-black tracking-[-0.08em]">dji</span>
-          <span className="text-[21px] md:text-[24px] font-black tracking-[-0.06em]">GoPro</span>
+        <div className="rawi-gear-track flex w-max items-center">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center gap-14 pr-14 md:gap-20 md:pr-20 text-gray-500/50 grayscale select-none" aria-hidden={copy === 1}>
+              {["SONY", "Canon", "Nikon", "FUJIFILM", "LUMIX", "Leica", "HASSELBLAD", "SIGMA", "TAMRON", "ZEISS", "dji", "GoPro", "Insta360", "OM SYSTEM", "PENTAX", "ARRI", "RED", "Blackmagicdesign"].map((brand) => (
+                <span key={brand} className="whitespace-nowrap text-[22px] md:text-[27px] font-black tracking-[-0.055em]">{brand}</span>
+              ))}
+            </div>
+          ))}
         </div>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent md:w-40" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent md:w-40" />
+        <style>{`
+          @keyframes rawi-gear-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+          }
+          .rawi-gear-track {
+            animation: rawi-gear-scroll 38s linear infinite;
+          }
+          .rawi-gear-track:hover {
+            animation-play-state: paused;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .rawi-gear-track {
+              animation: none;
+            }
+          }
+        `}</style>
       </div>
     </section>
   );
