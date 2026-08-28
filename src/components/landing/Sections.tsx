@@ -19,39 +19,24 @@ const DEMO_PROJECTS = [
 
 export function Hero() {
   return (
-    <section className="bg-[#fbf6ef]">
+    <section className="bg-[#fbf6ef] pt-3 md:pt-5">
       <div className="relative mx-auto w-full max-w-[1755px] overflow-hidden">
         <img
-          src="/rawi-home-hero-hq.jpg"
-          alt="RAWI photography and filmmaking delivery workflow"
+          src="/rawi-home-hero.webp"
+          alt="RAWI turns camera, film and drone work into cinematic branded client galleries"
           width={1755}
           height={896}
-          className="hidden h-auto w-full md:block"
+          className="block h-auto w-full"
           fetchPriority="high"
         />
-
-        <div className="px-5 pb-12 pt-8 md:absolute md:left-[3.7%] md:top-[16%] md:z-10 md:w-[38.5%] md:bg-[#fbf6ef] md:px-0 md:pb-5 md:pt-0">
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-black/[.06] bg-white px-4 py-2.5 text-[10px] font-extrabold tracking-[.12em] text-gray-600 shadow-sm md:text-[11px]">
-            <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
-            UAE-BORN • MADE FOR CREATORS
-          </div>
-          <h1 className="mt-7 text-[46px] font-medium leading-[.98] tracking-[-0.06em] text-black sm:text-[58px] md:text-[clamp(42px,4vw,70px)]">
-            Your work deserves <span className="bg-rawi-yellow/70 px-[.04em]">better</span> than a Drive link.
-          </h1>
-          <p className="mt-7 max-w-[610px] text-lg leading-[1.55] text-[#596272] md:text-[clamp(16px,1.28vw,22px)]">
-            Deliver photos and films through cinematic, branded client galleries built for the way creators actually work.
-          </p>
-        </div>
-
-        <div className="md:hidden">
-          <img
-            src="/rawi-home-hero-hq.jpg"
-            alt=""
-            width={1755}
-            height={896}
-            className="h-[330px] w-full object-cover object-[72%_center]"
-          />
-        </div>
+        <nav aria-label="Homepage" className="absolute inset-0 hidden md:block">
+          <a href="#features" aria-label="Features" className="absolute left-[38%] top-[4%] h-[8%] w-[8%]" />
+          <a href="#gallery" aria-label="Gallery" className="absolute left-[45%] top-[4%] h-[8%] w-[8%]" />
+          <a href="#pricing" aria-label="Pricing" className="absolute left-[52%] top-[4%] h-[8%] w-[8%]" />
+          <Link href="/login" aria-label="Open RAWI" className="absolute right-[4%] top-[3%] h-[8%] w-[10%] rounded-full" />
+          <Link href="/signup" aria-label="Start free" className="absolute left-[4.5%] top-[72%] h-[10%] w-[11%] rounded-xl" />
+          <a href="#gallery" aria-label="View demo gallery" className="absolute left-[17%] top-[72%] h-[10%] w-[14%]" />
+        </nav>
       </div>
     </section>
   );
