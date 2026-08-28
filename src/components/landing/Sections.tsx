@@ -22,7 +22,7 @@ export function Hero() {
     <section className="bg-[#fbf6ef] pt-3 md:pt-5">
       <div className="relative mx-auto w-full max-w-[1755px] overflow-hidden">
         <img
-          src="/rawi-home-hero.webp"
+          src="/rawi-home-hero-sharp.jpg"
           alt="RAWI turns camera, film and drone work into cinematic branded client galleries"
           width={1755}
           height={896}
