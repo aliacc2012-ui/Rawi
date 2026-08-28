@@ -88,6 +88,18 @@ export function EnhancedFeatures() {
           ))}
         </div>
       </div>
+
+      <div className="w-[min(1180px,calc(100%-40px))] mx-auto mt-20 pt-10 border-t border-gray-200">
+        <div className="text-center text-[10px] font-extrabold tracking-[0.2em] text-gray-400">
+          MADE FOR THE GEAR CREATORS ALREADY LOVE
+        </div>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-7 md:gap-x-20 text-gray-500/50 grayscale select-none" aria-label="Photography gear brands">
+          <span className="text-[26px] md:text-[30px] font-black tracking-[-0.08em]">SONY</span>
+          <span className="text-[24px] md:text-[28px] font-black tracking-[0.02em] italic">SIGMA</span>
+          <span className="text-[26px] md:text-[30px] font-black tracking-[-0.08em]">dji</span>
+          <span className="text-[21px] md:text-[24px] font-black tracking-[-0.06em]">GoPro</span>
+        </div>
+      </div>
     </section>
   );
 }
