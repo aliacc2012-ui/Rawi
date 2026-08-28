@@ -93,7 +93,7 @@ export default function SignupPage() {
         </Field>
         <label className="flex items-start gap-2.5 text-xs text-gray-600 mt-4">
           <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5" />
-          I agree to the Terms and Privacy Policy
+          <span>I agree to the <Link href="/terms" target="_blank" className="font-semibold text-black underline">Terms</Link> and <Link href="/privacy" target="_blank" className="font-semibold text-black underline">Privacy Policy</Link></span>
         </label>
         <ErrorNote>{error}</ErrorNote>
         <PrimaryButton type="submit" loading={loading}>Create account</PrimaryButton>
