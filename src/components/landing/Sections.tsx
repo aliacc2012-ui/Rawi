@@ -23,19 +23,51 @@ export function Hero() {
       <div className="relative mx-auto w-full max-w-[1755px] overflow-hidden">
         <img
           src="/rawi-home-hero.webp"
-          alt="RAWI turns camera, film and drone work into cinematic branded client galleries"
+          alt="RAWI photography delivery workflow connecting cameras, drones and cinematic client galleries"
           width={1755}
           height={896}
-          className="block h-auto w-full"
+          className="hidden h-auto w-full md:block"
           fetchPriority="high"
         />
+
+        <div className="relative px-5 pb-16 pt-8 md:absolute md:left-[3.2%] md:top-[17%] md:z-10 md:w-[39%] md:bg-[#fbf6ef] md:px-0 md:pb-0 md:pt-0">
+          <div className="inline-flex items-center gap-3 rounded-full border border-black/5 bg-white px-4 py-2.5 text-[10px] font-extrabold tracking-[.12em] text-gray-600 shadow-sm md:text-[12px]">
+            <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
+            UAE-BORN • MADE FOR CREATORS
+          </div>
+          <h1 className="mt-7 text-[48px] font-medium leading-[.94] tracking-[-.065em] text-black sm:text-[62px] md:mt-8 md:text-[clamp(48px,4.65vw,82px)]">
+            Your work<br />
+            deserves <span className="bg-gradient-to-r from-[#ffd000] to-[#ffe985] px-[.05em]">better</span><br />
+            than a Drive link.
+          </h1>
+          <p className="mt-8 max-w-[650px] text-lg leading-relaxed text-gray-600 md:mt-9 md:text-[clamp(17px,1.45vw,25px)]">
+            Deliver photos and films through cinematic, branded client galleries built for the way creators actually work.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-7 md:mt-9">
+            <Link href="/signup" className="rounded-xl bg-rawi-yellow px-7 py-4 text-base font-bold text-black shadow-[0_12px_30px_rgba(255,200,0,.2)]">
+              Start free
+            </Link>
+            <a href="#gallery" className="border-b border-black pb-1 text-base font-medium">
+              View demo gallery ↗
+            </a>
+          </div>
+        </div>
+
+        <div className="md:hidden">
+          <img
+            src="/rawi-home-hero.webp"
+            alt=""
+            width={1755}
+            height={896}
+            className="h-[330px] w-full object-cover object-[72%_center]"
+          />
+        </div>
+
         <nav aria-label="Homepage" className="absolute inset-0 hidden md:block">
           <a href="#features" aria-label="Features" className="absolute left-[38%] top-[4%] h-[8%] w-[8%]" />
           <a href="#gallery" aria-label="Gallery" className="absolute left-[45%] top-[4%] h-[8%] w-[8%]" />
           <a href="#pricing" aria-label="Pricing" className="absolute left-[52%] top-[4%] h-[8%] w-[8%]" />
           <Link href="/login" aria-label="Open RAWI" className="absolute right-[4%] top-[3%] h-[8%] w-[10%] rounded-full" />
-          <Link href="/signup" aria-label="Start free" className="absolute left-[4.5%] top-[72%] h-[10%] w-[11%] rounded-xl" />
-          <a href="#gallery" aria-label="View demo gallery" className="absolute left-[17%] top-[72%] h-[10%] w-[14%]" />
         </nav>
       </div>
     </section>
