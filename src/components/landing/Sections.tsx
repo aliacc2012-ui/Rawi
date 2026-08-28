@@ -19,56 +19,42 @@ const DEMO_PROJECTS = [
 
 export function Hero() {
   return (
-    <section className="bg-[#fbf6ef] pt-3 md:pt-5">
-      <div className="relative mx-auto w-full max-w-[1755px] overflow-hidden">
-        <img
-          src="/rawi-home-hero.webp"
-          alt="RAWI photography delivery workflow connecting cameras, drones and cinematic client galleries"
-          width={1755}
-          height={896}
-          className="hidden h-auto w-full md:block"
-          fetchPriority="high"
-        />
-
-        <div className="relative px-5 pb-16 pt-8 md:absolute md:left-[3.2%] md:top-[17%] md:z-10 md:w-[39%] md:bg-[#fbf6ef] md:px-0 md:pb-0 md:pt-0">
-          <div className="inline-flex items-center gap-3 rounded-full border border-black/5 bg-white px-4 py-2.5 text-[10px] font-extrabold tracking-[.12em] text-gray-600 shadow-sm md:text-[12px]">
+    <section className="relative overflow-hidden bg-[#fbf6ef]">
+      <div className="mx-auto grid min-h-[690px] w-[min(1380px,calc(100%-40px))] items-center gap-8 pb-14 pt-8 lg:grid-cols-[.82fr_1.18fr] lg:gap-4 lg:pb-16 lg:pt-4">
+        <div className="relative z-10 max-w-[660px]">
+          <div className="inline-flex items-center gap-3 rounded-full border border-black/[.06] bg-white/90 px-4 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-gray-600 shadow-[0_8px_24px_rgba(39,31,20,.08)] sm:text-[11px]">
             <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
             UAE-BORN • MADE FOR CREATORS
           </div>
-          <h1 className="mt-7 text-[48px] font-medium leading-[.94] tracking-[-.065em] text-black sm:text-[62px] md:mt-8 md:text-[clamp(48px,4.65vw,82px)]">
+          <h1 className="mt-8 text-[48px] font-medium leading-[.96] tracking-[-0.062em] text-black sm:text-[60px] lg:text-[clamp(58px,4.7vw,76px)]">
             Your work<br />
-            deserves <span className="bg-gradient-to-r from-[#ffd000] to-[#ffe985] px-[.05em]">better</span><br />
+            deserves <span className="relative inline-block"><span className="relative z-10">better</span><span className="absolute inset-x-[-.06em] bottom-[.04em] top-[.56em] -z-0 bg-rawi-yellow/75" /></span><br />
             than a Drive link.
           </h1>
-          <p className="mt-8 max-w-[650px] text-lg leading-relaxed text-gray-600 md:mt-9 md:text-[clamp(17px,1.45vw,25px)]">
+          <p className="mt-8 max-w-[620px] text-[18px] leading-[1.55] text-[#596272] sm:text-[20px]">
             Deliver photos and films through cinematic, branded client galleries built for the way creators actually work.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-7 md:mt-9">
-            <Link href="/signup" className="rounded-xl bg-rawi-yellow px-7 py-4 text-base font-bold text-black shadow-[0_12px_30px_rgba(255,200,0,.2)]">
+          <div className="mt-9 flex flex-wrap items-center gap-7">
+            <Link href="/signup" className="rounded-xl bg-rawi-yellow px-7 py-4 text-base font-bold text-black shadow-[0_12px_28px_rgba(255,200,0,.20)] transition-transform hover:-translate-y-0.5">
               Start free
             </Link>
-            <a href="#gallery" className="border-b border-black pb-1 text-base font-medium">
-              View demo gallery ↗
+            <a href="#gallery" className="group inline-flex items-center gap-2 border-b border-black pb-1 text-base font-medium">
+              View demo gallery <span className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
             </a>
           </div>
         </div>
 
-        <div className="md:hidden">
+        <div className="relative min-h-[420px] lg:min-h-[650px]">
+          <div className="pointer-events-none absolute inset-8 rounded-full bg-rawi-yellow/[.08] blur-3xl" />
           <img
-            src="/rawi-home-hero.webp"
-            alt=""
-            width={1755}
-            height={896}
-            className="h-[330px] w-full object-cover object-[72%_center]"
+            src="/rawi-hero-art.jpg"
+            alt="RAWI collects camera, film and drone media into branded galleries for desktop and mobile"
+            width={1105}
+            height={776}
+            className="relative z-10 h-full w-full object-contain object-center"
+            fetchPriority="high"
           />
         </div>
-
-        <nav aria-label="Homepage" className="absolute inset-0 hidden md:block">
-          <a href="#features" aria-label="Features" className="absolute left-[38%] top-[4%] h-[8%] w-[8%]" />
-          <a href="#gallery" aria-label="Gallery" className="absolute left-[45%] top-[4%] h-[8%] w-[8%]" />
-          <a href="#pricing" aria-label="Pricing" className="absolute left-[52%] top-[4%] h-[8%] w-[8%]" />
-          <Link href="/login" aria-label="Open RAWI" className="absolute right-[4%] top-[3%] h-[8%] w-[10%] rounded-full" />
-        </nav>
       </div>
     </section>
   );
