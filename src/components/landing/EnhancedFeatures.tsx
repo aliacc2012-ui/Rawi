@@ -31,7 +31,7 @@ const SUPPORTING_FEATURES = [
 
 export function EnhancedFeatures() {
   return (
-    <section id="features" className="bg-white pt-[110px] pb-0">
+    <section id="features" className="bg-[#fbf6ef] pt-[110px] pb-0">
       <div className="w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.72fr_1.28fr] gap-10 lg:gap-14 items-end mb-10">
           <div>
@@ -89,7 +89,7 @@ export function EnhancedFeatures() {
         </div>
       </div>
 
-      <div className="relative left-1/2 mt-20 w-screen -translate-x-1/2 overflow-hidden border-y border-gray-200 bg-white py-9">
+      <div className="relative left-1/2 mt-20 w-screen -translate-x-1/2 overflow-hidden border-y border-[#e8dfd5] bg-[#fbf6ef] py-9">
         <div className="mb-7 text-center text-[10px] font-extrabold tracking-[0.2em] text-gray-400">
           PHOTOGRAPHY &amp; FILMMAKING GEAR
         </div>
@@ -102,8 +102,8 @@ export function EnhancedFeatures() {
             </div>
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent md:w-40" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent md:w-40" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#fbf6ef] to-transparent md:w-40" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#fbf6ef] to-transparent md:w-40" />
         <style>{`
           @keyframes rawi-gear-scroll {
             from { transform: translateX(0); }
