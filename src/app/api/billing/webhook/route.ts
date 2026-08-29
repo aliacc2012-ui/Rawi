@@ -4,8 +4,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { PLAN_CONFIG } from "@/lib/plans";
 
 type PaidPlan = "creator" | "pro";
-type ZiinaPayment = { id?: string; status?: string; amount?: number; currency_code?: string };
+type ZiinaStatus = "requires_payment_instrument" | "requires_user_action" | "pending" | "completed" | "failed" | "canceled";
+type ZiinaPayment = { id?: string; status?: ZiinaStatus; amount?: number; currency_code?: string };
 type ZiinaEvent = { event?: string; data?: ZiinaPayment };
+type ActivationResult = { already_applied?: boolean; plan?: PaidPlan; current_period_end?: string };
 
 function validSignature(payload: string, signature: string, secret: string) {
   const expected = createHmac("sha256", secret).update(payload).digest("hex");
@@ -25,35 +27,41 @@ export async function POST(request: NextRequest) {
 
   let event: ZiinaEvent;
   try { event = JSON.parse(payload) as ZiinaEvent; } catch { return NextResponse.json({ error: "Invalid payload." }, { status: 400 }); }
-  if (event.event !== "payment_intent.status.updated" || event.data?.status !== "completed" || !event.data.id) return NextResponse.json({ received: true });
+  if (event.event !== "payment_intent.status.updated" || !event.data?.id) return NextResponse.json({ received: true });
 
-  // Never trust the webhook payload alone for money or status. Re-fetch the intent directly from Ziina.
+  // Never trust webhook money or status by itself. Re-fetch the intent from Ziina.
   const verifyResponse = await fetch(`https://api-v2.ziina.com/api/payment_intent/${encodeURIComponent(event.data.id)}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     cache: "no-store",
   });
   const payment = (await verifyResponse.json().catch(() => ({}))) as ZiinaPayment;
-  if (!verifyResponse.ok || payment.status !== "completed" || payment.id !== event.data.id) return NextResponse.json({ error: "Ziina payment verification failed." }, { status: 400 });
+  if (!verifyResponse.ok || !payment.id || payment.id !== event.data.id || !payment.status) return NextResponse.json({ error: "Ziina payment verification failed." }, { status: 400 });
 
   const admin = createAdminClient();
-  const { data: subscription, error: subscriptionError } = await admin.from("subscriptions").select("workspace_id,plan,status,current_period_end").eq("ziina_payment_intent_id", payment.id).maybeSingle();
-  if (subscriptionError || !subscription) return NextResponse.json({ error: "Unknown payment intent." }, { status: 400 });
+  const { data: attempt, error: attemptError } = await admin.from("billing_payment_attempts").select("workspace_id,plan,amount,currency_code,status,completed_at").eq("ziina_payment_intent_id", payment.id).maybeSingle();
+  if (attemptError || !attempt) return NextResponse.json({ error: "Unknown payment intent." }, { status: 400 });
 
-  const plan = subscription.plan as PaidPlan;
+  const plan = attempt.plan as PaidPlan;
   if (plan !== "creator" && plan !== "pro") return NextResponse.json({ error: "Invalid subscription plan." }, { status: 400 });
   const expectedAmount = PLAN_CONFIG[plan].priceAed * 100;
-  if (payment.currency_code !== "AED" || payment.amount !== expectedAmount) return NextResponse.json({ error: "Payment amount doesn't match the selected plan." }, { status: 400 });
+  if (payment.currency_code !== "AED" || payment.amount !== expectedAmount || attempt.currency_code !== "AED" || attempt.amount !== expectedAmount) {
+    return NextResponse.json({ error: "Payment amount doesn't match the selected plan." }, { status: 400 });
+  }
 
-  // Idempotent: Ziina retries webhooks; don't extend the pass twice for the same payment intent.
-  if (subscription.status === "active" && subscription.current_period_end) return NextResponse.json({ received: true, alreadyApplied: true });
+  if (payment.status !== "completed") {
+    const { error: statusError } = await admin.from("billing_payment_attempts").update({ status: payment.status }).eq("ziina_payment_intent_id", payment.id);
+    if (statusError) return NextResponse.json({ error: "Couldn't save Ziina payment status." }, { status: 500 });
+    return NextResponse.json({ received: true, status: payment.status });
+  }
 
-  const periodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-  const storageLimit = PLAN_CONFIG[plan].storageBytes;
-  const { error: workspaceError } = await admin.from("workspaces").update({ plan, storage_limit_bytes: storageLimit }).eq("id", subscription.workspace_id);
-  if (workspaceError) return NextResponse.json({ error: "Couldn't activate RAWI plan." }, { status: 500 });
+  const { data: activation, error: activationError } = await admin.rpc("activate_ziina_payment", { p_payment_intent_id: payment.id });
+  if (activationError) return NextResponse.json({ error: "Couldn't activate RAWI plan." }, { status: 500 });
 
-  const { error: updateError } = await admin.from("subscriptions").update({ status: "active", current_period_end: periodEnd, provider: "ziina" }).eq("ziina_payment_intent_id", payment.id);
-  if (updateError) return NextResponse.json({ error: "Couldn't save RAWI billing period." }, { status: 500 });
-
-  return NextResponse.json({ received: true, activated: plan, currentPeriodEnd: periodEnd });
+  const result = activation as ActivationResult | null;
+  return NextResponse.json({
+    received: true,
+    activated: result?.plan ?? plan,
+    currentPeriodEnd: result?.current_period_end,
+    alreadyApplied: result?.already_applied ?? false,
+  });
 }
