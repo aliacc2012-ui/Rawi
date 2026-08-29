@@ -173,6 +173,26 @@ export default async function ClientGalleryPage({
               {studioName}
             </span>
             <div className="flex items-center gap-3 text-white/70">
+              {socialLinks.length > 0 && (
+                <nav
+                  aria-label={`${studioName} social media`}
+                  className="flex items-center gap-1 sm:gap-2"
+                >
+                  {socialLinks.map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={item.label}
+                      title={item.label}
+                      className="grid h-8 w-8 place-items-center rounded-full border border-white/20 text-white/75 transition hover:-translate-y-0.5 hover:border-white/45 hover:text-white sm:h-9 sm:w-9"
+                    >
+                      <SocialIcon label={item.label} />
+                    </a>
+                  ))}
+                </nav>
+              )}
               {gallery.branding_enabled && (
                 <span className="hidden sm:inline text-xs">
                   Delivered with RAWI
@@ -270,28 +290,39 @@ export default async function ClientGalleryPage({
         <ClientComments galleryId={gallery.id} initialComments={comments} />
       )}
       <footer
-        className={`border-t px-6 py-8 text-xs ${borderClass} ${dark ? "bg-[#080808] text-white/50" : editorial ? "bg-[#e7e0d4] text-black/50" : "bg-white text-black/50"}`}
+        className={`border-t px-6 py-8 text-center text-xs ${borderClass} ${dark ? "bg-[#080808] text-white/35" : editorial ? "bg-[#e7e0d4] text-black/40" : "bg-white text-black/40"}`}
       >
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 sm:flex-row">
-          <span>{gallery.branding_enabled ? "Made with RAWI" : studioName}</span>
-          {socialLinks.length > 0 && (
-            <nav aria-label={`${studioName} social media`} className="flex flex-wrap justify-center gap-2">
-              {socialLinks.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`rounded-full border px-4 py-2 font-semibold transition hover:-translate-y-0.5 ${dark ? "border-white/15 text-white/70 hover:border-white/35 hover:text-white" : "border-black/10 text-black/60 hover:border-black/25 hover:text-black"}`}
-                >
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          )}
-        </div>
+        {gallery.branding_enabled ? "Made with RAWI" : studioName}
       </footer>
     </div>
+  );
+}
+function SocialIcon({ label }: { label: string }) {
+  if (label === "Instagram")
+    return (
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  if (label === "TikTok")
+    return (
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+        <path d="M15.6 3c.3 2.1 1.5 3.5 3.6 3.9v3.2a8.1 8.1 0 0 1-3.6-1.1v6.3a6.3 6.3 0 1 1-5.5-6.2v3.3a3.1 3.1 0 1 0 2.3 3V3h3.2Z" />
+      </svg>
+    );
+  if (label === "Facebook")
+    return (
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+        <path d="M13.7 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5H17V3.6c-.8-.1-1.6-.2-2.4-.2-2.4 0-4.1 1.5-4.1 4.2v2.3H7.8V13h2.7v8h3.2Z" />
+      </svg>
+    );
+  return (
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3.5 12h17M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21M12 3c-2.3 2.5-3.5 5.5-3.5 9S9.7 18.5 12 21" />
+    </svg>
   );
 }
 function UnavailableScreen({ reason }: { reason: string }) {
