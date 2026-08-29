@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createProject } from "@/app/(app)/actions";
 import { Field, Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
+import { markPendingProjectCreation } from "@/lib/analytics";
 
 type ClientOption = { id: string; name: string };
 
@@ -43,7 +44,7 @@ export function NewProjectForm({ workspaceId, clients }: { workspaceId: string; 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-      <form action={formAction} className="relative bg-white rounded-3xl p-7 w-full max-w-md z-10">
+      <form action={formAction} onSubmit={markPendingProjectCreation} className="relative bg-white rounded-3xl p-7 w-full max-w-md z-10">
         <span className="text-[11px] font-extrabold tracking-[0.17em] text-gray-400">NEW PROJECT</span>
         <h2 className="text-[28px] tracking-[-0.03em] mt-2 mb-2">Create a delivery.</h2>
 
