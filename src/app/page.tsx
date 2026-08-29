@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Nav } from "@/components/landing/Nav";
 import { Hero, Strip, GalleryDemo, Pricing, ClosingCTA } from "@/components/landing/Sections";
 import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function LandingPage() {
   return (
