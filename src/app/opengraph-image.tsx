@@ -30,8 +30,12 @@ export default function OpenGraphImage() {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", maxWidth: "940px" }}>
-            <div style={{ fontSize: "72px", lineHeight: 0.98, letterSpacing: "-0.055em", fontWeight: 700 }}>
-              Your work deserves <span style={{ background: "#FFD400", padding: "0 12px" }}>better</span><br />than a Drive link.
+            <div style={{ display: "flex", flexDirection: "column", fontSize: "72px", lineHeight: 0.98, letterSpacing: "-0.055em", fontWeight: 700 }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <span>Your work deserves&nbsp;</span>
+                <span style={{ background: "#FFD400", padding: "0 12px" }}>better</span>
+              </div>
+              <div style={{ display: "flex" }}>than a Drive link.</div>
             </div>
             <div style={{ marginTop: "30px", fontSize: "27px", color: "#5f6672" }}>Cinematic, branded client galleries for photographers and filmmakers.</div>
           </div>
