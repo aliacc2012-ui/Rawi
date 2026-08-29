@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient, SupabaseNotConfiguredError } from "@/lib/supabase/client";
 import { Field, Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
+import { trackEvent } from "@/lib/analytics";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -47,6 +48,7 @@ export default function SignupPage() {
         setError(signUpError.message);
         return;
       }
+      trackEvent("signup_completed", { method: "email" });
       setSent(true);
     } catch (err) {
       if (err instanceof SupabaseNotConfiguredError) {
