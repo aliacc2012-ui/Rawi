@@ -6,7 +6,7 @@ import Script from "next/script";
 import { consumePendingProjectCreation } from "@/lib/analytics";
 
 export function GoogleAnalytics() {
-  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-6B5FB91L5L";
   const pathname = usePathname();
 
   useEffect(() => {
