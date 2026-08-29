@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { ClientErrorReporter } from "@/components/system/ClientErrorReporter";
+import { GoogleAnalytics } from "@/components/system/GoogleAnalytics";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ClientErrorReporter />
         <LocaleProvider>{children}</LocaleProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );
