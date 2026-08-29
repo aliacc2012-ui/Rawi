@@ -26,9 +26,14 @@ export function markPendingProjectCreation() {
   window.sessionStorage.setItem("rawi_pending_project_created", "1");
 }
 
+export function clearPendingProjectCreation() {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem("rawi_pending_project_created");
+}
+
 export function consumePendingProjectCreation(pathname: string) {
   if (typeof window === "undefined" || !/^\/projects\/[0-9a-f-]{36}$/i.test(pathname)) return;
   if (window.sessionStorage.getItem("rawi_pending_project_created") !== "1") return;
-  window.sessionStorage.removeItem("rawi_pending_project_created");
+  clearPendingProjectCreation();
   trackEvent("project_created");
 }
