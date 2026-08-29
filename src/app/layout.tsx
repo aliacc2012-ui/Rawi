@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
+import { Inter, Noto_Kufi_Arabic } from "next/font/google";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { ClientErrorReporter } from "@/components/system/ClientErrorReporter";
 import { GoogleAnalytics } from "@/components/system/GoogleAnalytics";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+const notoKufiArabic = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  display: "swap",
+  variable: "--font-noto-kufi-arabic",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://rawi-five.vercel.app"),
@@ -41,15 +54,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" dir="ltr" className={`${inter.variable} ${notoKufiArabic.variable}`}>
       <body>
         <ClientErrorReporter />
         <LocaleProvider>{children}</LocaleProvider>
