@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createProject } from "@/app/(app)/actions";
 import { Field, Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
-import { markPendingProjectCreation } from "@/lib/analytics";
+import { clearPendingProjectCreation, markPendingProjectCreation } from "@/lib/analytics";
 
 type ClientOption = { id: string; name: string };
 
@@ -29,6 +29,10 @@ export function NewProjectForm({ workspaceId, clients }: { workspaceId: string; 
   const [open, setOpen] = useState(false);
   const boundAction = createProject.bind(null, workspaceId);
   const [state, formAction] = useActionState(async (_: unknown, formData: FormData) => boundAction(formData), null);
+
+  useEffect(() => {
+    if (state && "error" in state) clearPendingProjectCreation();
+  }, [state]);
 
   if (!open) {
     return (
