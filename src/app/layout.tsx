@@ -5,9 +5,35 @@ import { GoogleAnalytics } from "@/components/system/GoogleAnalytics";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RAWI — Your work deserves better than a Drive link.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://rawi-five.vercel.app"),
+  applicationName: "RAWI",
+  title: {
+    default: "RAWI — Your work deserves better than a Drive link.",
+    template: "%s | RAWI",
+  },
   description:
-    "RAWI is a UAE-born media delivery platform for photographers, videographers and creative teams.",
+    "Deliver photos and films through cinematic, branded client galleries built for the way creators actually work.",
+  keywords: [
+    "client photo galleries",
+    "photographer gallery delivery",
+    "video delivery platform",
+    "UAE photographers",
+    "RAWI",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "en_AE",
+    siteName: "RAWI",
+    title: "RAWI — Your work deserves better than a Drive link.",
+    description:
+      "Cinematic, branded client galleries for photographers and filmmakers.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RAWI — Your work deserves better than a Drive link.",
+    description:
+      "Cinematic, branded client galleries for photographers and filmmakers.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
