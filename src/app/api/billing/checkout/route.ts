@@ -42,19 +42,21 @@ export async function POST(request: NextRequest) {
     cache: "no-store",
   });
 
-  const payment = (await ziinaResponse.json().catch(() => ({}))) as { id?: string; redirect_url?: string; latest_error?: { message?: string }; message?: string };
+  const payment = (await ziinaResponse.json().catch(() => ({}))) as { id?: string; redirect_url?: string; status?: string; latest_error?: { message?: string }; message?: string };
   if (!ziinaResponse.ok || !payment.redirect_url || !payment.id) return NextResponse.json({ error: payment.latest_error?.message || payment.message || "Couldn't create Ziina checkout." }, { status: 502 });
 
   const admin = createAdminClient();
-  const { error: billingError } = await admin.from("subscriptions").upsert({
+  const { error: attemptError } = await admin.from("billing_payment_attempts").insert({
     workspace_id: body.workspaceId,
+    user_id: user.id,
     plan: body.plan,
-    status: "incomplete",
-    current_period_end: null,
+    amount: plan.priceAed * 100,
+    currency_code: "AED",
+    status: payment.status === "pending" ? "pending" : "requires_payment_instrument",
     ziina_payment_intent_id: payment.id,
-    provider: "ziina",
-  }, { onConflict: "workspace_id" });
+    test_mode: testMode,
+  });
 
-  if (billingError) return NextResponse.json({ error: "Couldn't prepare RAWI billing state. Please try again." }, { status: 500 });
+  if (attemptError) return NextResponse.json({ error: "Couldn't prepare RAWI billing state. Please try again." }, { status: 500 });
   return NextResponse.json({ url: payment.redirect_url, paymentIntentId: payment.id, testMode });
 }
