@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     "UAE photographers",
     "RAWI",
   ],
+  verification: {
+    google: "8qGFgRZl_P4yfU4Yu7sGfGkJBS-xc6IsSHfi9KKtd9s",
+  },
   openGraph: {
     type: "website",
     locale: "en_AE",
