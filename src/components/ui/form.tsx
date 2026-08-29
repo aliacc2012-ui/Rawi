@@ -25,15 +25,16 @@ export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
 export function PrimaryButton({
   children,
   loading,
+  loadingLabel = "Please wait…",
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { loading?: boolean; loadingLabel?: string }) {
   return (
     <button
       {...props}
       disabled={loading || props.disabled}
       className={`w-full bg-rawi-yellow text-black font-extrabold rounded-full px-5 py-3.5 mt-2 disabled:opacity-60 disabled:cursor-not-allowed hover:brightness-[1.03] transition ${props.className ?? ""}`}
     >
-      {loading ? "…" : children}
+      {loading ? loadingLabel : children}
     </button>
   );
 }

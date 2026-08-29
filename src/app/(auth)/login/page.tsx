@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { createClient, SupabaseNotConfiguredError } from "@/lib/supabase/client";
 import { Field, Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
 
@@ -15,17 +15,22 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const submittingRef = useRef(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submittingRef.current) return;
+
+    submittingRef.current = true;
     setError(null);
     setLoading(true);
+    let navigationStarted = false;
+
     try {
       const supabase = createClient();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
@@ -37,8 +42,14 @@ function LoginForm() {
         );
         return;
       }
-      router.push(searchParams.get("next") || "/dashboard");
-      router.refresh();
+      const requestedDestination = searchParams.get("next");
+      const destination =
+        requestedDestination?.startsWith("/") && !requestedDestination.startsWith("//")
+          ? requestedDestination
+          : "/dashboard";
+
+      navigationStarted = true;
+      window.location.assign(destination);
     } catch (err) {
       if (err instanceof SupabaseNotConfiguredError) {
         setError("RAWI's backend isn't configured yet in this environment. Sign-in is unavailable until Supabase credentials are set.");
@@ -46,7 +57,10 @@ function LoginForm() {
         setError("Something went wrong. Please try again.");
       }
     } finally {
-      setLoading(false);
+      if (!navigationStarted) {
+        submittingRef.current = false;
+        setLoading(false);
+      }
     }
   }
 
@@ -57,10 +71,10 @@ function LoginForm() {
 
       <form onSubmit={handleSubmit} className="mt-6">
         <Field label="Email">
-          <Input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input type="email" required autoComplete="email" disabled={loading} value={email} onChange={(e) => setEmail(e.target.value)} />
         </Field>
         <Field label="Password">
-          <Input type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input type="password" required autoComplete="current-password" disabled={loading} value={password} onChange={(e) => setPassword(e.target.value)} />
         </Field>
         <div className="text-right -mt-2">
           <Link href="/forgot-password" className="text-xs font-semibold text-gray-500 hover:text-black">
@@ -68,7 +82,7 @@ function LoginForm() {
           </Link>
         </div>
         <ErrorNote>{error}</ErrorNote>
-        <PrimaryButton type="submit" loading={loading}>Sign in</PrimaryButton>
+        <PrimaryButton type="submit" loading={loading} loadingLabel="Signing in…">Sign in</PrimaryButton>
       </form>
 
       <p className="text-sm text-gray-500 mt-6">
