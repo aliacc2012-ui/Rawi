@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { publishGallery } from "@/app/(app)/actions";
+import { trackEvent } from "@/lib/analytics";
 
 export function PublishButton({ galleryId, isPublished }: { galleryId: string; isPublished: boolean }) {
   const router = useRouter();
@@ -20,6 +21,7 @@ export function PublishButton({ galleryId, isPublished }: { galleryId: string; i
         return;
       }
       setPublished(nextPublished);
+      if (nextPublished) trackEvent("gallery_published");
       router.refresh();
     });
   }
