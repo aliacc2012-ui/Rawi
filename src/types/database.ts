@@ -462,6 +462,9 @@ export interface Database {
           user_id: string;
           plan: "creator" | "pro";
           amount: number;
+          original_amount: number | null;
+          discount_percentage: number;
+          discount_redemption_id: string | null;
           currency_code: "AED";
           status:
             | "requires_payment_instrument"
@@ -481,6 +484,9 @@ export interface Database {
           user_id: string;
           plan: "creator" | "pro";
           amount: number;
+          original_amount?: number | null;
+          discount_percentage?: number;
+          discount_redemption_id?: string | null;
           ziina_payment_intent_id: string;
           id?: string;
           currency_code?: "AED";
@@ -498,6 +504,40 @@ export interface Database {
         };
         Update: Partial<
           Database["public"]["Tables"]["billing_payment_attempts"]["Row"]
+        >;
+        Relationships: [];
+      };
+      discount_redemptions: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string;
+          code_key: string;
+          discount_percentage: 10 | 50 | 100;
+          plan: "creator" | "pro";
+          original_amount: number;
+          final_amount: number;
+          status: "reserved" | "redeemed" | "failed";
+          ziina_payment_intent_id: string | null;
+          created_at: string;
+          redeemed_at: string | null;
+        };
+        Insert: {
+          workspace_id: string;
+          user_id: string;
+          code_key: string;
+          discount_percentage: 10 | 50 | 100;
+          plan: "creator" | "pro";
+          original_amount: number;
+          final_amount: number;
+          id?: string;
+          status?: "reserved" | "redeemed" | "failed";
+          ziina_payment_intent_id?: string | null;
+          created_at?: string;
+          redeemed_at?: string | null;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["discount_redemptions"]["Row"]
         >;
         Relationships: [];
       };
@@ -537,6 +577,25 @@ export interface Database {
         Returns: {
           already_applied?: boolean;
           plan?: "creator" | "pro";
+          current_period_end?: string;
+        };
+      };
+      claim_rawi_discount: {
+        Args: {
+          p_workspace_id: string;
+          p_user_id: string;
+          p_code_key: string;
+          p_discount_percentage: number;
+          p_max_uses: number;
+          p_plan: "creator" | "pro";
+          p_original_amount: number;
+          p_final_amount: number;
+        };
+        Returns: {
+          redemption_id?: string;
+          discount_percentage?: number;
+          final_amount?: number;
+          activated?: boolean;
           current_period_end?: string;
         };
       };
