@@ -1,19 +1,559 @@
 // Hand-authored to match the RAWI Supabase migrations.
-export type ProjectStatus="draft"|"processing"|"published"|"expired"|"archived";export type ProjectType="photography"|"video"|"photo_video"|"automotive"|"wedding"|"event"|"real_estate"|"commercial"|"other";export type GalleryStatus="draft"|"published"|"unpublished";export type MediaType="image"|"video"|"raw";export type ProcessingStatus="pending"|"processing"|"ready"|"failed";export type WorkspaceRole="owner"|"admin"|"editor"|"viewer";export type Plan="free"|"creator"|"pro"|"studio";export type FeedbackStatus="new"|"in_progress"|"resolved";
-export interface Database{public:{Tables:{
-profiles:{Row:{id:string;full_name:string|null;email:string;avatar_url:string|null;preferred_language:"en"|"ar";created_at:string;updated_at:string};Insert:{id:string;email:string;full_name?:string|null;avatar_url?:string|null;preferred_language?:"en"|"ar"};Update:Partial<Database["public"]["Tables"]["profiles"]["Row"]>;Relationships:[]};
-workspaces:{Row:{id:string;owner_id:string;name:string;slug:string;logo_url:string|null;accent_color:string;plan:Plan;storage_limit_bytes:number;storage_used_bytes:number;renewal_reminder_days:number;instagram_url:string|null;tiktok_url:string|null;facebook_url:string|null;website_url:string|null;whatsapp_url:string|null;created_at:string;updated_at:string};Insert:{owner_id:string;name:string;slug:string;id?:string;logo_url?:string|null;accent_color?:string;plan?:Plan;storage_limit_bytes?:number;storage_used_bytes?:number;renewal_reminder_days?:number;instagram_url?:string|null;tiktok_url?:string|null;facebook_url?:string|null;website_url?:string|null;whatsapp_url?:string|null};Update:Partial<Database["public"]["Tables"]["workspaces"]["Row"]>;Relationships:[]};
-workspace_members:{Row:{workspace_id:string;user_id:string;role:WorkspaceRole;created_at:string};Insert:{workspace_id:string;user_id:string;role?:WorkspaceRole};Update:Partial<Database["public"]["Tables"]["workspace_members"]["Row"]>;Relationships:[]};
-clients:{Row:{id:string;workspace_id:string;name:string;email:string|null;phone:string|null;company:string|null;notes:string|null;created_at:string};Insert:{workspace_id:string;name:string;id?:string;email?:string|null;phone?:string|null;company?:string|null;notes?:string|null};Update:Partial<Database["public"]["Tables"]["clients"]["Row"]>;Relationships:[]};
-projects:{Row:{id:string;workspace_id:string;client_id:string|null;name:string;slug:string;description:string|null;project_type:ProjectType;project_date:string|null;status:ProjectStatus;cover_media_id:string|null;vehicle_make:string|null;vehicle_model:string|null;vehicle_generation:string|null;vehicle_year:number|null;location:string|null;created_at:string;updated_at:string};Insert:{workspace_id:string;name:string;slug:string;id?:string;client_id?:string|null;description?:string|null;project_type?:ProjectType;project_date?:string|null;status?:ProjectStatus;cover_media_id?:string|null;vehicle_make?:string|null;vehicle_model?:string|null;vehicle_generation?:string|null;vehicle_year?:number|null;location?:string|null};Update:Partial<Database["public"]["Tables"]["projects"]["Row"]>;Relationships:[{foreignKeyName:"projects_client_id_fkey";columns:["client_id"];isOneToOne:false;referencedRelation:"clients";referencedColumns:["id"]},{foreignKeyName:"projects_workspace_id_fkey";columns:["workspace_id"];isOneToOne:false;referencedRelation:"workspaces";referencedColumns:["id"]}]};
-galleries:{Row:{id:string;project_id:string;title:string;slug:string;description:string|null;status:GalleryStatus;password_hash:string|null;password_enabled:boolean;expiry_date:string|null;downloads_enabled:boolean;favorites_enabled:boolean;comments_enabled:boolean;branding_enabled:boolean;published_at:string|null;created_at:string;updated_at:string};Insert:{project_id:string;title:string;slug:string;id?:string;description?:string|null;status?:GalleryStatus;password_hash?:string|null;password_enabled?:boolean;expiry_date?:string|null;downloads_enabled?:boolean;favorites_enabled?:boolean;comments_enabled?:boolean;branding_enabled?:boolean;published_at?:string|null};Update:Partial<Database["public"]["Tables"]["galleries"]["Row"]>;Relationships:[{foreignKeyName:"galleries_project_id_fkey";columns:["project_id"];isOneToOne:false;referencedRelation:"projects";referencedColumns:["id"]}]};
-gallery_sections:{Row:{id:string;gallery_id:string;title:string;section_type:string;sort_order:number};Insert:{gallery_id:string;title:string;id?:string;section_type?:string;sort_order?:number};Update:Partial<Database["public"]["Tables"]["gallery_sections"]["Row"]>;Relationships:[{foreignKeyName:"gallery_sections_gallery_id_fkey";columns:["gallery_id"];isOneToOne:false;referencedRelation:"galleries";referencedColumns:["id"]}]};
-media:{Row:{id:string;project_id:string;gallery_section_id:string|null;uploader_id:string;file_name:string;original_name:string;media_type:MediaType;mime_type:string;file_size:number;width:number|null;height:number|null;duration_seconds:number|null;storage_path:string;thumbnail_path:string|null;streaming_url:string|null;processing_status:ProcessingStatus;sort_order:number;created_at:string};Insert:{project_id:string;uploader_id:string;file_name:string;original_name:string;media_type:MediaType;mime_type:string;file_size:number;storage_path:string;id?:string;gallery_section_id?:string|null;width?:number|null;height?:number|null;duration_seconds?:number|null;thumbnail_path?:string|null;streaming_url?:string|null;processing_status?:ProcessingStatus;sort_order?:number};Update:Partial<Database["public"]["Tables"]["media"]["Row"]>;Relationships:[{foreignKeyName:"media_project_id_fkey";columns:["project_id"];isOneToOne:false;referencedRelation:"projects";referencedColumns:["id"]},{foreignKeyName:"media_gallery_section_id_fkey";columns:["gallery_section_id"];isOneToOne:false;referencedRelation:"gallery_sections";referencedColumns:["id"]}]};
-favorites:{Row:{id:string;gallery_id:string;media_id:string;visitor_session:string;created_at:string};Insert:{gallery_id:string;media_id:string;visitor_session:string;id?:string};Update:Partial<Database["public"]["Tables"]["favorites"]["Row"]>;Relationships:[]};
-downloads:{Row:{id:string;gallery_id:string;media_id:string;download_type:string;visitor_session:string|null;created_at:string};Insert:{gallery_id:string;media_id:string;id?:string;download_type?:string;visitor_session?:string};Update:Partial<Database["public"]["Tables"]["downloads"]["Row"]>;Relationships:[]};
-gallery_views:{Row:{id:string;gallery_id:string;visitor_session:string;created_at:string};Insert:{gallery_id:string;visitor_session:string;id?:string};Update:Partial<Database["public"]["Tables"]["gallery_views"]["Row"]>;Relationships:[]};
-gallery_approvals:{Row:{id:string;gallery_id:string;visitor_session:string;client_name:string;status:"approved";approved_at:string;created_at:string};Insert:{gallery_id:string;visitor_session:string;client_name:string;id?:string;status?:"approved";approved_at?:string;created_at?:string};Update:Partial<Database["public"]["Tables"]["gallery_approvals"]["Row"]>;Relationships:[{foreignKeyName:"gallery_approvals_gallery_id_fkey";columns:["gallery_id"];isOneToOne:false;referencedRelation:"galleries";referencedColumns:["id"]}]};
-gallery_comments:{Row:{id:string;gallery_id:string;media_id:string|null;visitor_session:string;client_name:string;comment_text:string;status:FeedbackStatus;created_at:string};Insert:{gallery_id:string;visitor_session:string;client_name:string;comment_text:string;id?:string;media_id?:string|null;status?:FeedbackStatus;created_at?:string};Update:Partial<Database["public"]["Tables"]["gallery_comments"]["Row"]>;Relationships:[{foreignKeyName:"gallery_comments_gallery_id_fkey";columns:["gallery_id"];isOneToOne:false;referencedRelation:"galleries";referencedColumns:["id"]},{foreignKeyName:"gallery_comments_media_id_fkey";columns:["media_id"];isOneToOne:false;referencedRelation:"media";referencedColumns:["id"]}]};
-billing_payment_attempts:{Row:{id:string;workspace_id:string;user_id:string;plan:"creator"|"pro";amount:number;currency_code:"AED";status:"requires_payment_instrument"|"requires_user_action"|"pending"|"completed"|"failed"|"canceled";ziina_payment_intent_id:string;test_mode:boolean;completed_at:string|null;created_at:string;updated_at:string};Insert:{workspace_id:string;user_id:string;plan:"creator"|"pro";amount:number;ziina_payment_intent_id:string;id?:string;currency_code?:"AED";status?:"requires_payment_instrument"|"requires_user_action"|"pending"|"completed"|"failed"|"canceled";test_mode?:boolean;completed_at?:string|null;created_at?:string;updated_at?:string};Update:Partial<Database["public"]["Tables"]["billing_payment_attempts"]["Row"]>;Relationships:[]};
-subscriptions:{Row:{id:string;workspace_id:string;stripe_customer_id:string|null;stripe_subscription_id:string|null;ziina_payment_intent_id:string|null;provider:string|null;plan:Plan;status:string;current_period_end:string|null;created_at:string;updated_at:string};Insert:{workspace_id:string;id?:string;stripe_customer_id?:string|null;stripe_subscription_id?:string|null;ziina_payment_intent_id?:string|null;provider?:string|null;plan?:Plan;status?:string;current_period_end?:string|null};Update:Partial<Database["public"]["Tables"]["subscriptions"]["Row"]>;Relationships:[]}
-};Views:Record<string,never>;Functions:{activate_ziina_payment:{Args:{p_payment_intent_id:string};Returns:{already_applied?:boolean;plan?:"creator"|"pro";current_period_end?:string}};rawi_dashboard_stats:{Args:{target_workspace_id:string};Returns:{project_count:number;photo_count:number;published_count:number;download_count:number;favorite_count:number;new_feedback_count:number;feedback_by_project:Record<string,number>}}};Enums:Record<string,never>;CompositeTypes:Record<string,never>}}
+export type ProjectStatus =
+  "draft" | "processing" | "published" | "expired" | "archived";
+export type ProjectType =
+  | "photography"
+  | "video"
+  | "photo_video"
+  | "automotive"
+  | "wedding"
+  | "event"
+  | "real_estate"
+  | "commercial"
+  | "other";
+export type GalleryStatus = "draft" | "published" | "unpublished";
+export type MediaType = "image" | "video" | "raw";
+export type ProcessingStatus = "pending" | "processing" | "ready" | "failed";
+export type WorkspaceRole = "owner" | "admin" | "editor" | "viewer";
+export type Plan = "free" | "creator" | "pro" | "studio";
+export type FeedbackStatus = "new" | "in_progress" | "resolved";
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string;
+          full_name: string | null;
+          email: string;
+          avatar_url: string | null;
+          preferred_language: "en" | "ar";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          email: string;
+          full_name?: string | null;
+          avatar_url?: string | null;
+          preferred_language?: "en" | "ar";
+        };
+        Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+        Relationships: [];
+      };
+      workspaces: {
+        Row: {
+          id: string;
+          owner_id: string;
+          name: string;
+          slug: string;
+          logo_url: string | null;
+          accent_color: string;
+          plan: Plan;
+          storage_limit_bytes: number;
+          storage_used_bytes: number;
+          renewal_reminder_days: number;
+          instagram_url: string | null;
+          tiktok_url: string | null;
+          facebook_url: string | null;
+          website_url: string | null;
+          whatsapp_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          owner_id: string;
+          name: string;
+          slug: string;
+          id?: string;
+          logo_url?: string | null;
+          accent_color?: string;
+          plan?: Plan;
+          storage_limit_bytes?: number;
+          storage_used_bytes?: number;
+          renewal_reminder_days?: number;
+          instagram_url?: string | null;
+          tiktok_url?: string | null;
+          facebook_url?: string | null;
+          website_url?: string | null;
+          whatsapp_url?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["workspaces"]["Row"]>;
+        Relationships: [];
+      };
+      workspace_members: {
+        Row: {
+          workspace_id: string;
+          user_id: string;
+          role: WorkspaceRole;
+          created_at: string;
+        };
+        Insert: { workspace_id: string; user_id: string; role?: WorkspaceRole };
+        Update: Partial<
+          Database["public"]["Tables"]["workspace_members"]["Row"]
+        >;
+        Relationships: [];
+      };
+      clients: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          name: string;
+          email: string | null;
+          phone: string | null;
+          company: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          workspace_id: string;
+          name: string;
+          id?: string;
+          email?: string | null;
+          phone?: string | null;
+          company?: string | null;
+          notes?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["clients"]["Row"]>;
+        Relationships: [];
+      };
+      projects: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          client_id: string | null;
+          name: string;
+          slug: string;
+          description: string | null;
+          project_type: ProjectType;
+          project_date: string | null;
+          status: ProjectStatus;
+          cover_media_id: string | null;
+          vehicle_make: string | null;
+          vehicle_model: string | null;
+          vehicle_generation: string | null;
+          vehicle_year: number | null;
+          location: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          workspace_id: string;
+          name: string;
+          slug: string;
+          id?: string;
+          client_id?: string | null;
+          description?: string | null;
+          project_type?: ProjectType;
+          project_date?: string | null;
+          status?: ProjectStatus;
+          cover_media_id?: string | null;
+          vehicle_make?: string | null;
+          vehicle_model?: string | null;
+          vehicle_generation?: string | null;
+          vehicle_year?: number | null;
+          location?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["projects"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey";
+            columns: ["client_id"];
+            isOneToOne: false;
+            referencedRelation: "clients";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "projects_workspace_id_fkey";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      galleries: {
+        Row: {
+          id: string;
+          project_id: string;
+          title: string;
+          slug: string;
+          description: string | null;
+          status: GalleryStatus;
+          password_hash: string | null;
+          password_enabled: boolean;
+          expiry_date: string | null;
+          downloads_enabled: boolean;
+          favorites_enabled: boolean;
+          comments_enabled: boolean;
+          branding_enabled: boolean;
+          published_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          project_id: string;
+          title: string;
+          slug: string;
+          id?: string;
+          description?: string | null;
+          status?: GalleryStatus;
+          password_hash?: string | null;
+          password_enabled?: boolean;
+          expiry_date?: string | null;
+          downloads_enabled?: boolean;
+          favorites_enabled?: boolean;
+          comments_enabled?: boolean;
+          branding_enabled?: boolean;
+          published_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["galleries"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "galleries_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      gallery_sections: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          title: string;
+          section_type: string;
+          sort_order: number;
+        };
+        Insert: {
+          gallery_id: string;
+          title: string;
+          id?: string;
+          section_type?: string;
+          sort_order?: number;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["gallery_sections"]["Row"]
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "gallery_sections_gallery_id_fkey";
+            columns: ["gallery_id"];
+            isOneToOne: false;
+            referencedRelation: "galleries";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      media: {
+        Row: {
+          id: string;
+          project_id: string;
+          gallery_section_id: string | null;
+          uploader_id: string;
+          file_name: string;
+          original_name: string;
+          media_type: MediaType;
+          mime_type: string;
+          file_size: number;
+          width: number | null;
+          height: number | null;
+          duration_seconds: number | null;
+          storage_path: string;
+          thumbnail_path: string | null;
+          streaming_url: string | null;
+          processing_status: ProcessingStatus;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          project_id: string;
+          uploader_id: string;
+          file_name: string;
+          original_name: string;
+          media_type: MediaType;
+          mime_type: string;
+          file_size: number;
+          storage_path: string;
+          id?: string;
+          gallery_section_id?: string | null;
+          width?: number | null;
+          height?: number | null;
+          duration_seconds?: number | null;
+          thumbnail_path?: string | null;
+          streaming_url?: string | null;
+          processing_status?: ProcessingStatus;
+          sort_order?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["media"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "media_project_id_fkey";
+            columns: ["project_id"];
+            isOneToOne: false;
+            referencedRelation: "projects";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "media_gallery_section_id_fkey";
+            columns: ["gallery_section_id"];
+            isOneToOne: false;
+            referencedRelation: "gallery_sections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      favorites: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          media_id: string;
+          visitor_session: string;
+          created_at: string;
+        };
+        Insert: {
+          gallery_id: string;
+          media_id: string;
+          visitor_session: string;
+          id?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["favorites"]["Row"]>;
+        Relationships: [];
+      };
+      downloads: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          media_id: string;
+          download_type: string;
+          visitor_session: string | null;
+          created_at: string;
+        };
+        Insert: {
+          gallery_id: string;
+          media_id: string;
+          id?: string;
+          download_type?: string;
+          visitor_session?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["downloads"]["Row"]>;
+        Relationships: [];
+      };
+      gallery_views: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          visitor_session: string;
+          created_at: string;
+        };
+        Insert: { gallery_id: string; visitor_session: string; id?: string };
+        Update: Partial<Database["public"]["Tables"]["gallery_views"]["Row"]>;
+        Relationships: [];
+      };
+      gallery_approvals: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          visitor_session: string;
+          client_name: string;
+          status: "approved";
+          approved_at: string;
+          created_at: string;
+        };
+        Insert: {
+          gallery_id: string;
+          visitor_session: string;
+          client_name: string;
+          id?: string;
+          status?: "approved";
+          approved_at?: string;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["gallery_approvals"]["Row"]
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "gallery_approvals_gallery_id_fkey";
+            columns: ["gallery_id"];
+            isOneToOne: false;
+            referencedRelation: "galleries";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      gallery_comments: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          media_id: string | null;
+          visitor_session: string;
+          client_name: string;
+          comment_text: string;
+          status: FeedbackStatus;
+          created_at: string;
+        };
+        Insert: {
+          gallery_id: string;
+          visitor_session: string;
+          client_name: string;
+          comment_text: string;
+          id?: string;
+          media_id?: string | null;
+          status?: FeedbackStatus;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["gallery_comments"]["Row"]
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "gallery_comments_gallery_id_fkey";
+            columns: ["gallery_id"];
+            isOneToOne: false;
+            referencedRelation: "galleries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "gallery_comments_media_id_fkey";
+            columns: ["media_id"];
+            isOneToOne: false;
+            referencedRelation: "media";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      gallery_reviews: {
+        Row: {
+          id: string;
+          gallery_id: string;
+          visitor_session: string;
+          client_name: string;
+          rating: number;
+          review_text: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          gallery_id: string;
+          visitor_session: string;
+          client_name: string;
+          rating: number;
+          review_text: string;
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["gallery_reviews"]["Row"]>;
+        Relationships: [
+          {
+            foreignKeyName: "gallery_reviews_gallery_id_fkey";
+            columns: ["gallery_id"];
+            isOneToOne: false;
+            referencedRelation: "galleries";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      billing_payment_attempts: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          user_id: string;
+          plan: "creator" | "pro";
+          amount: number;
+          currency_code: "AED";
+          status:
+            | "requires_payment_instrument"
+            | "requires_user_action"
+            | "pending"
+            | "completed"
+            | "failed"
+            | "canceled";
+          ziina_payment_intent_id: string;
+          test_mode: boolean;
+          completed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          workspace_id: string;
+          user_id: string;
+          plan: "creator" | "pro";
+          amount: number;
+          ziina_payment_intent_id: string;
+          id?: string;
+          currency_code?: "AED";
+          status?:
+            | "requires_payment_instrument"
+            | "requires_user_action"
+            | "pending"
+            | "completed"
+            | "failed"
+            | "canceled";
+          test_mode?: boolean;
+          completed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["billing_payment_attempts"]["Row"]
+        >;
+        Relationships: [];
+      };
+      subscriptions: {
+        Row: {
+          id: string;
+          workspace_id: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          ziina_payment_intent_id: string | null;
+          provider: string | null;
+          plan: Plan;
+          status: string;
+          current_period_end: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          workspace_id: string;
+          id?: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          ziina_payment_intent_id?: string | null;
+          provider?: string | null;
+          plan?: Plan;
+          status?: string;
+          current_period_end?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["subscriptions"]["Row"]>;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: {
+      activate_ziina_payment: {
+        Args: { p_payment_intent_id: string };
+        Returns: {
+          already_applied?: boolean;
+          plan?: "creator" | "pro";
+          current_period_end?: string;
+        };
+      };
+      rawi_dashboard_stats: {
+        Args: { target_workspace_id: string };
+        Returns: {
+          project_count: number;
+          photo_count: number;
+          published_count: number;
+          download_count: number;
+          favorite_count: number;
+          new_feedback_count: number;
+          feedback_by_project: Record<string, number>;
+        };
+      };
+    };
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
+  };
+}

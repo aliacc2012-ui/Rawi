@@ -1,2 +1,333 @@
 "use client";
-import{useEffect,useMemo,useRef,useState}from"react";import{getBulkDownloadUrls}from"@/app/g/[slug]/actions";import{MediaTile}from"@/components/gallery/MediaTile";type ViewMode="grid"|"masonry"|"large"|"slideshow";type MediaItem={id:string;media_type:"image"|"video"|"raw";signed_url?:string|null;thumbnail_url?:string|null};type GallerySection={id:string;title:string;media:MediaItem[]};type Theme="dark"|"light";const INITIAL_VISIBLE=24,LOAD_MORE=24;const VIEW_OPTIONS:{id:ViewMode;label:string;icon:string}[]=[{id:"grid",label:"Grid",icon:"▦"},{id:"masonry",label:"Masonry",icon:"▥"},{id:"large",label:"Large",icon:"▭"},{id:"slideshow",label:"Slideshow",icon:"▶"}];export function GalleryMediaGrid({galleryId,sections,favoritesEnabled,downloadsEnabled,commentsEnabled=false,theme="dark"}:{galleryId:string;sections:GallerySection[];favoritesEnabled:boolean;downloadsEnabled:boolean;commentsEnabled?:boolean;theme?:Theme}){const[selected,setSelected]=useState<Set<string>>(new Set());const[downloading,setDownloading]=useState(false),[progress,setProgress]=useState(0),[message,setMessage]=useState<string|null>(null),[viewMode,setViewMode]=useState<ViewMode>("grid"),[slideIndex,setSlideIndex]=useState(0),[visibleCount,setVisibleCount]=useState(INITIAL_VISIBLE);const sentinelRef=useRef<HTMLDivElement>(null);const allMedia=useMemo(()=>sections.flatMap(s=>s.media),[sections]),allIds=useMemo(()=>allMedia.map(i=>i.id),[allMedia]),activeSlide=allMedia.at(slideIndex)??null,light=theme==="light";const visibleSections=useMemo(()=>{let remaining=visibleCount;return sections.map(section=>{const media=remaining>0?section.media.slice(0,remaining):[];remaining-=media.length;return{...section,media}})},[sections,visibleCount]);useEffect(()=>{if(viewMode==="slideshow"||visibleCount>=allMedia.length)return;const node=sentinelRef.current;if(!node)return;const observer=new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting)setVisibleCount(c=>Math.min(allMedia.length,c+LOAD_MORE))},{rootMargin:"800px 0px"});observer.observe(node);return()=>observer.disconnect()},[viewMode,visibleCount,allMedia.length]);function changeView(mode:ViewMode){setViewMode(mode);if(mode==="slideshow")setSlideIndex(i=>Math.min(i,Math.max(0,allMedia.length-1)));if(typeof window!=="undefined")localStorage.setItem("rawi_gallery_view",mode)}function toggleSelected(id:string){setSelected(c=>{const n=new Set(c);n.has(id)?n.delete(id):n.add(id);return n});setMessage(null)}function clearSelection(){setSelected(new Set());setMessage(null)}function selectAll(){setSelected(new Set(allIds.slice(0,100)));setMessage(allIds.length>100?"Up to 100 files can be downloaded at once.":null)}async function downloadSelected(){if(!selected.size||downloading)return;setDownloading(true);setProgress(10);setMessage("Preparing secure download links…");try{const r=await getBulkDownloadUrls(galleryId,Array.from(selected));if("error"in r){setMessage(r.error??"Couldn't prepare the selected files.");return}const files=r.files??[];if(!files.length){setMessage("No files were available to download.");return}setProgress(55);files.forEach((f,i)=>setTimeout(()=>{const a=document.createElement("a");a.href=f.url;a.download=f.name||"download";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();setProgress(Math.round(55+((i+1)/files.length)*45))},i*60));setTimeout(()=>{setMessage(`${files.length} file${files.length===1?"":"s"} sent to your downloads.`);setProgress(100);setSelected(new Set())},files.length*60+250)}catch{setMessage("Something went wrong while preparing the download.")}finally{setTimeout(()=>setDownloading(false),400)}}const renderTile=(item:MediaItem,mode:ViewMode=viewMode)=><MediaTile key={`${mode}-${item.id}`} mediaId={item.id} galleryId={galleryId} mediaType={item.media_type} initialUrl={item.signed_url} initialThumbnailUrl={item.thumbnail_url} favoritesEnabled={favoritesEnabled} downloadsEnabled={downloadsEnabled} commentsEnabled={commentsEnabled} initiallyFavorited={false} selectable={downloadsEnabled} selected={selected.has(item.id)} onToggleSelect={()=>toggleSelected(item.id)} displayMode={mode}/>;const labelClass=light?"text-black/35":"text-white/35",secondaryClass=light?"text-black/45":"text-white/45",inactiveViewClass=light?"border-black/10 bg-white text-black/60 hover:border-black/25 hover:text-black":"border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white",sectionTitleClass=light?"text-black":"text-white";return <div><div className={`mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl ${light?"border border-black/10 bg-white px-4 py-3":""}`}><div className="flex flex-wrap items-center gap-3"><span className={`text-[10px] font-extrabold tracking-[.16em] ${labelClass}`}>VIEW</span><div className="flex flex-wrap gap-2">{VIEW_OPTIONS.map(o=><button key={o.id} onClick={()=>changeView(o.id)} className={`rounded-full border px-3.5 py-2 text-xs font-semibold ${viewMode===o.id?"border-[#d6b600] bg-[#FFD400] text-black":inactiveViewClass}`}><span className="mr-1.5">{o.icon}</span>{o.label}</button>)}</div></div><span className={`text-xs ${secondaryClass}`}>{allMedia.length} item{allMedia.length===1?"":"s"}</span></div>{downloadsEnabled&&<div className={`sticky top-3 z-30 mb-7 overflow-hidden rounded-xl ${light?"border border-black/10 bg-white/95 shadow-lg":"border border-white/10 bg-black/85"}`}><div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"><div className="flex gap-3"><span className={`text-sm font-semibold ${light?"text-black":"text-white"}`}>{selected.size} selected</span><button onClick={selectAll} className="text-xs text-black/45">Select all</button>{selected.size>0&&<button onClick={clearSelection} className="text-xs text-black/45">Clear</button>}</div><button onClick={downloadSelected} disabled={!selected.size||downloading} className="rounded-full bg-[#FFD400] px-4 py-2 text-xs font-extrabold text-black disabled:opacity-40">{downloading?"Preparing…":`Download selected${selected.size?` (${selected.size})`:""}`}</button></div>{downloading&&<div className="h-1 bg-black/5"><div className="h-full bg-[#FFD400]" style={{width:`${progress}%`}}/></div>}{message&&<div className="px-4 pb-3 text-xs text-black/40">{message}</div>}</div>}{viewMode==="slideshow"?<div className="mx-auto max-w-5xl">{activeSlide?renderTile(activeSlide,"slideshow"):<div className="py-24 text-center">No media.</div>}<div className="mt-4 flex justify-center gap-3"><button onClick={()=>setSlideIndex(i=>allMedia.length?(i-1+allMedia.length)%allMedia.length:0)} className="rounded-full border px-5 py-2.5">← Previous</button><button onClick={()=>setSlideIndex(i=>allMedia.length?(i+1)%allMedia.length:0)} className="rounded-full bg-black px-5 py-2.5 text-white">Next →</button></div></div>:<>{visibleSections.map((s,index)=>s.media.length?<div key={s.id} className="mb-14"><div className="mb-5 flex items-baseline gap-5"><span className={`text-[11px] ${secondaryClass}`}>{String(index+1).padStart(2,"0")}</span><h4 className={`text-2xl font-semibold ${sectionTitleClass}`}>{s.title}</h4></div>{viewMode==="grid"&&<div className="grid grid-cols-2 gap-3 md:grid-cols-3">{s.media.map(i=>renderTile(i,"grid"))}</div>}{viewMode==="masonry"&&<div className="columns-1 gap-3 sm:columns-2 md:columns-3 [&>*]:mb-3 [&>*]:break-inside-avoid">{s.media.map(i=>renderTile(i,"masonry"))}</div>}{viewMode==="large"&&<div className="mx-auto flex max-w-4xl flex-col gap-7">{s.media.map(i=>renderTile(i,"large"))}</div>}</div>:null)}{visibleCount<allMedia.length&&<div ref={sentinelRef} className={`py-8 text-center text-xs ${secondaryClass}`}>Loading more photos…</div>}</>}</div>}
+import { useEffect, useMemo, useRef, useState } from "react";
+import { getBulkDownloadUrls } from "@/app/g/[slug]/actions";
+import { MediaTile } from "@/components/gallery/MediaTile";
+import { ReviewPrompt } from "@/components/gallery/ReviewPrompt";
+type ViewMode = "grid" | "masonry" | "large" | "slideshow";
+type MediaItem = {
+  id: string;
+  media_type: "image" | "video" | "raw";
+  signed_url?: string | null;
+  thumbnail_url?: string | null;
+};
+type GallerySection = { id: string; title: string; media: MediaItem[] };
+type Theme = "dark" | "light";
+const INITIAL_VISIBLE = 24,
+  LOAD_MORE = 24;
+const VIEW_OPTIONS: { id: ViewMode; label: string; icon: string }[] = [
+  { id: "grid", label: "Grid", icon: "▦" },
+  { id: "masonry", label: "Masonry", icon: "▥" },
+  { id: "large", label: "Large", icon: "▭" },
+  { id: "slideshow", label: "Slideshow", icon: "▶" },
+];
+export function GalleryMediaGrid({
+  galleryId,
+  sections,
+  favoritesEnabled,
+  downloadsEnabled,
+  commentsEnabled = false,
+  theme = "dark",
+  clientName,
+}: {
+  galleryId: string;
+  sections: GallerySection[];
+  favoritesEnabled: boolean;
+  downloadsEnabled: boolean;
+  commentsEnabled?: boolean;
+  theme?: Theme;
+  clientName?: string;
+}) {
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [downloading, setDownloading] = useState(false),
+    [progress, setProgress] = useState(0),
+    [message, setMessage] = useState<string | null>(null),
+    [viewMode, setViewMode] = useState<ViewMode>("grid"),
+    [slideIndex, setSlideIndex] = useState(0),
+    [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE),
+    [reviewOpen, setReviewOpen] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const allMedia = useMemo(() => sections.flatMap((s) => s.media), [sections]),
+    allIds = useMemo(() => allMedia.map((i) => i.id), [allMedia]),
+    activeSlide = allMedia.at(slideIndex) ?? null,
+    light = theme === "light";
+  const visibleSections = useMemo(() => {
+    let remaining = visibleCount;
+    return sections.map((section) => {
+      const media = remaining > 0 ? section.media.slice(0, remaining) : [];
+      remaining -= media.length;
+      return { ...section, media };
+    });
+  }, [sections, visibleCount]);
+  useEffect(() => {
+    if (viewMode === "slideshow" || visibleCount >= allMedia.length) return;
+    const node = sentinelRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting)
+          setVisibleCount((c) => Math.min(allMedia.length, c + LOAD_MORE));
+      },
+      { rootMargin: "800px 0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [viewMode, visibleCount, allMedia.length]);
+  function changeView(mode: ViewMode) {
+    setViewMode(mode);
+    if (mode === "slideshow")
+      setSlideIndex((i) => Math.min(i, Math.max(0, allMedia.length - 1)));
+    if (typeof window !== "undefined")
+      localStorage.setItem("rawi_gallery_view", mode);
+  }
+  function toggleSelected(id: string) {
+    setSelected((c) => {
+      const n = new Set(c);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
+    setMessage(null);
+  }
+  function clearSelection() {
+    setSelected(new Set());
+    setMessage(null);
+  }
+  function selectAll() {
+    setSelected(new Set(allIds.slice(0, 100)));
+    setMessage(
+      allIds.length > 100 ? "Up to 100 files can be downloaded at once." : null,
+    );
+  }
+  function offerReview() {
+    const key = `rawi_review_prompt_${galleryId}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    window.setTimeout(() => setReviewOpen(true), 600);
+  }
+  async function downloadSelected() {
+    if (!selected.size || downloading) return;
+    setDownloading(true);
+    setProgress(10);
+    setMessage("Preparing secure download links…");
+    try {
+      const r = await getBulkDownloadUrls(galleryId, Array.from(selected));
+      if ("error" in r) {
+        setMessage(r.error ?? "Couldn't prepare the selected files.");
+        return;
+      }
+      const files = r.files ?? [];
+      if (!files.length) {
+        setMessage("No files were available to download.");
+        return;
+      }
+      setProgress(55);
+      files.forEach((f, i) =>
+        setTimeout(() => {
+          const a = document.createElement("a");
+          a.href = f.url;
+          a.download = f.name || "download";
+          a.rel = "noopener";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setProgress(Math.round(55 + ((i + 1) / files.length) * 45));
+        }, i * 60),
+      );
+      setTimeout(
+        () => {
+          setMessage(
+            `${files.length} file${files.length === 1 ? "" : "s"} sent to your downloads.`,
+          );
+          setProgress(100);
+          setSelected(new Set());
+          offerReview();
+        },
+        files.length * 60 + 250,
+      );
+    } catch {
+      setMessage("Something went wrong while preparing the download.");
+    } finally {
+      setTimeout(() => setDownloading(false), 400);
+    }
+  }
+  const renderTile = (item: MediaItem, mode: ViewMode = viewMode) => (
+    <MediaTile
+      key={`${mode}-${item.id}`}
+      mediaId={item.id}
+      galleryId={galleryId}
+      mediaType={item.media_type}
+      initialUrl={item.signed_url}
+      initialThumbnailUrl={item.thumbnail_url}
+      favoritesEnabled={favoritesEnabled}
+      downloadsEnabled={downloadsEnabled}
+      commentsEnabled={commentsEnabled}
+      initiallyFavorited={false}
+      selectable={downloadsEnabled}
+      selected={selected.has(item.id)}
+      onToggleSelect={() => toggleSelected(item.id)}
+      onDownloadComplete={offerReview}
+      displayMode={mode}
+    />
+  );
+  const labelClass = light ? "text-black/35" : "text-white/35",
+    secondaryClass = light ? "text-black/45" : "text-white/45",
+    inactiveViewClass = light
+      ? "border-black/10 bg-white text-black/60 hover:border-black/25 hover:text-black"
+      : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white",
+    sectionTitleClass = light ? "text-black" : "text-white";
+  return (
+    <div>
+      <div
+        className={`mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl ${light ? "border border-black/10 bg-white px-4 py-3" : ""}`}
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          <span
+            className={`text-[10px] font-extrabold tracking-[.16em] ${labelClass}`}
+          >
+            VIEW
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {VIEW_OPTIONS.map((o) => (
+              <button
+                key={o.id}
+                onClick={() => changeView(o.id)}
+                className={`rounded-full border px-3.5 py-2 text-xs font-semibold ${viewMode === o.id ? "border-[#d6b600] bg-[#FFD400] text-black" : inactiveViewClass}`}
+              >
+                <span className="mr-1.5">{o.icon}</span>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <span className={`text-xs ${secondaryClass}`}>
+          {allMedia.length} item{allMedia.length === 1 ? "" : "s"}
+        </span>
+      </div>
+      {downloadsEnabled && (
+        <div
+          className={`sticky top-3 z-30 mb-7 overflow-hidden rounded-xl ${light ? "border border-black/10 bg-white/95 shadow-lg" : "border border-white/10 bg-black/85"}`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+            <div className="flex gap-3">
+              <span
+                className={`text-sm font-semibold ${light ? "text-black" : "text-white"}`}
+              >
+                {selected.size} selected
+              </span>
+              <button onClick={selectAll} className="text-xs text-black/45">
+                Select all
+              </button>
+              {selected.size > 0 && (
+                <button
+                  onClick={clearSelection}
+                  className="text-xs text-black/45"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <button
+              onClick={downloadSelected}
+              disabled={!selected.size || downloading}
+              className="rounded-full bg-[#FFD400] px-4 py-2 text-xs font-extrabold text-black disabled:opacity-40"
+            >
+              {downloading
+                ? "Preparing…"
+                : `Download selected${selected.size ? ` (${selected.size})` : ""}`}
+            </button>
+          </div>
+          {downloading && (
+            <div className="h-1 bg-black/5">
+              <div
+                className="h-full bg-[#FFD400]"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          )}
+          {message && (
+            <div className="px-4 pb-3 text-xs text-black/40">{message}</div>
+          )}
+        </div>
+      )}
+      {viewMode === "slideshow" ? (
+        <div className="mx-auto max-w-5xl">
+          {activeSlide ? (
+            renderTile(activeSlide, "slideshow")
+          ) : (
+            <div className="py-24 text-center">No media.</div>
+          )}
+          <div className="mt-4 flex justify-center gap-3">
+            <button
+              onClick={() =>
+                setSlideIndex((i) =>
+                  allMedia.length
+                    ? (i - 1 + allMedia.length) % allMedia.length
+                    : 0,
+                )
+              }
+              className="rounded-full border px-5 py-2.5"
+            >
+              ← Previous
+            </button>
+            <button
+              onClick={() =>
+                setSlideIndex((i) =>
+                  allMedia.length ? (i + 1) % allMedia.length : 0,
+                )
+              }
+              className="rounded-full bg-black px-5 py-2.5 text-white"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {visibleSections.map((s, index) =>
+            s.media.length ? (
+              <div key={s.id} className="mb-14">
+                <div className="mb-5 flex items-baseline gap-5">
+                  <span className={`text-[11px] ${secondaryClass}`}>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h4 className={`text-2xl font-semibold ${sectionTitleClass}`}>
+                    {s.title}
+                  </h4>
+                </div>
+                {viewMode === "grid" && (
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                    {s.media.map((i) => renderTile(i, "grid"))}
+                  </div>
+                )}
+                {viewMode === "masonry" && (
+                  <div className="columns-1 gap-3 sm:columns-2 md:columns-3 [&>*]:mb-3 [&>*]:break-inside-avoid">
+                    {s.media.map((i) => renderTile(i, "masonry"))}
+                  </div>
+                )}
+                {viewMode === "large" && (
+                  <div className="mx-auto flex max-w-4xl flex-col gap-7">
+                    {s.media.map((i) => renderTile(i, "large"))}
+                  </div>
+                )}
+              </div>
+            ) : null,
+          )}
+          {visibleCount < allMedia.length && (
+            <div
+              ref={sentinelRef}
+              className={`py-8 text-center text-xs ${secondaryClass}`}
+            >
+              Loading more photos…
+            </div>
+          )}
+        </>
+      )}
+      <ReviewPrompt
+        galleryId={galleryId}
+        clientName={clientName}
+        open={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+      />
+    </div>
+  );
+}

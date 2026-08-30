@@ -44,6 +44,7 @@ export function MediaTile({
   selectable = false,
   selected = false,
   onToggleSelect,
+  onDownloadComplete,
   displayMode = "grid",
 }: {
   mediaId: string;
@@ -58,10 +59,11 @@ export function MediaTile({
   selectable?: boolean;
   selected?: boolean;
   onToggleSelect?: () => void;
+  onDownloadComplete?: () => void;
   displayMode?: DisplayMode;
 }) {
   const [url, setUrl] = useState<string | null>(
-    () => initialUrl || mediaUrlCache.get(mediaId) || null
+    () => initialUrl || mediaUrlCache.get(mediaId) || null,
   );
   const displayUrl =
     mediaType === "image"
@@ -119,7 +121,13 @@ export function MediaTile({
       setError(r.error ?? null);
       return;
     }
-    window.location.href = r.url!;
+    const anchor = document.createElement("a");
+    anchor.href = r.url!;
+    anchor.rel = "noopener";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    onDownloadComplete?.();
   }
 
   async function openViewer() {
@@ -236,7 +244,9 @@ export function MediaTile({
           )
         ) : displayUrl ? (
           mediaType === "raw" ? (
-            <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}>
+            <div
+              className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}
+            >
               RAW file
             </div>
           ) : (
@@ -258,11 +268,15 @@ export function MediaTile({
             </button>
           )
         ) : error ? (
-          <div className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center p-2 text-center text-xs text-gray-500`}>
+          <div
+            className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center p-2 text-center text-xs text-gray-500`}
+          >
             {error}
           </div>
         ) : (
-          <div className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`} />
+          <div
+            className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`}
+          />
         )}
 
         {selectable && (
@@ -283,7 +297,9 @@ export function MediaTile({
           </button>
         )}
 
-        <div className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}>
+        <div
+          className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}
+        >
           {mediaType !== "raw" && (url || initialThumbnailUrl) && (
             <button
               type="button"
@@ -340,7 +356,9 @@ export function MediaTile({
                 <span className="text-[10px] font-extrabold tracking-[.16em] text-[#b59600]">
                   MEDIA FEEDBACK
                 </span>
-                <h3 className="mt-1 text-xl font-semibold">Comment on this item</h3>
+                <h3 className="mt-1 text-xl font-semibold">
+                  Comment on this item
+                </h3>
               </div>
               <button
                 type="button"
@@ -368,7 +386,9 @@ export function MediaTile({
               className="mt-3 w-full resize-none rounded-xl border border-black/10 p-3 text-sm outline-none"
             />
             <div className="mt-3 flex items-center justify-between gap-3">
-              <span className={`text-xs ${commentStatus === "Sent ✓" ? "text-emerald-600" : "text-red-600"}`}>
+              <span
+                className={`text-xs ${commentStatus === "Sent ✓" ? "text-emerald-600" : "text-red-600"}`}
+              >
                 {commentStatus}
               </span>
               <button
@@ -391,21 +411,52 @@ export function MediaTile({
         >
           <div className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-white/10">
             <span className="text-white/60 text-xs">RAWI Viewer</span>
-            <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="flex items-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               {mediaType === "image" && (
                 <>
-                  <button onClick={() => setZoom((v) => Math.max(0.5, v - 0.25))} className="h-9 min-w-9 rounded-full bg-white/10 text-white">−</button>
-                  <button onClick={() => setZoom(1)} className="h-9 px-3 rounded-full bg-white/10 text-white text-xs">{Math.round(zoom * 100)}%</button>
-                  <button onClick={() => setZoom((v) => Math.min(3, v + 0.25))} className="h-9 min-w-9 rounded-full bg-white/10 text-white">+</button>
+                  <button
+                    onClick={() => setZoom((v) => Math.max(0.5, v - 0.25))}
+                    className="h-9 min-w-9 rounded-full bg-white/10 text-white"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => setZoom(1)}
+                    className="h-9 px-3 rounded-full bg-white/10 text-white text-xs"
+                  >
+                    {Math.round(zoom * 100)}%
+                  </button>
+                  <button
+                    onClick={() => setZoom((v) => Math.min(3, v + 0.25))}
+                    className="h-9 min-w-9 rounded-full bg-white/10 text-white"
+                  >
+                    +
+                  </button>
                 </>
               )}
               {downloadsEnabled && (
-                <button onClick={handleDownload} className="h-9 px-4 rounded-full bg-white/10 text-white text-xs">Download</button>
+                <button
+                  onClick={handleDownload}
+                  className="h-9 px-4 rounded-full bg-white/10 text-white text-xs"
+                >
+                  Download
+                </button>
               )}
-              <button onClick={closeViewer} className="h-9 min-w-9 rounded-full bg-white text-black font-bold">×</button>
+              <button
+                onClick={closeViewer}
+                className="h-9 min-w-9 rounded-full bg-white text-black font-bold"
+              >
+                ×
+              </button>
             </div>
           </div>
-          <div className="relative flex-1 overflow-auto grid place-items-center p-4 md:p-8" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative flex-1 overflow-auto grid place-items-center p-4 md:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
             {mediaType === "video" ? (
               <>
                 <video
@@ -421,17 +472,23 @@ export function MediaTile({
                   onWaiting={() => setVideoLoading(true)}
                   onError={() => {
                     setVideoLoading(false);
-                    setVideoError("This video couldn't be played. Try again or download the original file.");
+                    setVideoError(
+                      "This video couldn't be played. Try again or download the original file.",
+                    );
                   }}
                   className="max-w-full max-h-[calc(100vh-7rem)] bg-black"
                 />
                 {videoLoading && !videoError && (
                   <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                    <div className="rounded-full bg-black/70 px-4 py-2 text-xs font-semibold text-white backdrop-blur">Loading video…</div>
+                    <div className="rounded-full bg-black/70 px-4 py-2 text-xs font-semibold text-white backdrop-blur">
+                      Loading video…
+                    </div>
                   </div>
                 )}
                 {videoError && (
-                  <div className="absolute bottom-8 left-1/2 w-[min(90%,32rem)] -translate-x-1/2 rounded-xl bg-black/80 px-4 py-3 text-center text-sm text-white shadow-xl backdrop-blur">{videoError}</div>
+                  <div className="absolute bottom-8 left-1/2 w-[min(90%,32rem)] -translate-x-1/2 rounded-xl bg-black/80 px-4 py-3 text-center text-sm text-white shadow-xl backdrop-blur">
+                    {videoError}
+                  </div>
                 )}
               </>
             ) : (
