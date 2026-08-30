@@ -10,6 +10,8 @@ import {
 } from "@/components/landing/Sections";
 import { WorkflowSection } from "@/components/landing/WorkflowSection";
 import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
+import { Testimonials } from "@/components/landing/Testimonials";
+import { FAQ } from "@/components/landing/FAQ";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -24,6 +26,8 @@ export default function LandingPage() {
       <WorkflowSection />
       <EnhancedFeatures />
       <GalleryDemo />
+      <Testimonials />
+      <FAQ />
       <Pricing />
       <ClosingCTA />
       <footer className="border-t border-black/10 bg-[#fbf6ef] px-5 py-8">
