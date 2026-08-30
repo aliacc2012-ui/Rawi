@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { updateSocialLinks } from "@/app/(app)/actions";
 
-type SocialKey = "instagram" | "tiktok" | "facebook" | "website";
+type SocialKey = "instagram" | "tiktok" | "facebook" | "website" | "whatsapp";
 type Links = Record<SocialKey, string>;
 
 const items: { key: SocialKey; name: string; placeholder: string; icon: React.ReactNode }[] = [
@@ -11,6 +11,7 @@ const items: { key: SocialKey; name: string; placeholder: string; icon: React.Re
   { key: "tiktok", name: "TikTok", placeholder: "https://www.tiktok.com/@yourprofile", icon: <TikTokIcon /> },
   { key: "facebook", name: "Facebook", placeholder: "https://www.facebook.com/yourpage", icon: <FacebookIcon /> },
   { key: "website", name: "Website", placeholder: "https://www.yourwebsite.com", icon: <WebsiteIcon /> },
+  { key: "whatsapp", name: "WhatsApp", placeholder: "https://wa.me/971501234567", icon: <WhatsAppIcon /> },
 ];
 
 function normalizeUrl(value: string) {
@@ -48,3 +49,4 @@ function InstagramIcon(){return <svg viewBox="0 0 24 24" width="28" height="28" 
 function TikTokIcon(){return <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M15.6 3c.3 2.1 1.5 3.5 3.6 3.9v3.2a8.1 8.1 0 0 1-3.6-1.1v6.3a6.3 6.3 0 1 1-5.5-6.2v3.3a3.1 3.1 0 1 0 2.3 3V3h3.2Z"/></svg>}
 function FacebookIcon(){return <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M13.7 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5H17V3.6c-.8-.1-1.6-.2-2.4-.2-2.4 0-4.1 1.5-4.1 4.2v2.3H7.8V13h2.7v8h3.2Z"/></svg>}
 function WebsiteIcon(){return <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21M12 3c-2.3 2.5-3.5 5.5-3.5 9S9.7 18.5 12 21"/></svg>}
+function WhatsAppIcon(){return <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4A8 8 0 1 1 20 11.6Z"/><path d="M9 8.5c.4 2.5 2 4.1 4.5 5l1.2-1.2c.3-.3.7-.4 1.1-.2l1.7.8c.4.2.6.6.5 1-.3 1.4-1.4 2.1-2.8 2.1-4 0-7.2-3.2-7.2-7.2 0-1.4.7-2.5 2.1-2.8.4-.1.8.1 1 .5l.8 1.7c.2.4.1.8-.2 1.1L10.5 10"/></svg>}
