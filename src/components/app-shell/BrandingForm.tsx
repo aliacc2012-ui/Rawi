@@ -41,7 +41,7 @@ export function BrandingForm({
             type="color"
             name="accentColor"
             defaultValue={initialAccent}
-            className="w-[38px] h-[38px] rounded-[10px] border border-gray-300 p-0.5"
+            className="w-[38px] h-[38px] rounded-[10px] border border-white/[.10] p-0.5"
           />
         </div>
       </Field>

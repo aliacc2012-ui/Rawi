@@ -45,12 +45,12 @@ export function SortableMedia({ projectId, initialMedia }: { projectId: string; 
     });
   }
 
-  if (!items.length) return <p className="text-sm text-gray-400">No media yet — upload photos or video below.</p>;
+  if (!items.length) return <p className="text-sm text-white/45">No media yet — upload photos or video below.</p>;
 
   return <div>
     <div className="mb-3 flex items-center justify-between gap-3">
-      <p className="text-xs text-gray-400">Drag media to set the order your client will see.</p>
-      {message && <span className={`text-xs font-semibold ${message.includes("✓") ? "text-emerald-600" : message.includes("Saving") ? "text-gray-400" : "text-red-500"}`}>{message}</span>}
+      <p className="text-xs text-white/45">Drag media to set the order your client will see.</p>
+      {message && <span className={`text-xs font-semibold ${message.includes("✓") ? "text-emerald-600" : message.includes("Saving") ? "text-white/45" : "text-red-500"}`}>{message}</span>}
     </div>
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext items={items.map((item) => item.id)} strategy={rectSortingStrategy}>
@@ -65,15 +65,15 @@ export function SortableMedia({ projectId, initialMedia }: { projectId: string; 
 function SortableCard({ item, index }: { item: MediaItem; index: number }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 20 : undefined };
-  return <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={`group cursor-grab overflow-hidden rounded-2xl border bg-white active:cursor-grabbing ${isDragging ? "border-[#FFD400] shadow-xl" : "border-gray-200"}`}>
-    <div className="relative aspect-[4/3] bg-gray-100">
-      {item.media_type === "image" && item.preview_url ? <img src={item.preview_url} alt={item.original_name} className="h-full w-full object-cover" draggable={false}/> : <div className="grid h-full place-items-center text-3xl text-gray-300">{item.media_type === "video" ? "▶" : "▧"}</div>}
+  return <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={`group cursor-grab overflow-hidden rounded-2xl border bg-rawi-panel active:cursor-grabbing ${isDragging ? "border-[#FFD400] shadow-xl" : "border-white/[.07]"}`}>
+    <div className="relative aspect-[4/3] bg-rawi-panel/[.06]">
+      {item.media_type === "image" && item.preview_url ? <img src={item.preview_url} alt={item.original_name} className="h-full w-full object-cover" draggable={false}/> : <div className="grid h-full place-items-center text-3xl text-white/60">{item.media_type === "video" ? "▶" : "▧"}</div>}
       <span className="absolute left-2 top-2 rounded-full bg-black/75 px-2 py-1 text-[10px] font-bold text-white">{index + 1}</span>
       <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-black/65 text-sm text-white opacity-80">⠿</span>
     </div>
     <div className="p-2.5">
-      <div className="truncate text-xs font-semibold text-gray-700">{item.original_name}</div>
-      <div className="mt-1 text-[10px] capitalize text-gray-400">{item.processing_status}</div>
+      <div className="truncate text-xs font-semibold text-white/65">{item.original_name}</div>
+      <div className="mt-1 text-[10px] capitalize text-white/45">{item.processing_status}</div>
     </div>
   </div>;
 }

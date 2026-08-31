@@ -16,8 +16,8 @@ export function ShareBar({ url, clientName }: { url: string; clientName?: string
 
   return (
     <div>
-      <p className="text-xs text-gray-400 mb-2">Public gallery link</p>
-      <code className="block bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-xs break-all mb-3">{url}</code>
+      <p className="text-xs text-white/45 mb-2">Public gallery link</p>
+      <code className="block bg-rawi-panel/[.03] border border-white/[.07] rounded-lg px-3 py-2.5 text-xs break-all mb-3">{url}</code>
       <div className="flex gap-2">
         <a
           href={whatsappHref}
@@ -30,7 +30,7 @@ export function ShareBar({ url, clientName }: { url: string; clientName?: string
         <button
           type="button"
           onClick={copyLink}
-          className="flex-1 border border-gray-300 rounded-full px-4 py-2.5 text-sm font-bold"
+          className="flex-1 border border-white/[.10] rounded-full px-4 py-2.5 text-sm font-bold"
         >
           {copied ? "Copied!" : "Copy link"}
         </button>

@@ -30,21 +30,21 @@ export function GalleryThemePicker({ galleryId, initialTheme }: { galleryId: str
     });
   }
 
-  return <div className="mt-5 rounded-[20px] border border-gray-200 bg-white p-5">
+  return <div className="mt-5 rounded-[20px] border border-white/[.07] bg-rawi-panel p-5">
     <div>
       <h3 className="text-[19px] font-semibold">Gallery theme</h3>
-      <p className="mt-1 text-xs text-gray-400">Choose how clients experience this gallery.</p>
+      <p className="mt-1 text-xs text-white/45">Choose how clients experience this gallery.</p>
     </div>
     <div className="mt-4 grid gap-2">
-      {THEMES.map(option => <button key={option.id} type="button" onClick={() => choose(option.id)} disabled={pending} className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${theme === option.id ? "border-black bg-gray-50" : "border-gray-200 hover:border-gray-300"}`}>
+      {THEMES.map(option => <button key={option.id} type="button" onClick={() => choose(option.id)} disabled={pending} className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${theme === option.id ? "border-black bg-rawi-panel/[.03]" : "border-white/[.07] hover:border-white/[.10]"}`}>
         <span className={`h-12 w-16 shrink-0 rounded-lg border ${option.preview}`}>
-          <span className={`mx-auto mt-2 block h-1.5 w-9 rounded-full ${option.id === "dark" ? "bg-white/60" : "bg-black/35"}`}/>
-          <span className={`mx-auto mt-1.5 block h-5 w-11 rounded ${option.id === "dark" ? "bg-white/15" : "bg-black/10"}`}/>
+          <span className={`mx-auto mt-2 block h-1.5 w-9 rounded-full ${option.id === "dark" ? "bg-rawi-panel/60" : "bg-black/35"}`}/>
+          <span className={`mx-auto mt-1.5 block h-5 w-11 rounded ${option.id === "dark" ? "bg-rawi-panel/15" : "bg-black/10"}`}/>
         </span>
-        <span className="min-w-0 flex-1"><span className="block text-sm font-bold">{option.name}</span><span className="mt-0.5 block text-xs text-gray-400">{option.description}</span></span>
-        <span className={`grid h-5 w-5 place-items-center rounded-full border text-[10px] ${theme === option.id ? "border-black bg-black text-white" : "border-gray-300"}`}>{theme === option.id ? "✓" : ""}</span>
+        <span className="min-w-0 flex-1"><span className="block text-sm font-bold">{option.name}</span><span className="mt-0.5 block text-xs text-white/45">{option.description}</span></span>
+        <span className={`grid h-5 w-5 place-items-center rounded-full border text-[10px] ${theme === option.id ? "border-black bg-black text-white" : "border-white/[.10]"}`}>{theme === option.id ? "✓" : ""}</span>
       </button>)}
     </div>
-    <div className={`mt-3 text-xs font-bold ${message.includes("✓") ? "text-emerald-600" : message === "Saving…" ? "text-gray-400" : "text-red-600"}`}>{message}</div>
+    <div className={`mt-3 text-xs font-bold ${message.includes("✓") ? "text-emerald-600" : message === "Saving…" ? "text-white/45" : "text-red-600"}`}>{message}</div>
   </div>;
 }

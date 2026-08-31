@@ -34,7 +34,7 @@ export function PublishButton({ galleryId, isPublished }: { galleryId: string; i
         onClick={toggle}
         disabled={pending}
         className={`rounded-full px-4 py-2.5 text-sm font-extrabold disabled:opacity-60 ${
-          published ? "bg-white border border-gray-300 text-black" : "bg-rawi-yellow text-black"
+          published ? "bg-rawi-panel border border-white/[.10] text-black" : "bg-rawi-yellow text-black"
         }`}
       >
         {pending ? "…" : published ? "Unpublish" : "Publish"}

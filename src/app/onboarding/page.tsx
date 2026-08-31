@@ -21,7 +21,7 @@ export default async function OnboardingPage() {
       <div className="w-full max-w-sm">
         <span className="inline-grid w-10 h-10 rounded-[50%_50%_50%_8px] bg-rawi-yellow place-items-center text-black font-black -rotate-[8deg] mb-6">R</span>
         <h1 className="text-3xl font-extrabold tracking-[-0.03em]">Welcome to RAWI.</h1>
-        <p className="text-gray-500 mt-1.5 text-sm">What should clients see on your galleries?</p>
+        <p className="text-white/40 mt-1.5 text-sm">What should clients see on your galleries?</p>
         <form action={createWorkspaceAction} className="mt-6">
           <Field label="Studio / brand name">
             <Input name="studioName" required placeholder="e.g. CARCLCK" />

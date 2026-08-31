@@ -146,16 +146,16 @@ export function ThumbnailBackfill({
   }
 
   return (
-    <div className="rounded-[22px] border border-gray-200 bg-white p-5 md:p-6 shadow-sm">
+    <div className="rounded-[22px] border border-white/[.07] bg-rawi-panel p-5 md:p-6 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <span className="text-[10px] font-extrabold tracking-[.16em] text-amber-600">PERFORMANCE</span>
           <h2 className="mt-1 text-xl font-bold">Optimize gallery images</h2>
-          <p className="mt-1 max-w-xl text-sm leading-6 text-gray-400">
+          <p className="mt-1 max-w-xl text-sm leading-6 text-white/45">
             Rebuild gallery previews as smaller 1200px WebP images for faster mobile loading. Originals are never changed.
           </p>
         </div>
-        <div className="rounded-full bg-gray-100 px-3 py-2 text-xs font-bold text-gray-600">
+        <div className="rounded-full bg-rawi-panel/[.06] px-3 py-2 text-xs font-bold text-white/55">
           {pending} images
         </div>
       </div>
@@ -171,7 +171,7 @@ export function ThumbnailBackfill({
         {done > 0 && <span className="text-xs font-bold text-emerald-600">{done} completed</span>}
         {failed > 0 && <span className="text-xs font-bold text-red-500">{failed} failed</span>}
       </div>
-      {message && <p className="mt-4 text-xs text-gray-500">{message}</p>}
+      {message && <p className="mt-4 text-xs text-white/40">{message}</p>}
     </div>
   );
 }

@@ -48,8 +48,8 @@ export function NewProjectForm({ workspaceId, clients }: { workspaceId: string; 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
-      <form action={formAction} onSubmit={markPendingProjectCreation} className="relative bg-white rounded-3xl p-7 w-full max-w-md z-10">
-        <span className="text-[11px] font-extrabold tracking-[0.17em] text-gray-400">NEW PROJECT</span>
+      <form action={formAction} onSubmit={markPendingProjectCreation} className="relative bg-rawi-panel rounded-3xl p-7 w-full max-w-md z-10">
+        <span className="text-[11px] font-extrabold tracking-[0.17em] text-white/45">NEW PROJECT</span>
         <h2 className="text-[28px] tracking-[-0.03em] mt-2 mb-2">Create a delivery.</h2>
 
         <Field label="Project name">
@@ -58,7 +58,7 @@ export function NewProjectForm({ workspaceId, clients }: { workspaceId: string; 
 
         {clients.length > 0 ? (
           <Field label="Client">
-            <select name="clientId" className="w-full mt-2 border border-gray-300 rounded-xl px-3.5 py-3 bg-[#fafafa] text-sm">
+            <select name="clientId" className="w-full mt-2 border border-white/[.10] rounded-xl px-3.5 py-3 bg-rawi-panel/[.04] text-sm">
               <option value="">— Select or add new below —</option>
               {clients.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -71,7 +71,7 @@ export function NewProjectForm({ workspaceId, clients }: { workspaceId: string; 
         </Field>
 
         <Field label="Project type">
-          <select name="projectType" className="w-full mt-2 border border-gray-300 rounded-xl px-3.5 py-3 bg-[#fafafa] text-sm">
+          <select name="projectType" className="w-full mt-2 border border-white/[.10] rounded-xl px-3.5 py-3 bg-rawi-panel/[.04] text-sm">
             {PROJECT_TYPES.map(([value, label]) => (
               <option key={value} value={value}>{label}</option>
             ))}
@@ -85,7 +85,7 @@ export function NewProjectForm({ workspaceId, clients }: { workspaceId: string; 
         {state && "error" in state && <ErrorNote>{state.error}</ErrorNote>}
 
         <div className="flex justify-end gap-2.5 mt-6">
-          <button type="button" onClick={() => setOpen(false)} className="border border-gray-300 rounded-full px-4 py-2.5 text-sm">
+          <button type="button" onClick={() => setOpen(false)} className="border border-white/[.10] rounded-full px-4 py-2.5 text-sm">
             Cancel
           </button>
           <SubmitButton />

@@ -66,11 +66,11 @@ export function WorkspaceLogoForm({
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-gray-200 bg-[#fafafa]">
+      <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/[.07] bg-rawi-panel/[.04]">
         {logoUrl ? (
           <Image src={logoUrl} alt="Studio logo" width={80} height={80} className="h-full w-full object-cover" />
         ) : (
-          <span className="text-2xl font-black text-gray-300">R</span>
+          <span className="text-2xl font-black text-white/60">R</span>
         )}
       </div>
       <div>
@@ -83,13 +83,13 @@ export function WorkspaceLogoForm({
         />
         <div className="mt-3 flex items-center gap-3">
           {logoUrl && (
-            <button type="button" onClick={remove} disabled={pending} className="text-xs font-bold text-gray-500 underline">
+            <button type="button" onClick={remove} disabled={pending} className="text-xs font-bold text-white/40 underline">
               Remove logo
             </button>
           )}
           {message && <span className={`text-xs font-bold ${message.includes("✓") ? "text-emerald-600" : "text-red-600"}`}>{message}</span>}
         </div>
-        <p className="mt-2 text-[11px] text-gray-400">Square JPG, PNG or WebP · maximum 2 MB.</p>
+        <p className="mt-2 text-[11px] text-white/45">Square JPG, PNG or WebP · maximum 2 MB.</p>
       </div>
     </div>
   );

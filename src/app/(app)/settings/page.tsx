@@ -61,7 +61,7 @@ export default async function SettingsPage() {
   return (
     <div className="max-w-[1500px] mx-auto pb-8">
       <div className="mb-7">
-        <span className="text-[11px] font-extrabold tracking-[0.18em] text-gray-400">
+        <span className="text-[11px] font-extrabold tracking-[0.18em] text-white/45">
           CREATOR WORKSPACE
         </span>
         <h1 className="text-[34px] md:text-[42px] tracking-[-0.05em] leading-none mt-3">
@@ -166,7 +166,7 @@ export default async function SettingsPage() {
                       : limitGb.toFixed(1) + " GB"}
                   </span>
                 </div>
-                <div className="h-2.5 rounded-full bg-white/[.08] mt-3">
+                <div className="h-2.5 rounded-full bg-rawi-panel/[.08] mt-3">
                   <div
                     className="h-full rounded-full bg-emerald-500"
                     style={{ width: `${storagePct}%` }}
@@ -199,7 +199,7 @@ export default async function SettingsPage() {
 }
 function CustomPlanCard() {
   return (
-    <div className="relative flex min-h-[390px] flex-col rounded-[22px] border border-gray-200 bg-[linear-gradient(145deg,#171717,#050505)] p-6 text-white">
+    <div className="relative flex min-h-[390px] flex-col rounded-[22px] border border-white/[.07] bg-[linear-gradient(145deg,#171717,#050505)] p-6 text-white">
       <div className="font-extrabold uppercase text-[#F0EFFF]">Custom</div>
       <div className="mt-5 text-[40px] leading-none tracking-[-.05em]">
         Built for your workflow.

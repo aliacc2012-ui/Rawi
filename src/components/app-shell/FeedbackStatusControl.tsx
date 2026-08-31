@@ -39,7 +39,7 @@ export function FeedbackStatusControl({ projectId, commentId, initialStatus }: {
             type="button"
             disabled={pending}
             onClick={() => change(option.value)}
-            className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold transition disabled:opacity-50 ${status === option.value ? "bg-black text-white" : "bg-white text-gray-500 ring-1 ring-gray-200 hover:text-black"}`}
+            className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold transition disabled:opacity-50 ${status === option.value ? "bg-black text-white" : "bg-rawi-panel text-white/40 ring-1 ring-white/[.10] hover:text-black"}`}
           >
             {option.label}
           </button>
