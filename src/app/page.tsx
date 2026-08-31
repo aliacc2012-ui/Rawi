@@ -10,7 +10,6 @@ import {
 } from "@/components/landing/Sections";
 import { WorkflowSection } from "@/components/landing/WorkflowSection";
 import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
-import { Testimonials } from "@/components/landing/Testimonials";
 import { FAQ } from "@/components/landing/FAQ";
 
 export const metadata: Metadata = {
@@ -26,9 +25,8 @@ export default function LandingPage() {
       <WorkflowSection />
       <EnhancedFeatures />
       <GalleryDemo />
-      <Testimonials />
-      <FAQ />
       <Pricing />
+      <FAQ />
       <ClosingCTA />
       <footer className="border-t border-black/10 bg-[#fbf6ef] px-5 py-8">
         <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between">
