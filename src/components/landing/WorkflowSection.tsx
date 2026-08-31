@@ -28,7 +28,7 @@ export function WorkflowSection() {
 
         <ol className="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-4">
           {WORKFLOW.map((step, index) => (
-            <Reveal key={step.number} delay={index * 100}>
+            <Reveal key={step.number} delay={(index as 0|1|2|3|4|5)}>
               <li
                 className="group relative min-h-[230px] rounded-[24px] border border-white/8 bg-[#0C0C1A] p-6 shadow-[0_12px_35px_rgba(0,0,0,.4)] transition duration-300 hover:-translate-y-1.5 hover:border-rawi-yellow/20 hover:shadow-[0_0_40px_rgba(255,212,0,0.06),0_20px_50px_rgba(0,0,0,.5)]"
               >
