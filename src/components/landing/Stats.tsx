@@ -19,7 +19,7 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
     if (!el) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (!entries[0].isIntersecting) return;
+        if (!entries[0]?.isIntersecting) return;
         observer.disconnect();
         const duration = 1400;
         const start = performance.now();
