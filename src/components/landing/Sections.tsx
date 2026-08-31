@@ -329,7 +329,7 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
           <div className="text-[8px] text-white/35 mt-0.5">Sarah is viewing your gallery · now</div>
           {/* Tiny photo strip */}
           <div className="flex gap-1 mt-2.5">
-            {(openProject?.photos ?? DEMO_PROJECTS[0].photos).slice(0, 4).map((ph, i) => (
+            {(openProject?.photos ?? DEMO_PROJECTS[0]?.photos ?? []).slice(0, 4).map((ph, i) => (
               <div
                 key={i}
                 className="h-8 w-8 rounded-md bg-cover bg-center border border-white/[.08] flex-shrink-0"
