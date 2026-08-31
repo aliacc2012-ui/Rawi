@@ -82,7 +82,7 @@ export default function OpenGraphImage() {
           </div>
 
           {/* Footer */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", fontWeight: 700, letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)", display: "flex" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", fontWeight: 700, letterSpacing: "0.14em", color: "rgba(255,255,255,0.3)" }}>
             <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#FFD400", display: "flex" }} />
             UAE-BORN · MADE FOR CREATORS · tryRawi.com
           </div>
