@@ -12,14 +12,14 @@ export function Nav() {
         <span className="w-[30px] h-[30px] shrink-0 rounded-[50%_50%_50%_8px] bg-rawi-yellow grid place-items-center text-black font-black -rotate-[8deg]">
           R
         </span>
-        <span className="text-[18px] tracking-[0.1em] sm:text-[19px] sm:tracking-[0.12em]">RAWI</span>
-        <span className="font-arabic text-xs text-gray-500">راوي</span>
+        <span className="text-[18px] tracking-[0.1em] sm:text-[19px] sm:tracking-[0.12em] text-[#f5f5f0]">RAWI</span>
+        <span className="font-arabic text-xs text-white/35">راوي</span>
       </Link>
 
-      <nav className="hidden md:flex gap-8 text-sm" aria-label="Primary navigation">
-        <a href="#features" className="hover:opacity-55 transition-opacity">{dict.nav.features}</a>
-        <a href="#gallery" className="hover:opacity-55 transition-opacity">{dict.nav.gallery}</a>
-        <a href="#pricing" className="hover:opacity-55 transition-opacity">{dict.nav.pricing}</a>
+      <nav className="hidden md:flex gap-8 text-sm text-white/60" aria-label="Primary navigation">
+        <a href="#features" className="hover:text-rawi-yellow transition-colors">{dict.nav.features}</a>
+        <a href="#gallery" className="hover:text-rawi-yellow transition-colors">{dict.nav.gallery}</a>
+        <a href="#pricing" className="hover:text-rawi-yellow transition-colors">{dict.nav.pricing}</a>
       </nav>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
@@ -28,23 +28,23 @@ export function Nav() {
             type="button"
             onClick={() => setLocale("ar")}
             aria-pressed={locale === "ar"}
-            className={`transition-colors ${locale === "ar" ? "text-rawi-yellow" : "text-gray-400 hover:text-black"}`}
+            className={`transition-colors ${locale === "ar" ? "text-rawi-yellow" : "text-white/35 hover:text-white/70"}`}
           >
             AR
           </button>
-          <span className="text-gray-300 font-medium">/</span>
+          <span className="text-white/20 font-medium">/</span>
           <button
             type="button"
             onClick={() => setLocale("en")}
             aria-pressed={locale === "en"}
-            className={`transition-colors ${locale === "en" ? "text-rawi-yellow" : "text-gray-400 hover:text-black"}`}
+            className={`transition-colors ${locale === "en" ? "text-rawi-yellow" : "text-white/35 hover:text-white/70"}`}
           >
             ENG
           </button>
         </div>
         <Link
           href="/login"
-          className="bg-rawi-yellow text-black font-extrabold rounded-full px-3 sm:px-[15px] py-[9px] sm:py-[10px] text-xs sm:text-sm shadow-[0_8px_24px_rgba(255,212,0,0.18)] hover:-translate-y-px transition-transform inline-flex items-center"
+          className="bg-rawi-yellow text-black font-extrabold rounded-full px-3 sm:px-[15px] py-[9px] sm:py-[10px] text-xs sm:text-sm shadow-[0_8px_24px_rgba(255,212,0,0.22)] hover:-translate-y-px transition-transform inline-flex items-center"
         >
           {dict.nav.open}
         </Link>

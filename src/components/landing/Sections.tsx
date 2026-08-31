@@ -66,7 +66,7 @@ export function Hero() {
   return (
     <section className="mx-auto grid min-h-0 w-[min(1240px,calc(100%-32px))] items-center gap-10 overflow-hidden pb-14 pt-8 md:min-h-[760px] md:w-[min(1240px,calc(100%-40px))] md:grid-cols-[.92fr_1.08fr] md:gap-[58px] md:pb-[80px] md:pt-10">
       <div>
-        <div className="inline-flex items-center gap-2.5 rounded-full border border-black/[.06] bg-white px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-gray-600 shadow-sm md:text-[11px]">
+        <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[.06] px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-white/70 shadow-sm md:text-[11px]">
           <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
           {dict.hero.eyebrow}
         </div>
@@ -77,7 +77,7 @@ export function Hero() {
           </span>
           {dict.hero.titlePost}
         </h1>
-        <p className="max-w-[590px] text-base leading-relaxed text-gray-500 md:text-xl">
+        <p className="max-w-[590px] text-base leading-relaxed text-white/50 md:text-xl">
           {dict.hero.body}
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-5 md:gap-7">
@@ -90,12 +90,12 @@ export function Hero() {
           </Link>
           <a
             href="/demo/today-drive"
-            className="border-b border-black pb-1 text-sm font-bold md:text-base"
+            className="border-b border-white/50 pb-1 text-sm font-bold text-white/80 md:text-base"
           >
             {dict.hero.viewDemo} <span>↘</span>
           </a>
         </div>
-        <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-gray-400">
+        <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-white/35">
           {dict.hero.trust.map((item) => (
             <span key={item}>✓ {item}</span>
           ))}
@@ -436,7 +436,7 @@ export function Features() {
 
 export function GalleryDemo() {
   return (
-    <section id="gallery" className="bg-[#fbf6ef] py-[72px] md:py-[110px]">
+    <section id="gallery" className="bg-[#0a0a0a] py-[72px] md:py-[110px]">
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.78fr_1.22fr] gap-5 lg:gap-14 items-end mb-8 md:mb-12">
           <div>
@@ -449,7 +449,7 @@ export function GalleryDemo() {
               <span className="text-[#d4aa00]">A presentation.</span>
             </h2>
           </div>
-          <p className="text-gray-500 max-w-[620px] text-lg leading-relaxed lg:pb-2">
+          <p className="text-white/45 max-w-[620px] text-lg leading-relaxed lg:pb-2">
             Give clients a branded experience that feels like part of the
             shoot—not an afterthought.
           </p>
@@ -554,7 +554,7 @@ export function Pricing() {
           return (
             <article
               key={id}
-              className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border ${p.featured ? "border-2 border-black shadow-[0_20px_60px_rgba(0,0,0,0.08)]" : "border-gray-200"}`}
+              className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border bg-[#141414] ${p.featured ? "border-2 border-rawi-yellow/60 shadow-[0_20px_60px_rgba(255,212,0,0.08)]" : "border-white/10"}`}
             >
               {p.featured && (
                 <div className="absolute top-3 right-3 text-[9px] bg-rawi-yellow px-2.5 py-1.5 rounded-full font-black tracking-[0.08em]">
@@ -562,21 +562,21 @@ export function Pricing() {
                 </div>
               )}
               <div>
-                <span className="text-[11px] font-black tracking-[0.12em] text-gray-500">
+                <span className="text-[11px] font-black tracking-[0.12em] text-white/45">
                   {p.name.toUpperCase()}
                 </span>
                 <h3 className="text-[46px] md:text-[54px] my-4 tracking-[-0.06em]">
                   {p.priceAed}{" "}
-                  <small className="text-[13px] text-gray-500 tracking-normal">
+                  <small className="text-[13px] text-white/40 tracking-normal">
                     {p.priceAed === 0 ? "AED" : "AED/mo"}
                   </small>
                 </h3>
-                <p className="text-gray-500">{PLAN_DESCRIPTIONS[id]}</p>
+                <p className="text-white/45">{PLAN_DESCRIPTIONS[id]}</p>
                 <ul className="p-0 my-6 list-none">
                   {p.features.map((f) => (
                     <li
                       key={f}
-                      className="py-2.5 border-b border-gray-100 text-sm"
+                      className="py-2.5 border-b border-white/8 text-sm text-white/80"
                     >
                       {f}
                     </li>
@@ -591,7 +591,7 @@ export function Pricing() {
                     price_aed: p.priceAed,
                   })
                 }
-                className={`text-center rounded-full px-5 py-[13px] font-extrabold ${p.featured ? "bg-rawi-yellow text-black" : "bg-white border border-gray-300 text-black"}`}
+                className={`text-center rounded-full px-5 py-[13px] font-extrabold ${p.featured ? "bg-rawi-yellow text-black" : "bg-white/8 border border-white/15 text-white"}`}
               >
                 Choose {p.name}
               </Link>
@@ -635,7 +635,7 @@ export function Pricing() {
       </div>
 
       {/* Trust row */}
-      <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-gray-400">
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-white/35">
         {[
           "✓ No credit card required",
           "✓ Cancel anytime",
