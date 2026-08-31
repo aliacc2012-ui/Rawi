@@ -109,7 +109,7 @@ export default async function ProjectsPage() {
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {projects.map((p, index) => {
               const newCount = newFeedbackByProject[p.id] ?? 0;
-              const theme = CARD_THEMES[index % CARD_THEMES.length];
+              const theme = CARD_THEMES[index % CARD_THEMES.length] ?? CARD_THEMES[0]!;
               return (
                 <div
                   key={p.id}
