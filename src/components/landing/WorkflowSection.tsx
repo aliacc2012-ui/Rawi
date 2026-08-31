@@ -43,8 +43,8 @@ function useInView(threshold = 0.2) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setVisible(true); obs.disconnect(); }
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) { setVisible(true); obs.disconnect(); }
     }, { threshold });
     obs.observe(el);
     return () => obs.disconnect();
