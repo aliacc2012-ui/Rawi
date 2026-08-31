@@ -202,7 +202,7 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
       <div className="absolute left-0 top-4 z-20 w-[96%]">
 
         {/* Grid of album cards */}
-        <div className="relative grid grid-cols-3 gap-3">
+        <div className="relative grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
           {DEMO_PROJECTS.map((p, i) => (
             <motion.div
               key={p.name}
@@ -504,15 +504,7 @@ export function GalleryDemo() {
             shoot—not an afterthought.
           </p>
         </div>
-        <div className="rounded-[24px] md:rounded-[34px] bg-[#111] text-white border border-black/10 overflow-hidden shadow-[0_35px_90px_rgba(15,15,15,0.18)]">
-          <div className="h-10 border-b border-white/10 flex items-center gap-2 px-4">
-            <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <span className="w-2.5 h-2.5 rounded-full bg-rawi-yellow" />
-            <div className="ml-3 text-[8px] text-white/35">
-              rawi.gallery/today-drive
-            </div>
-          </div>
+        <div className="rounded-[24px] md:rounded-[34px] bg-[#111] text-white border border-white/[.06] overflow-hidden shadow-[0_35px_90px_rgba(0,0,0,0.5)]">
           <div
             className="relative min-h-[320px] md:min-h-[420px] p-5 md:p-7 bg-cover bg-center"
             style={{
@@ -560,7 +552,7 @@ export function GalleryDemo() {
             </div>
             <div className="flex flex-col sm:flex-row justify-between sm:items-center border-t border-white/10 mt-6 pt-5 gap-4">
               <div>
-                <div className="font-bold">8 unique automotive stories</div>
+                <div className="font-bold">6 unique automotive stories</div>
                 <div className="text-xs text-white/40">
                   Every gallery gets its own visual identity.
                 </div>

@@ -13,6 +13,7 @@ import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
 import { Stats } from "@/components/landing/Stats";
 import { EditorialStatement } from "@/components/landing/EditorialStatement";
 import { FAQ } from "@/components/landing/FAQ";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { CookieConsent } from "@/components/landing/CookieConsent";
 
 export const metadata: Metadata = {
@@ -61,6 +62,7 @@ export default function LandingPage() {
       <Stats />
       <WorkflowSection />
       <GalleryDemo />
+      <Testimonials />
       <EditorialStatement />
       <EnhancedFeatures />
       <Pricing />
