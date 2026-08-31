@@ -157,7 +157,7 @@ export function Hero() {
           <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] rounded-full bg-cyan-500/[.04] blur-[100px]" />
         </div>
 
-        <div className="relative z-10 mx-auto w-[min(1280px,calc(100%-32px))] grid md:grid-cols-[1.05fr_.95fr] gap-10 md:gap-16 items-center py-20 md:py-0 md:min-h-screen">
+        <div className="relative z-10 mx-auto w-[min(1280px,calc(100%-32px))] grid md:grid-cols-[1.05fr_.95fr] gap-10 md:gap-16 items-center py-24 md:py-0 md:min-h-[calc(100vh-64px)]">
 
           {/* ── Left: Editorial copy ── */}
           <div className="relative">
@@ -176,28 +176,28 @@ export function Hero() {
 
             {/* Headline */}
             <motion.h1
-              className="font-cormorant leading-[1.02] tracking-[-0.02em]"
-              style={{ fontSize: "clamp(52px, 7vw, 90px)" }}
-              initial={{ opacity: 0, y: 20 }}
+              className="font-cormorant leading-[1.0] tracking-[-0.025em]"
+              style={{ fontSize: "clamp(60px, 8.5vw, 108px)" }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <span className="block text-white">{dict.hero.titlePre}</span>
-              <span className="block relative h-[1.05em] overflow-hidden">
+              <span className="block text-white/90">For every</span>
+              <span className="block relative overflow-hidden" style={{ height: "1.08em" }}>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={wordIdx}
-                    className="block italic text-rawi-yellow"
-                    initial={{ y: "100%", opacity: 0 }}
+                    className="block italic text-rawi-yellow drop-shadow-[0_0_40px_rgba(255,212,0,0.35)]"
+                    initial={{ y: "110%", opacity: 0 }}
                     animate={{ y: "0%", opacity: 1 }}
-                    exit={{ y: "-100%", opacity: 0 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    exit={{ y: "-110%", opacity: 0 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   >
                     {MORPH_WORDS[wordIdx]}
                   </motion.span>
                 </AnimatePresence>
               </span>
-              <span className="block text-white">{dict.hero.titlePost}</span>
+              <span className="block text-white/90">creator.</span>
             </motion.h1>
 
             {/* Body */}
@@ -260,7 +260,7 @@ export function Hero() {
 
           {/* ── Right: Film strip with 3D tilt ── */}
           <motion.div
-            className="relative h-[520px] md:h-[700px] overflow-hidden rounded-[28px] select-none"
+            className="relative h-[480px] md:h-[min(780px,90vh)] overflow-hidden rounded-[28px] select-none"
             style={{ rotateX, rotateY, perspective: 900, transformStyle: "preserve-3d" }}
             onMouseMove={e => {
               const rect = e.currentTarget.getBoundingClientRect();
