@@ -3,10 +3,25 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-export type GalleryTheme = "clean" | "dark" | "editorial";
+export type GalleryTheme =
+  | "clean"
+  | "dark"
+  | "editorial"
+  | "noir"
+  | "blush"
+  | "forest"
+  | "slate"
+  | "ivory"
+  | "midnight"
+  | "ember";
+
+const VALID_THEMES: GalleryTheme[] = [
+  "clean", "dark", "editorial", "noir", "blush",
+  "forest", "slate", "ivory", "midnight", "ember",
+];
 
 export async function updateGalleryTheme(galleryId: string, theme: GalleryTheme) {
-  if (!["clean", "dark", "editorial"].includes(theme)) return { error: "Invalid gallery theme." };
+  if (!VALID_THEMES.includes(theme)) return { error: "Invalid gallery theme." };
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Please sign in again." };
