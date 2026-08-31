@@ -3,117 +3,167 @@
 import { useState, useTransition } from "react";
 import { updateGalleryTheme, type GalleryTheme } from "@/app/(app)/projects/[id]/theme-actions";
 
+type LayoutType = "overlay" | "split" | "stack" | "minimal";
+
 const THEMES: {
   id: GalleryTheme;
   name: string;
   description: string;
+  layout: LayoutType;
   bg: string;
-  bar1: string;
-  bar2: string;
-  border: string;
-  selectedBorder: string;
+  imageBg: string;
+  textColor: string;
 }[] = [
   {
     id: "clean",
     name: "Clean",
-    description: "Bright white, left-aligned, minimal.",
+    description: "Left overlay · 3-col grid",
+    layout: "overlay",
     bg: "bg-[#f6f5f2]",
-    bar1: "bg-black/30",
-    bar2: "bg-black/10",
-    border: "border-black/10",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#c8c4bc]",
+    textColor: "text-[#111]",
   },
   {
     id: "dark",
     name: "Dark",
-    description: "Cinematic black, bold 82vh hero.",
+    description: "Left overlay · tight grid",
+    layout: "overlay",
     bg: "bg-[#0b0b0b]",
-    bar1: "bg-white/20",
-    bar2: "bg-white/8",
-    border: "border-white/10",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#2a2a2a]",
+    textColor: "text-white",
   },
   {
     id: "editorial",
     name: "Editorial",
-    description: "Centered serif, warm beige, magazine.",
+    description: "Centered serif · masonry",
+    layout: "overlay",
     bg: "bg-[#eee9df]",
-    bar1: "bg-[#7a6e5f]/50",
-    bar2: "bg-[#7a6e5f]/20",
-    border: "border-[#c9bfad]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#a09080]",
+    textColor: "text-[#201d19]",
   },
   {
     id: "noir",
     name: "Noir",
-    description: "Full-bleed 88vh, silver accents.",
+    description: "Split: text left, photo right · 4-col",
+    layout: "split",
     bg: "bg-[#1a1a1e]",
-    bar1: "bg-[#b0b0c0]/40",
-    bar2: "bg-[#b0b0c0]/12",
-    border: "border-[#3a3a44]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#3a3a44]",
+    textColor: "text-[#dddde8]",
   },
   {
     id: "blush",
     name: "Blush",
-    description: "Centered serif, airy romantic.",
+    description: "Centered serif · 2-col wide",
+    layout: "overlay",
     bg: "bg-[#f9eff0]",
-    bar1: "bg-[#c97a8a]/50",
-    bar2: "bg-[#c97a8a]/18",
-    border: "border-[#e8c4cb]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#d4a0a8]",
+    textColor: "text-[#3a1e25]",
   },
   {
     id: "forest",
     name: "Forest",
-    description: "85vh full-bleed, organic feel.",
+    description: "Left overlay · masonry",
+    layout: "overlay",
     bg: "bg-[#1b2a22]",
-    bar1: "bg-[#6abf7a]/40",
-    bar2: "bg-[#6abf7a]/12",
-    border: "border-[#2d4535]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#2d4535]",
+    textColor: "text-[#c8ddc8]",
   },
   {
     id: "slate",
     name: "Slate",
-    description: "Architectural, structured grid.",
+    description: "Stack: image then text · 3-col",
+    layout: "stack",
     bg: "bg-[#e8ecf0]",
-    bar1: "bg-[#3d5a72]/50",
-    bar2: "bg-[#3d5a72]/15",
-    border: "border-[#bac8d4]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#6a8aa0]",
+    textColor: "text-[#1e2a36]",
   },
   {
     id: "ivory",
     name: "Ivory",
-    description: "Centered serif, luxury margins.",
+    description: "No hero image · large photos",
+    layout: "minimal",
     bg: "bg-[#faf7f0]",
-    bar1: "bg-[#8b7355]/45",
-    bar2: "bg-[#8b7355]/15",
-    border: "border-[#d4c8b0]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#d4c8b0]",
+    textColor: "text-[#2e2820]",
   },
   {
     id: "midnight",
     name: "Midnight",
-    description: "86vh immersive, celestial dark.",
+    description: "Text at bottom · 4-col dense",
+    layout: "overlay",
     bg: "bg-[#0a0e1a]",
-    bar1: "bg-[#6070c0]/45",
-    bar2: "bg-[#6070c0]/12",
-    border: "border-[#1a2040]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#1a2040]",
+    textColor: "text-[#c8cce8]",
   },
   {
     id: "ember",
     name: "Ember",
-    description: "Intimate, fire-lit amber tones.",
+    description: "Split: photo left, text right · 2-col",
+    layout: "split",
     bg: "bg-[#1c1208]",
-    bar1: "bg-[#f09030]/50",
-    bar2: "bg-[#f09030]/15",
-    border: "border-[#3a2010]",
-    selectedBorder: "border-white/60",
+    imageBg: "bg-[#3a2010]",
+    textColor: "text-[#e8d0a8]",
   },
 ];
+
+// Tiny SVG icons representing each layout type
+function LayoutIcon({ layout, imageBg }: { layout: LayoutType; imageBg: string }) {
+  if (layout === "overlay") {
+    // Full-bleed image with text bars overlaid bottom-left
+    return (
+      <span className={`relative block h-12 w-16 overflow-hidden rounded-lg ${imageBg}`}>
+        <span className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/20 to-transparent" />
+        <span className="absolute bottom-2 left-2 right-2 space-y-1">
+          <span className="block h-1 w-6 rounded-full bg-white/70" />
+          <span className="block h-1.5 w-10 rounded-full bg-white/90" />
+        </span>
+      </span>
+    );
+  }
+  if (layout === "split") {
+    // Half text panel, half image side by side
+    return (
+      <span className="relative flex h-12 w-16 overflow-hidden rounded-lg">
+        {/* Text side */}
+        <span className="relative flex w-[45%] flex-col justify-end p-1.5 bg-[#0e0e14]">
+          <span className="block h-0.5 w-4 rounded-full bg-white/40 mb-0.5" />
+          <span className="block h-1 w-6 rounded-full bg-white/70" />
+        </span>
+        {/* Image side */}
+        <span className={`flex-1 ${imageBg}`} />
+        {/* Divider */}
+        <span className="absolute left-[45%] inset-y-0 w-px bg-white/10" />
+      </span>
+    );
+  }
+  if (layout === "stack") {
+    // Image strip on top, text below
+    return (
+      <span className="flex flex-col h-12 w-16 overflow-hidden rounded-lg">
+        <span className={`h-[55%] w-full ${imageBg}`} />
+        <span className="flex-1 bg-[#e8ecf0] flex flex-col justify-center px-1.5 gap-0.5">
+          <span className="block h-0.5 w-4 rounded-full bg-[#1e2a36]/30" />
+          <span className="block h-1 w-8 rounded-full bg-[#1e2a36]/60" />
+        </span>
+      </span>
+    );
+  }
+  // minimal — centered text lines, no image
+  return (
+    <span className="flex flex-col items-center justify-center h-12 w-16 overflow-hidden rounded-lg bg-[#faf7f0] gap-1 border border-amber-200/40">
+      <span className="block h-0.5 w-5 rounded-full bg-[#c8a860]/60" />
+      <span className="block h-1.5 w-10 rounded-full bg-[#2e2820]/50" />
+      <span className="block h-1 w-8 rounded-full bg-[#2e2820]/25" />
+    </span>
+  );
+}
+
+const LAYOUT_LABEL: Record<LayoutType, string> = {
+  overlay: "Overlay",
+  split:   "Split",
+  stack:   "Stack",
+  minimal: "Minimal",
+};
 
 export function GalleryThemePicker({
   galleryId,
@@ -145,8 +195,8 @@ export function GalleryThemePicker({
   return (
     <div className="mt-5 rounded-[20px] border border-white/[.07] bg-rawi-panel p-5">
       <div>
-        <h3 className="text-[19px] font-semibold">Gallery theme</h3>
-        <p className="mt-1 text-xs text-white/45">Choose how clients experience this gallery.</p>
+        <h3 className="font-cormorant text-[22px] italic font-light text-white leading-tight">Gallery theme</h3>
+        <p className="mt-1 text-xs text-white/40">Choose a layout for how clients experience this gallery.</p>
       </div>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
         {THEMES.map((option) => {
@@ -163,17 +213,20 @@ export function GalleryThemePicker({
                   : "border-white/[.07] hover:border-white/[.14] hover:bg-white/[.02]"
               }`}
             >
-              {/* Mini preview */}
-              <span
-                className={`relative h-12 w-16 shrink-0 overflow-hidden rounded-lg border ${option.bg} ${option.border}`}
-              >
-                <span className={`mx-auto mt-2 block h-1.5 w-9 rounded-full ${option.bar1}`} />
-                <span className={`mx-auto mt-1.5 block h-5 w-11 rounded ${option.bar2}`} />
-              </span>
+              {/* Layout preview */}
+              <LayoutIcon layout={option.layout} imageBg={option.imageBg} />
 
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-bold">{option.name}</span>
-                <span className="mt-0.5 block text-xs text-white/45">{option.description}</span>
+                <span className="flex items-center gap-2">
+                  <span className="block text-sm font-bold">{option.name}</span>
+                  <span className={`text-[9px] font-extrabold tracking-widest uppercase rounded px-1.5 py-0.5 ${
+                    option.layout === "split"   ? "bg-violet-500/15 text-violet-400" :
+                    option.layout === "stack"   ? "bg-sky-500/15 text-sky-400" :
+                    option.layout === "minimal" ? "bg-amber-500/15 text-amber-400" :
+                    "bg-white/8 text-white/40"
+                  }`}>{LAYOUT_LABEL[option.layout]}</span>
+                </span>
+                <span className="mt-0.5 block text-[11px] text-white/40">{option.description}</span>
               </span>
 
               <span
@@ -191,11 +244,9 @@ export function GalleryThemePicker({
       </div>
       <div
         className={`mt-3 text-xs font-bold ${
-          message.includes("✓")
-            ? "text-emerald-400"
-            : message === "Saving…"
-            ? "text-white/45"
-            : "text-red-500"
+          message.includes("✓") ? "text-emerald-400"
+          : message === "Saving…" ? "text-white/45"
+          : "text-red-500"
         }`}
       >
         {message}

@@ -28,6 +28,8 @@ export function GalleryMediaGrid({
   commentsEnabled = false,
   theme = "dark",
   clientName,
+  defaultViewMode = "grid",
+  gridCols = "grid-cols-2 md:grid-cols-3",
 }: {
   galleryId: string;
   sections: GallerySection[];
@@ -36,12 +38,14 @@ export function GalleryMediaGrid({
   commentsEnabled?: boolean;
   theme?: Theme;
   clientName?: string;
+  defaultViewMode?: "grid" | "masonry" | "large";
+  gridCols?: string;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [downloading, setDownloading] = useState(false),
     [progress, setProgress] = useState(0),
     [message, setMessage] = useState<string | null>(null),
-    [viewMode, setViewMode] = useState<ViewMode>("grid"),
+    [viewMode, setViewMode] = useState<ViewMode>(defaultViewMode),
     [slideIndex, setSlideIndex] = useState(0),
     [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE),
     [reviewOpen, setReviewOpen] = useState(false);
@@ -76,8 +80,6 @@ export function GalleryMediaGrid({
     setViewMode(mode);
     if (mode === "slideshow")
       setSlideIndex((i) => Math.min(i, Math.max(0, allMedia.length - 1)));
-    if (typeof window !== "undefined")
-      localStorage.setItem("rawi_gallery_view", mode);
   }
   function toggleSelected(id: string) {
     setSelected((c) => {
@@ -295,7 +297,7 @@ export function GalleryMediaGrid({
                   </h4>
                 </div>
                 {viewMode === "grid" && (
-                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                  <div className={`grid gap-3 ${gridCols}`}>
                     {s.media.map((i) => renderTile(i, "grid"))}
                   </div>
                 )}
