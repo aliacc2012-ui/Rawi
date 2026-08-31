@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { motion } from "framer-motion";
 
 export function Nav() {
   const { dict, locale, setLocale } = useLocale();
@@ -22,9 +23,21 @@ export function Nav() {
     >
       <div className="mx-auto flex w-[min(1180px,calc(100%-24px))] sm:w-[min(1180px,calc(100%-40px))] items-center justify-between gap-3">
         <Link href="#top" aria-label="RAWI home" className="flex min-w-0 items-center gap-2 font-extrabold">
-          <span className="grid h-[30px] w-[30px] shrink-0 -rotate-[8deg] place-items-center rounded-[50%_50%_50%_8px] bg-rawi-yellow text-sm font-black text-black">
+          {/* R logo — drop-in entry + coin-flip hover + idle heartbeat glow (CSS) */}
+          <motion.span
+            className="rawi-logo-r grid h-[30px] w-[30px] shrink-0 place-items-center rounded-[50%_50%_50%_8px] bg-rawi-yellow text-sm font-black text-black select-none"
+            style={{ rotate: -8, transformStyle: "preserve-3d" }}
+            initial={{ y: -18, opacity: 0, scale: 0.65 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 420, damping: 17, delay: 0.12 }}
+            whileHover={{
+              rotateY: 360,
+              scale: 1.22,
+              transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
+            }}
+          >
             R
-          </span>
+          </motion.span>
           <span className="text-[18px] font-extrabold tracking-[0.1em] text-[#F0EFFF] sm:text-[20px]">RAWI</span>
           <span className="font-arabic text-xs text-white/35">راوي</span>
         </Link>

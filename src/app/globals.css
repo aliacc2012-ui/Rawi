@@ -415,3 +415,13 @@ body {
   .display-hero    { font-size: 48px; }
   .display-section { font-size: 36px; }
 }
+
+/* ─── RAWI logo R — idle heartbeat glow ─── */
+@keyframes rawi-logo-glow {
+  0%, 100% { box-shadow: 0 3px 10px rgba(255,212,0,0.18); }
+  50%       { box-shadow: 0 0 22px rgba(255,212,0,0.65), 0 0 48px rgba(255,212,0,0.22); }
+}
+.rawi-logo-r {
+  animation: rawi-logo-glow 3.5s ease-in-out infinite;
+  animation-delay: 1.8s;
+}
