@@ -1,10 +1,11 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { unstable_cache } from "next/cache";
-import { hasGalleryAccess, getVisitorComments } from "@/app/g/[slug]/actions";
+import { hasGalleryAccess } from "@/app/g/[slug]/actions";
 import { PasswordGate } from "@/components/gallery/PasswordGate";
 import { GalleryMediaGrid } from "@/components/gallery/GalleryMediaGrid";
 import { ClientComments } from "@/components/gallery/ClientComments";
 import Image from "next/image";
+import { Suspense } from "react";
 export const dynamic = "force-dynamic";
 
 type GalleryTheme =
@@ -212,6 +213,14 @@ const THEME: Record<GalleryTheme, {
 };
 
 // ── Page ───────────────────────────────────────────────────────────────────
+
+// ── Streamed comments loader (deferred so it doesn't block page HTML) ─────
+async function CommentsLoader({ galleryId }: { galleryId: string }) {
+  const { getVisitorComments } = await import("@/app/g/[slug]/actions");
+  const comments = await getVisitorComments(galleryId);
+  return <ClientComments galleryId={galleryId} initialComments={comments} />;
+}
+
 export default async function ClientGalleryPage({
   params,
 }: {
@@ -314,7 +323,7 @@ export default async function ClientGalleryPage({
   const videoCount   = allMedia.filter((i) => i.media_type === "video").length;
   const coverMedia   = allMedia.find((i) => i.media_type === "image" && i.thumbnail_url);
   const coverUrl     = coverMedia?.thumbnail_url ?? null;
-  const comments     = commentsAllowed ? await getVisitorComments(gallery.id) : [];
+  // comments are streamed via <CommentsLoader> below
   const projectDate  = project?.project_date
     ? new Intl.DateTimeFormat("en", { day: "numeric", month: "short", year: "numeric" })
         .format(new Date(project.project_date))
@@ -692,7 +701,7 @@ export default async function ClientGalleryPage({
         </div>
       </section>
 
-      {commentsAllowed && <ClientComments galleryId={gallery.id} initialComments={comments} />}
+      {commentsAllowed && <Suspense fallback={null}><CommentsLoader galleryId={gallery.id} /></Suspense>}
 
       <footer className={`border-t px-6 py-8 text-center text-xs ${t.border} ${t.footerBg}`}>
         {gallery.branding_enabled ? "Made with RAWI" : studioName}
