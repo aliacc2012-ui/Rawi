@@ -303,6 +303,61 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
         </div>
       </div>
 
+      {/* Center floating: live client activity */}
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 bottom-[6.5rem] z-20 w-[220px] rounded-2xl border border-white/[.07] bg-[#0d0d0d]/90 backdrop-blur-xl shadow-[0_16px_48px_rgba(0,0,0,.55)] overflow-hidden"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 1.5, ease: "easeOut" }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-3.5 pt-3 pb-2 border-b border-white/[.05]">
+          <div className="flex items-center gap-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+            </span>
+            <span className="text-[9px] font-bold text-white/70 tracking-[.08em]">LIVE</span>
+          </div>
+          <span className="text-[8px] text-white/25">Client portal</span>
+        </div>
+        {/* Viewer row */}
+        <div className="px-3.5 py-2.5">
+          <div className="text-[10px] font-semibold text-white leading-tight">
+            {openProject ? openProject.name : "Venice Wedding"}
+          </div>
+          <div className="text-[8px] text-white/35 mt-0.5">Sarah is viewing your gallery · now</div>
+          {/* Tiny photo strip */}
+          <div className="flex gap-1 mt-2.5">
+            {(openProject?.photos ?? DEMO_PROJECTS[0].photos).slice(0, 4).map((ph, i) => (
+              <div
+                key={i}
+                className="h-8 w-8 rounded-md bg-cover bg-center border border-white/[.08] flex-shrink-0"
+                style={{ backgroundImage: `url('${ph}')` }}
+              />
+            ))}
+            <div className="h-8 w-8 rounded-md bg-white/[.04] border border-white/[.08] flex items-center justify-center flex-shrink-0">
+              <span className="text-white/30 text-[8px] font-bold">+{openProject ? openProject.meta.split(" ")[0] : "210"}</span>
+            </div>
+          </div>
+        </div>
+        {/* Download progress bar */}
+        <div className="px-3.5 pb-3">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[7px] text-white/25">Download progress</span>
+            <span className="text-[7px] text-rawi-yellow font-bold">68%</span>
+          </div>
+          <div className="h-[3px] rounded-full bg-white/[.06] overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-rawi-yellow"
+              initial={{ width: "0%" }}
+              animate={{ width: "68%" }}
+              transition={{ duration: 1.8, delay: 2, ease: "easeOut" }}
+            />
+          </div>
+        </div>
+      </motion.div>
+
       {/* Floating: Gallery link sent */}
       <div
         className="absolute -left-4 bottom-24 z-30 flex items-center gap-2.5 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
