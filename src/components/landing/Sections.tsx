@@ -489,7 +489,7 @@ export function GalleryDemo() {
                 <div
                   key={p.name}
                   className="relative h-40 md:h-48 rounded-xl overflow-hidden bg-cover bg-center"
-                  style={{ backgroundImage: `url('${p.image}')` }}
+                  style={{ backgroundImage: `url('${p.cover}')` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute left-3 bottom-3">
