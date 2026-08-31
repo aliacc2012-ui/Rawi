@@ -35,7 +35,7 @@ export function EnhancedFeatures() {
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.72fr_1.28fr] gap-10 lg:gap-14 items-end mb-10">
           <div>
-            <div className="text-[11px] font-extrabold tracking-[0.17em] text-white/35">BUILT AROUND DELIVERY</div>
+            <div className="eyebrow-accent text-[11px] font-extrabold tracking-[0.17em] text-white/35">BUILT AROUND DELIVERY</div>
             <h2 className="text-[38px] sm:text-[42px] md:text-[68px] leading-[.98] tracking-[-0.06em] mt-4 max-w-[650px]">
               From final export<br />to <span className="text-[#e5b800]">happy client.</span>
             </h2>

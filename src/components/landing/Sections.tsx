@@ -66,13 +66,15 @@ export function Hero() {
   return (
     <section className="mx-auto grid min-h-0 w-[min(1240px,calc(100%-32px))] items-center gap-10 overflow-hidden pb-14 pt-8 md:min-h-[760px] md:w-[min(1240px,calc(100%-40px))] md:grid-cols-[.92fr_1.08fr] md:gap-[58px] md:pb-[80px] md:pt-10">
       <div>
+        {/* Hero headline glow */}
+        <div className="pointer-events-none absolute -top-32 -left-20 h-[420px] w-[520px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,212,0,0.09),transparent_65%)] blur-3xl" aria-hidden="true" />
         <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[.06] px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-white/70 shadow-sm md:text-[11px]">
           <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
           {dict.hero.eyebrow}
         </div>
         <h1 className="my-6 text-[48px] font-medium leading-[.96] tracking-[-.062em] sm:text-[56px] md:text-[88px]">
           {dict.hero.titlePre}
-          <span className="bg-gradient-to-r from-rawi-yellow to-[#ffeb80] px-[0.06em]">
+          <span className="bg-gradient-to-r from-rawi-yellow to-[#ffeb80] px-[0.06em] [text-shadow:0_0_40px_rgba(255,212,0,0.55)]">
             {dict.hero.titleHighlight}
           </span>
           {dict.hero.titlePost}
@@ -484,9 +486,10 @@ export function Pricing() {
           return (
             <article
               key={id}
-              className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border bg-[#0A0A18] ${p.featured ? "border-2 border-rawi-yellow/60 shadow-[0_20px_60px_rgba(255,212,0,0.08)]" : "border-white/10"}`}
+              className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border bg-[#0A0A18] ${p.featured ? "border-2 border-rawi-yellow/70 shadow-[0_0_0_1px_rgba(255,212,0,0.15),0_20px_80px_rgba(255,212,0,0.18),0_4px_20px_rgba(255,212,0,0.1)]" : "border-white/10"}`}
             >
               {p.featured && (
+                <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-[22px] bg-gradient-to-r from-rawi-yellow/0 via-rawi-yellow to-rawi-yellow/0" />
                 <div className="absolute top-3 right-3 text-[9px] bg-rawi-yellow px-2.5 py-1.5 rounded-full font-black tracking-[0.08em]">
                   MOST POPULAR
                 </div>

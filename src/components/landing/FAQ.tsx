@@ -54,7 +54,7 @@ export function FAQ() {
       <div className="mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))]">
         {/* Header */}
         <div className="mb-10 md:mb-14">
-          <span className="text-[11px] font-extrabold tracking-[.17em] text-white/35">
+          <span className="eyebrow-accent text-[11px] font-extrabold tracking-[.17em] text-white/35">
             {isAr ? "الأسئلة الشائعة" : "FREQUENTLY ASKED"}
           </span>
           <h2 id="faq-title" className="mt-3 text-[36px] leading-[1.02] tracking-[-.05em] text-[#F0EFFF] md:text-[58px]">

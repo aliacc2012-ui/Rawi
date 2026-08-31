@@ -21,7 +21,7 @@ export function WorkflowSection() {
       <div className="relative mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))]">
         <Reveal>
           <div className="mb-8 md:mb-10">
-            <span className="text-[11px] font-extrabold tracking-[.17em] text-white/35">
+            <span className="eyebrow-accent text-[11px] font-extrabold tracking-[.17em] text-white/35">
               FROM EXPORT TO DELIVERY
             </span>
             <h2
