@@ -71,14 +71,14 @@ export function PlanCheckoutButton({
           }
           placeholder="Enter discount code"
           autoComplete="off"
-          className="mb-3 h-11 w-full rounded-xl border border-gray-200 px-3.5 text-sm font-semibold uppercase tracking-[.08em] outline-none focus:border-black"
+          className="mb-3 h-11 w-full rounded-xl border border-white/[.10] bg-white/[.05] text-white px-3.5 text-sm font-semibold uppercase tracking-[.08em] outline-none focus:border-rawi-yellow/60 placeholder:text-white/30"
         />
       )}
       <button
         type="button"
         onClick={startCheckout}
         disabled={loading}
-        className={`w-full rounded-full px-5 py-3 text-sm font-extrabold transition disabled:cursor-wait disabled:opacity-60 ${featured ? "bg-rawi-yellow text-black hover:brightness-95" : "border border-gray-300 bg-white hover:bg-gray-50"}`}
+        className={`w-full rounded-full px-5 py-3 text-sm font-extrabold transition disabled:cursor-wait disabled:opacity-60 ${featured ? "bg-rawi-yellow text-black hover:brightness-95" : "border border-white/[.12] bg-white/[.06] text-white hover:bg-white/[.10]"}`}
       >
         {loading
           ? "Applying…"
