@@ -633,6 +633,18 @@ export function Pricing() {
           </Link>
         </article>
       </div>
+
+      {/* Trust row */}
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-gray-400">
+        {[
+          "✓ No credit card required",
+          "✓ Cancel anytime",
+          "✓ Secure checkout",
+          "✓ UAE-based support",
+        ].map((item) => (
+          <span key={item} className="font-semibold">{item}</span>
+        ))}
+      </div>
     </section>
   );
 }
