@@ -25,7 +25,7 @@ export function Nav() {
           <span className="grid h-[30px] w-[30px] shrink-0 -rotate-[8deg] place-items-center rounded-[50%_50%_50%_8px] bg-rawi-yellow text-sm font-black text-black">
             R
           </span>
-          <span className="font-cormorant text-[22px] font-light tracking-[0.14em] text-[#F2ECD8] sm:text-[24px]">RAWI</span>
+          <span className="text-[18px] font-extrabold tracking-[0.1em] text-[#F0EFFF] sm:text-[20px]">RAWI</span>
           <span className="font-arabic text-xs text-white/35">راوي</span>
         </Link>
 

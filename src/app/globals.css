@@ -360,10 +360,10 @@ body {
 
 /* ── Editorial typography utilities ── */
 .font-cormorant {
-  font-family: var(--font-cormorant, "Cormorant Garamond", Georgia, serif);
+  font-family: var(--font-inter, system-ui, sans-serif);
 }
 .font-montserrat {
-  font-family: var(--font-montserrat, "Montserrat", system-ui, sans-serif);
+  font-family: var(--font-inter, system-ui, sans-serif);
 }
 .display-hero {
   font-family: var(--font-cormorant, "Cormorant Garamond", Georgia, serif);
@@ -373,14 +373,14 @@ body {
   letter-spacing: -0.03em;
 }
 .display-section {
-  font-family: var(--font-cormorant, "Cormorant Garamond", Georgia, serif);
+  font-family: var(--font-inter, system-ui, sans-serif);
   font-size: clamp(38px, 6vw, 84px);
   font-weight: 300;
   line-height: 0.96;
   letter-spacing: -0.025em;
 }
 .editorial-eyebrow {
-  font-family: var(--font-montserrat, "Montserrat", system-ui, sans-serif);
+  font-family: var(--font-inter, system-ui, sans-serif);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.25em;

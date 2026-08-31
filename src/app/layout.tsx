@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Kufi_Arabic, Cormorant_Garamond, Montserrat } from "next/font/google";
+import { Inter, Noto_Kufi_Arabic } from "next/font/google";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { ClientErrorReporter } from "@/components/system/ClientErrorReporter";
 import { GoogleAnalytics } from "@/components/system/GoogleAnalytics";
@@ -17,20 +17,7 @@ const notoKufiArabic = Noto_Kufi_Arabic({
   variable: "--font-noto-kufi-arabic",
 });
 
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-cormorant",
-});
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
-  variable: "--font-montserrat",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://rawi-five.vercel.app"),
@@ -69,7 +56,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr" className={`${inter.variable} ${notoKufiArabic.variable} ${cormorantGaramond.variable} ${montserrat.variable}`}>
+    <html lang="en" dir="ltr" className={`${inter.variable} ${notoKufiArabic.variable}`}>
       <body>
         <ClientErrorReporter />
         <LocaleProvider>{children}</LocaleProvider>
