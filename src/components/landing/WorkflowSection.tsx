@@ -13,7 +13,7 @@ export function WorkflowSection() {
   return (
     <section
       aria-labelledby="rawi-workflow-title"
-      className="relative z-10 overflow-hidden bg-[#06060F] py-[72px] md:py-[100px]"
+      className="relative z-10 overflow-hidden bg-[#06060F] py-[52px] md:py-[76px]"
     >
       {/* Subtle grid */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:72px_72px]" />

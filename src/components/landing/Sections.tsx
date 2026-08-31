@@ -458,7 +458,7 @@ export function Features() {
   return (
     <section
       id="features"
-      className="py-[110px] w-[min(1180px,calc(100%-40px))] mx-auto"
+      className="py-[72px] w-[min(1180px,calc(100%-40px))] mx-auto"
     >
       <div className="max-w-[760px] mb-8 md:mb-12">
         <div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">
@@ -488,7 +488,7 @@ export function Features() {
 
 export function GalleryDemo() {
   return (
-    <section id="gallery" className="bg-[#06060F] py-[72px] md:py-[110px]">
+    <section id="gallery" className="bg-[#06060F] py-[52px] md:py-[80px]">
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.78fr_1.22fr] gap-5 lg:gap-14 items-end mb-8 md:mb-12">
           <div>
@@ -580,7 +580,7 @@ export function Pricing() {
   return (
     <section
       id="pricing"
-      className="py-[72px] md:py-[110px] w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto"
+      className="py-[52px] md:py-[80px] w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto"
     >
       <div className="max-w-[760px] mb-12">
         <div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">
@@ -696,7 +696,7 @@ export function Pricing() {
 
 export function ClosingCTA() {
   return (
-    <section className="relative overflow-hidden bg-[#06060F] py-[100px] md:py-[160px]">
+    <section className="relative overflow-hidden bg-[#06060F] py-[64px] md:py-[100px]">
       {/* Gold glow */}
       <div
         className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full opacity-20"

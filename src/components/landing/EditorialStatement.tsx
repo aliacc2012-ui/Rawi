@@ -9,7 +9,7 @@ const STATS = [
 
 export function EditorialStatement() {
   return (
-    <section className="relative overflow-hidden bg-[#06060F] py-[80px] md:py-[130px]">
+    <section className="relative overflow-hidden bg-[#06060F] py-[52px] md:py-[80px]">
       <div
         className="pointer-events-none absolute inset-0 opacity-30"
         style={{ background: "radial-gradient(ellipse 60% 50% at 20% 60%, rgba(201,150,42,.12), transparent)" }}

@@ -34,7 +34,7 @@ const SUPPORTING_FEATURES = [
 
 export function EnhancedFeatures() {
   return (
-    <section id="features" className="bg-[#06060F] pt-[72px] pb-0 md:pt-[110px]">
+    <section id="features" className="bg-[#06060F] pt-[52px] pb-0 md:pt-[80px]">
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.72fr_1.28fr] gap-10 lg:gap-14 items-end mb-10">
           <div>

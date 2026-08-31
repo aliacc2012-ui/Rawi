@@ -27,7 +27,7 @@ const TESTIMONIALS = [
 
 export function Testimonials() {
   return (
-    <section className="bg-[#06060F] py-[72px] md:py-[110px]">
+    <section className="bg-[#06060F] py-[52px] md:py-[80px]">
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="mb-12 md:mb-16">
           <div className="editorial-eyebrow mb-4">CREATORS LOVE IT</div>

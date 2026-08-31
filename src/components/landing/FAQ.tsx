@@ -50,7 +50,7 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <section aria-labelledby="faq-title" className="relative z-10 bg-[#06060F] py-[72px] md:py-[100px]">
+    <section aria-labelledby="faq-title" className="relative z-10 bg-[#06060F] py-[52px] md:py-[76px]">
       <div className="mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))]">
         {/* Header */}
         <div className="mb-10 md:mb-14">
