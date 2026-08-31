@@ -26,7 +26,7 @@ async function getOwnedGalleryContext(supabase: AppSupabaseClient, userId: strin
   if (!project) return null;
   const workspace = await getOwnedWorkspace(supabase, userId, project.workspace_id);
   if (!workspace) return null;
-  return { gallery: gallery as unknown as { id: string; slug: string; project_id: string; status: string; password_enabled: boolean; password_hash: string | null; downloads_enabled: boolean; favorites_enabled: boolean; comments_enabled: boolean; branding_enabled: boolean; expiry_date: string | null }, project, workspace };
+  return { gallery: gallery as unknown as { id: string; slug: string; project_id: string; status: GalleryStatus; password_enabled: boolean; password_hash: string | null; downloads_enabled: boolean; favorites_enabled: boolean; comments_enabled: boolean; branding_enabled: boolean; expiry_date: string | null }, project, workspace };
 }
 async function ownsGallery(supabase: AppSupabaseClient, userId: string, galleryId: string) { return Boolean(await getOwnedGalleryContext(supabase, userId, galleryId)); }
 function safeUrl(value: string): string | null | undefined { const clean = value.trim(); if (!clean) return null; const candidate = /^https?:\/\//i.test(clean) ? clean : `https://${clean}`; try { const url = new URL(candidate); if (!["http:", "https:"].includes(url.protocol) || candidate.length > 500) return undefined; return url.toString(); } catch { return undefined; } }
