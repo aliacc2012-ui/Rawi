@@ -8,6 +8,7 @@ import { GallerySettings } from "@/components/app-shell/GallerySettings";
 import { FeedbackInbox } from "@/components/app-shell/FeedbackInbox";
 import { SortableMedia } from "@/components/app-shell/SortableMedia";
 import { GalleryThemePicker } from "@/components/app-shell/GalleryThemePicker";
+import { AnimateIn } from "@/components/app-shell/AnimateIn";
 import { ComingSoonGalleryTools } from "@/components/app-shell/ComingSoonGalleryTools";
 import type { GalleryTheme } from "@/app/(app)/projects/[id]/theme-actions";
 type FeedbackStatus = "new" | "in_progress" | "resolved";
@@ -136,12 +137,12 @@ export default async function ProjectDetailPage({
     ?.theme ?? "clean") as GalleryTheme;
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <AnimateIn delay={0} className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <span className="text-[11px] font-extrabold tracking-[.17em] text-white/45">
             GALLERY BUILDER
           </span>
-          <h1 className="mt-1.5 text-[26px] tracking-[-.04em] md:text-[32px]">
+          <h1 className="font-cormorant mt-1.5 text-[42px] italic font-medium tracking-[-0.02em] text-white md:text-[52px]">
             {project.name}
           </h1>
           {project.clients?.name && (
@@ -154,13 +155,13 @@ export default async function ProjectDetailPage({
               <span className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/45">
                 Feedback
               </span>
-              <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">
+              <span className="rounded-full bg-amber-500/15 border border-amber-500/20 px-2.5 py-1 text-xs font-bold text-amber-400">
                 {feedbackCounts.new} New
               </span>
-              <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">
+              <span className="rounded-full bg-blue-500/15 border border-blue-500/20 px-2.5 py-1 text-xs font-bold text-blue-400">
                 {feedbackCounts.inProgress} In Progress
               </span>
-              <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
+              <span className="rounded-full bg-emerald-500/15 border border-emerald-500/20 px-2.5 py-1 text-xs font-bold text-emerald-400">
                 {feedbackCounts.resolved} Resolved
               </span>
             </div>
@@ -172,9 +173,9 @@ export default async function ProjectDetailPage({
             isPublished={gallery.status === "published"}
           />
         )}
-      </div>
+      </AnimateIn>
       <div className="grid lg:grid-cols-[1fr_320px] gap-5">
-        <div>
+        <AnimateIn delay={120}>
           <div className="bg-rawi-panel border border-white/[.07] rounded-[20px] p-5.5">
             <h3 className="text-[19px] font-semibold mb-4">Media</h3>
             <SortableMedia
@@ -191,10 +192,10 @@ export default async function ProjectDetailPage({
               plan={workspace!.plan}
             />
           )}
-        </div>
-        <div>
+        </AnimateIn>
+        <AnimateIn delay={220}>
           <div className="bg-rawi-panel border border-white/[.07] rounded-[20px] p-5.5">
-            <h3 className="text-[19px] font-semibold mb-4">Share</h3>
+            <h3 className="font-cormorant text-[26px] italic font-medium tracking-[-0.02em] text-white mb-4">Share</h3>
             {gallery?.status === "published" && publicUrl ? (
               <ShareBar url={publicUrl} clientName={project.clients?.name} />
             ) : (
@@ -290,7 +291,7 @@ export default async function ProjectDetailPage({
               )}
             </div>
           )}
-        </div>
+        </AnimateIn>
       </div>
     </div>
   );
