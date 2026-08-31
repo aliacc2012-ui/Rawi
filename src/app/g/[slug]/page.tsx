@@ -317,6 +317,7 @@ export default async function ClientGalleryPage({
     (plan === "creator" || plan === "pro" || plan === "studio") && gallery.comments_enabled;
 
   const typedSections = rawTypedSections;
+  const allMedia = typedSections.flatMap((s) => s.media);
 
   const hasMedia     = allMedia.length > 0;
   const photoCount   = allMedia.filter((i) => i.media_type === "image").length;
