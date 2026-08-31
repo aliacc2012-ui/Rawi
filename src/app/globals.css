@@ -236,3 +236,83 @@ body {
   border-radius: 2px;
   flex-shrink: 0;
 }
+
+/* ─── Hero staggered entrance ─────────────────── */
+@keyframes hero-enter {
+  from { opacity: 0; transform: translateY(32px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.hero-e1 { animation: hero-enter 0.65s 0.04s cubic-bezier(0.22,0.9,0.28,1) both; }
+.hero-e2 { animation: hero-enter 0.70s 0.16s cubic-bezier(0.22,0.9,0.28,1) both; }
+.hero-e3 { animation: hero-enter 0.70s 0.30s cubic-bezier(0.22,0.9,0.28,1) both; }
+.hero-e4 { animation: hero-enter 0.65s 0.44s cubic-bezier(0.22,0.9,0.28,1) both; }
+.hero-e5 { animation: hero-enter 0.65s 0.58s cubic-bezier(0.22,0.9,0.28,1) both; }
+.hero-e6 { animation: hero-enter 0.65s 0.72s cubic-bezier(0.22,0.9,0.28,1) both; }
+
+/* ─── "better" background shimmer ────────────── */
+@keyframes better-shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+.better-shimmer {
+  background: linear-gradient(
+    90deg,
+    #ffd400 0%,
+    #ffe055 22%,
+    #fff8b0 44%,
+    #ffe055 66%,
+    #ffd400 88%,
+    #ffe055 100%
+  );
+  background-size: 200% auto;
+  animation: better-shimmer 2.8s linear infinite;
+  text-shadow: 0 0 50px rgba(255,212,0,0.7), 0 0 100px rgba(255,212,0,0.3);
+}
+
+/* ─── Character float bob ─────────────────────── */
+@keyframes char-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  40%       { transform: translateY(-14px) rotate(0.8deg); }
+  70%       { transform: translateY(-6px) rotate(-0.5deg); }
+}
+.rawi-character { animation: char-float 7s ease-in-out infinite !important; }
+
+/* ─── Hero star particles ─────────────────────── */
+@keyframes star-rise {
+  0%   { transform: translateY(0px) scale(1); opacity: 0; }
+  12%  { opacity: 1; }
+  80%  { opacity: 0.5; }
+  100% { transform: translateY(-130px) scale(0.3); opacity: 0; }
+}
+@keyframes star-sway {
+  0%, 100% { margin-left: 0; }
+  50%       { margin-left: 22px; }
+}
+.hero-star {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,212,0,0.85);
+  box-shadow: 0 0 6px 2px rgba(255,212,0,0.4);
+  pointer-events: none;
+  z-index: 1;
+  animation: star-rise 5s ease-in-out infinite, star-sway 3.5s ease-in-out infinite;
+}
+.hero-star-sm {
+  width: 3px;
+  height: 3px;
+  background: rgba(255,255,255,0.6);
+  box-shadow: 0 0 4px 1px rgba(255,255,255,0.3);
+  animation: star-rise 4s ease-in-out infinite, star-sway 2.8s ease-in-out infinite;
+}
+
+/* ─── Headline word-by-word reveal ───────────── */
+@keyframes word-in {
+  from { opacity: 0; transform: translateY(20px) rotateX(15deg); }
+  to   { opacity: 1; transform: translateY(0) rotateX(0deg); }
+}
+.hero-word { display: inline; animation: word-in 0.55s cubic-bezier(0.22,0.9,0.28,1) both; }
+.hero-w1 { animation-delay: 0.16s; }
+.hero-w2 { animation-delay: 0.26s; }
+.hero-w3 { animation-delay: 0.36s; }

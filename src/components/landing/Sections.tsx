@@ -65,24 +65,31 @@ export function Hero() {
 
   return (
     <section className="mx-auto grid min-h-0 w-[min(1240px,calc(100%-32px))] items-center gap-10 overflow-hidden pb-14 pt-8 md:min-h-[760px] md:w-[min(1240px,calc(100%-40px))] md:grid-cols-[.92fr_1.08fr] md:gap-[58px] md:pb-[80px] md:pt-10">
-      <div>
+      <div className="relative">
         {/* Hero headline glow */}
         <div className="pointer-events-none absolute -top-32 -left-20 h-[420px] w-[520px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,212,0,0.09),transparent_65%)] blur-3xl" aria-hidden="true" />
-        <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[.06] px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-white/70 shadow-sm md:text-[11px]">
+        {/* Floating star particles */}
+        <span aria-hidden="true" className="hero-star" style={{left:"12%", bottom:"38%", animationDelay:"0s"}} />
+        <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"28%", bottom:"55%", animationDelay:"1.2s"}} />
+        <span aria-hidden="true" className="hero-star" style={{left:"5%", bottom:"22%", animationDelay:"2.4s"}} />
+        <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"42%", bottom:"65%", animationDelay:"0.8s"}} />
+        <span aria-hidden="true" className="hero-star" style={{left:"62%", bottom:"30%", animationDelay:"1.8s"}} />
+        <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"55%", bottom:"48%", animationDelay:"3.1s"}} />
+        <div className="hero-e1 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[.06] px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-white/70 shadow-sm md:text-[11px]">
           <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
           {dict.hero.eyebrow}
         </div>
-        <h1 className="my-6 text-[48px] font-medium leading-[.96] tracking-[-.062em] sm:text-[56px] md:text-[88px]">
-          {dict.hero.titlePre}
-          <span className="bg-gradient-to-r from-rawi-yellow to-[#ffeb80] px-[0.06em] [text-shadow:0_0_40px_rgba(255,212,0,0.55)]">
+        <h1 className="hero-e2 my-6 text-[48px] font-medium leading-[.96] tracking-[-.062em] sm:text-[56px] md:text-[88px]" style={{perspective: "600px"}}>
+          <span className="hero-word hero-w1">{dict.hero.titlePre}</span>
+          <span className="hero-word hero-w2 better-shimmer px-[0.06em]">
             {dict.hero.titleHighlight}
           </span>
-          {dict.hero.titlePost}
+          <span className="hero-word hero-w3">{dict.hero.titlePost}</span>
         </h1>
-        <p className="max-w-[590px] text-base leading-relaxed text-white/50 md:text-xl">
+        <p className="hero-e3 max-w-[590px] text-base leading-relaxed text-white/50 md:text-xl">
           {dict.hero.body}
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-5 md:gap-7">
+        <div className="hero-e4 mt-8 flex flex-wrap items-center gap-5 md:gap-7">
           <Link
             href="/signup"
             onClick={() => trackEvent("signup_started", { source: "hero" })}
@@ -97,7 +104,7 @@ export function Hero() {
             {dict.hero.viewDemo} <span>↘</span>
           </a>
         </div>
-        <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-white/35">
+        <div className="hero-e5 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-white/35">
           {dict.hero.trust.map((item) => (
             <span key={item}>✓ {item}</span>
           ))}
