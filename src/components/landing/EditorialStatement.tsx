@@ -35,10 +35,10 @@ export function EditorialStatement() {
           </p>
         </Reveal>
         <Reveal delay={4}>
-          <div className="grid border-t border-white/[.08] sm:grid-cols-3">
+          <div className="grid grid-cols-3 border-t border-white/[.08]">
             {STATS.map((s, i) => (
               <div key={s.num} className={`pb-2 pt-8 ${i < STATS.length - 1 ? "sm:mr-10 sm:border-r sm:border-white/[.08] sm:pr-10" : ""}`}>
-                <div className="font-cormorant text-[60px] font-light leading-none text-[#F2ECD8]">{s.num}</div>
+                <div className="font-cormorant text-[38px] sm:text-[60px] font-light leading-none text-[#F2ECD8]">{s.num}</div>
                 <div className="font-montserrat mt-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">{s.label}</div>
               </div>
             ))}
