@@ -6,7 +6,7 @@ export function CatCursor() {
   const pos = useRef({ x: -200, y: -200 });
   const cur = useRef({ x: -200, y: -200 });
   const vel = useRef({ x: 0, y: 0 });
-  const raf = useRef<number>();
+  const raf = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
