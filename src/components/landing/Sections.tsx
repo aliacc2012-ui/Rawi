@@ -26,19 +26,7 @@ const DEMO_PROJECTS = [
       "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&q=75",
     ],
   },
-  {
-    name: "Tokyo Streets",
-    cover: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80",
-    meta: "187 photos",
-    color: "#e05c5c",
-    photos: [
-      "https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=400&q=75",
-      "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400&q=75",
-      "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=75",
-      "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400&q=75",
-      "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=400&q=75",
-    ],
-  },
+
 
   {
     name: "Studio Sessions",
@@ -80,16 +68,29 @@ const DEMO_PROJECTS = [
     ],
   },
   {
-    name: "Aerial Dubai",
-    cover: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80",
-    meta: "118 photos",
-    color: "#4a9eff",
+    name: "BMW M Series",
+    cover: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&q=80",
+    meta: "143 photos",
+    color: "#0066cc",
     photos: [
-      "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=400&q=75",
-      "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?w=400&q=75",
-      "https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=400&q=75",
-      "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&q=75",
-      "https://images.unsplash.com/photo-1560369483-efb5e1ded090?w=400&q=75",
+      "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?w=400&q=75",
+      "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&q=75",
+      "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=75",
+      "https://images.unsplash.com/photo-1617531653332-bd46c16f4d68?w=400&q=75",
+      "https://images.unsplash.com/photo-1619405399517-d7fce0f13302?w=400&q=75",
+    ],
+  },
+  {
+    name: "Porsche 911",
+    cover: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80",
+    meta: "98 photos",
+    color: "#cc2200",
+    photos: [
+      "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=75",
+      "https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=400&q=75",
+      "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&q=75",
+      "https://images.unsplash.com/photo-1493238792000-8113da705763?w=400&q=75",
+      "https://images.unsplash.com/photo-1542362567-b07e54358753?w=400&q=75",
     ],
   },
 ];
