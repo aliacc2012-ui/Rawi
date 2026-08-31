@@ -72,7 +72,7 @@ export default async function ProjectsPage() {
       {/* Stat tiles */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {STATS.map(({ label, value, Icon, idx, alert }) => {
-          const s = STAT_CFG[idx];
+          const s = STAT_CFG[idx] ?? { iconCls: "text-white/40", shadow: "", hoverBorder: "" };
           return (
             <div
               key={label}
