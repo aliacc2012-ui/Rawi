@@ -79,6 +79,19 @@ const DEMO_PROJECTS = [
     ],
   },
   {
+    name: "Desert Drift",
+    cover: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&q=80",
+    meta: "156 photos",
+    color: "#e8a020",
+    photos: [
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=75",
+      "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&q=75",
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=400&q=75",
+      "https://images.unsplash.com/photo-1542362567-b07e54358753?w=400&q=75",
+      "https://images.unsplash.com/photo-1493238792000-8113da705763?w=400&q=75",
+    ],
+  },
+  {
     name: "Aerial Dubai",
     cover: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80",
     meta: "118 photos",
