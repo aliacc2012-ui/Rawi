@@ -138,125 +138,100 @@ export function Hero() {
   );
 }
 
-function ProductMockup({ charState }: { charState: "idle" | "excited" | "thumbsup" }) {
+function ProductMockup({ charState: _charState }: { charState: "idle" | "excited" | "thumbsup" }) {
+  const photos = DEMO_PROJECTS.slice(0, 6);
   return (
     <div className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px]">
-      <div className="rawi-mockup-glow absolute -inset-10 bg-[radial-gradient(circle_at_55%_45%,rgba(255,212,0,.20),transparent_34%)] blur-2xl pointer-events-none" />
-      <div className="rawi-dashboard-enter absolute left-0 top-10 z-20 w-[92%] rounded-[28px] border border-black/10 bg-[#111] p-2.5 shadow-[0_40px_100px_rgba(0,0,0,.24)] -rotate-[1.1deg]">
-        <div className="rounded-[21px] bg-[#f6f5f1] overflow-hidden border border-white/10">
-          <div className="h-9 bg-[#171717] flex items-center gap-2 px-4">
-            <span className="w-2.5 h-2.5 rounded-full bg-white/20" />
-            <span className="w-2.5 h-2.5 rounded-full bg-white/20" />
-            <span className="w-2.5 h-2.5 rounded-full bg-rawi-yellow" />
+      {/* Ambient glow */}
+      <div className="rawi-mockup-glow pointer-events-none absolute -inset-10 bg-[radial-gradient(circle_at_55%_42%,rgba(255,212,0,.18),transparent_38%)] blur-2xl" />
+
+      {/* Main gallery frame */}
+      <div className="rawi-dashboard-enter absolute left-0 top-6 z-20 w-[96%] overflow-hidden rounded-[26px] border border-white/[.08] bg-[#0D0D0D] shadow-[0_32px_90px_rgba(0,0,0,.55)]">
+        {/* Browser chrome */}
+        <div className="flex h-10 items-center justify-between bg-[#161616] px-4 border-b border-white/[.05]">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-white/[.12]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-white/[.12]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
           </div>
-          <div className="grid grid-cols-[128px_1fr] min-h-[500px]">
-            <div className="bg-[#101010] text-white p-4 flex flex-col">
-              <div className="flex items-center gap-2 font-black tracking-[.12em]">
-                <span className="w-7 h-7 rounded-[50%_50%_50%_8px] bg-rawi-yellow grid place-items-center text-black -rotate-[8deg]">
-                  R
-                </span>
-                <span className="text-sm">RAWI</span>
-              </div>
-              <div className="mt-8 space-y-2 text-[10px]">
-                <div className="rounded-lg bg-white/10 px-3 py-2.5">Home</div>
-                <div className="px-3 py-2.5 text-white/45">Projects</div>
-                <div className="px-3 py-2.5 text-white/45">Analytics</div>
-                <div className="px-3 py-2.5 text-white/45">Branding</div>
-              </div>
-              <div className="mt-auto">
-                <div className="text-[8px] text-white/35 flex justify-between">
-                  <span>Storage</span>
-                  <span>68 / 200 GB</span>
-                </div>
-                <div className="h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
-                  <div className="h-full w-[34%] bg-rawi-yellow" />
-                </div>
-              </div>
+          <div className="flex items-center gap-2 rounded-lg bg-white/[.06] px-3 py-1.5">
+            <span className="text-[8px] text-white/30">🔒</span>
+            <span className="text-[9px] text-white/35 tracking-[.04em]">rawi.gallery/today-drive</span>
+          </div>
+          <div className="w-16" />
+        </div>
+
+        {/* Gallery header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[.05]">
+          <div className="flex items-center gap-3">
+            <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-rawi-yellow text-[11px] font-black text-black -rotate-[6deg]">R</span>
+            <div>
+              <div className="text-[11px] font-bold text-white tracking-[.06em]">TODAY DRIVE</div>
+              <div className="text-[9px] text-white/35 mt-0.5">146 photos · by Ali Hassan</div>
             </div>
-            <div className="p-5 md:p-6">
-              <div className="flex justify-between gap-4">
-                <div>
-                  <div className="text-[8px] tracking-[.15em] text-gray-400 font-black">
-                    CREATOR WORKSPACE
-                  </div>
-                  <h3 className="text-[22px] md:text-[28px] tracking-[-.04em] mt-1">
-                    Good morning, RAWI.
-                  </h3>
-                  <p className="text-[10px] text-gray-400 mt-1">
-                    Here&apos;s what&apos;s happening with your projects.
-                  </p>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-rawi-yellow grid place-items-center font-black text-xs">
-                  R
-                </div>
-              </div>
-              <div className="grid grid-cols-4 gap-2 mt-5">
-                <MiniStat value="24" label="Projects" />
-                <MiniStat value="1,284" label="Photos" />
-                <MiniStat value="36" label="Clients" />
-                <MiniStat value="98.7K" label="Downloads" />
-              </div>
-              <div className="mt-4 rounded-2xl border bg-white p-3 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-[10px] font-black">
-                      Recent Projects
-                    </div>
-                    <div className="text-[7px] text-gray-400 mt-0.5">
-                      Automotive galleries
-                    </div>
-                  </div>
-                  <span className="text-[7px] text-[#b88600] font-bold">
-                    View all
-                  </span>
-                </div>
-                <div className="grid grid-cols-4 gap-2 mt-3">
-                  {DEMO_PROJECTS.slice(0, 4).map((project) => (
-                    <DemoProjectCard key={project.name} project={project} />
-                  ))}
-                </div>
-              </div>
-              <div className="grid grid-cols-[1fr_.78fr] gap-3 mt-3">
-                <div className="rounded-2xl border bg-white p-3">
-                  <div className="text-[9px] font-bold">Client activity</div>
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <ActivityLine icon="↓" text="M3 F80 Silver downloaded" />
-                    <ActivityLine icon="◉" text="M3 G80 Orange viewed" />
-                    <ActivityLine icon="♡" text="M2 CS Green favorited" />
-                    <ActivityLine icon="↓" text="GT3 RS shared" />
-                  </div>
-                </div>
-                <div className="rounded-2xl bg-black text-white p-3">
-                  <div className="text-[8px] text-white/45">TODAY DRIVE</div>
-                  <div className="text-sm mt-1">Gallery is live.</div>
-                  <div className="grid grid-cols-2 gap-1.5 mt-3">
-                    <span className="rounded-lg bg-white/10 px-2 py-2 text-[7px] text-center">
-                      Copy link
-                    </span>
-                    <span className="rounded-lg bg-rawi-yellow text-black px-2 py-2 text-[7px] text-center font-bold">
-                      WhatsApp
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-white/[.07] px-3 py-1.5 text-[9px] text-white/50">♡ 12</span>
+            <span className="rounded-full bg-rawi-yellow px-3 py-1.5 text-[9px] font-bold text-black">↥ Download all</span>
           </div>
         </div>
+
+        {/* Photo grid */}
+        <div className="grid grid-cols-3 gap-[3px] p-[3px]">
+          {photos.map((p, i) => (
+            <div
+              key={p.name}
+              className="group relative overflow-hidden"
+              style={{ aspectRatio: i === 0 ? "2/1.1" : "1/0.85", gridColumn: i === 0 ? "span 2" : undefined }}
+            >
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                style={{ backgroundImage: `url('${p.image}')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-1.5">
+                <span className="rounded-full bg-white/90 px-2 py-1 text-[7px] font-bold text-black">♡</span>
+                <span className="rounded-full bg-white/90 px-2 py-1 text-[7px] font-bold text-black">↥</span>
+              </div>
+              {i === 0 && (
+                <div className="absolute top-2 right-2 rounded-full bg-rawi-yellow px-2 py-1 text-[7px] font-black text-black">✓ Selected</div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      <div
-        className={`pointer-events-none absolute -right-3 -bottom-10 z-30 w-[39%] min-w-[180px] max-w-[245px] char-${charState}`}
-        aria-hidden="true"
-      >
-        <Image
-          src="/rawi-wave.png"
-          alt=""
-          width={511}
-          height={768}
-          sizes="(max-width: 768px) 39vw, 245px"
-          quality={85}
-          priority
-          className="h-auto w-full drop-shadow-[-14px_28px_30px_rgba(0,0,0,.22)]"
-        />
+
+      {/* Floating: WhatsApp notification */}
+      <div className="absolute -left-4 bottom-24 z-30 flex items-center gap-2.5 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
+           style={{ animation: "hero-e3 .6s cubic-bezier(.22,1,.36,1) .9s both" }}>
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#25D366] text-white text-sm">✓</span>
+        <div>
+          <div className="text-[10px] font-bold text-white">Gallery link sent</div>
+          <div className="text-[8px] text-white/40 mt-0.5">via WhatsApp · just now</div>
+        </div>
+      </div>
+
+      {/* Floating: client reaction */}
+      <div className="absolute -right-2 top-[38%] z-30 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
+           style={{ animation: "hero-e4 .6s cubic-bezier(.22,1,.36,1) 1.1s both" }}>
+        <div className="text-[8px] text-white/35 tracking-[.1em]">CLIENT</div>
+        <div className="text-[11px] font-bold text-white mt-1">Sarah ♡ 3 photos</div>
+        <div className="mt-2 flex gap-1">
+          {[0,1,2].map(j => (
+            <div key={j} className="h-8 w-8 rounded-lg bg-cover bg-center border border-white/10"
+                 style={{ backgroundImage: `url('${photos[j]?.image}')` }} />
+          ))}
+        </div>
+      </div>
+
+      {/* Floating: download badge */}
+      <div className="absolute bottom-8 right-4 z-30 flex items-center gap-2 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,.4)] backdrop-blur-sm"
+           style={{ animation: "hero-e5 .5s cubic-bezier(.22,1,.36,1) 1.3s both" }}>
+        <span className="h-6 w-6 grid place-items-center rounded-lg bg-rawi-yellow/20 text-rawi-yellow text-xs">↥</span>
+        <div>
+          <div className="text-[9px] font-bold text-white">12 files downloaded</div>
+          <div className="text-[7px] text-white/35">Client delivered ✓</div>
+        </div>
       </div>
       <div className="rawi-delivery-enter absolute left-[9%] bottom-[3%] z-40 rounded-2xl bg-white border border-gray-200 shadow-xl p-3 w-[160px] rotate-[-4deg]">
         <div className="flex items-center gap-2">
