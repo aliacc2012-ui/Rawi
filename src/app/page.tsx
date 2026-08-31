@@ -13,6 +13,7 @@ import { Stats } from "@/components/landing/Stats";
 import { EditorialStatement } from "@/components/landing/EditorialStatement";
 import { FAQ } from "@/components/landing/FAQ";
 import { CookieConsent } from "@/components/landing/CookieConsent";
+import { CatCursor } from "@/components/landing/CatCursor";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -133,6 +134,7 @@ export default function LandingPage() {
       </footer>
 
       <CookieConsent />
+      <CatCursor />
     </main>
   );
 }
