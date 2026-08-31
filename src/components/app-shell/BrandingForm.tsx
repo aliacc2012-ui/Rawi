@@ -76,14 +76,29 @@ export function BrandingForm({
           {error && <ErrorNote>{error}</ErrorNote>}
           {success && <SuccessNote>Branding updated.</SuccessNote>}
 
-          <button
-            type="submit"
-            disabled={pending}
-            className="w-full rounded-xl px-5 py-3 text-sm font-extrabold text-black transition-all hover:opacity-90 active:scale-[.98] disabled:opacity-60"
-            style={{ backgroundColor: accent }}
-          >
-            {pending ? "Saving…" : "Save branding"}
-          </button>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                setName(initialName || "Your Studio");
+                setAccent(initialAccent || "#FBBF24");
+                setError(null);
+                setSuccess(false);
+              }}
+              className="flex-1 rounded-xl px-5 py-3 text-sm font-extrabold text-white/60 border border-white/10 bg-white/5 transition-all hover:bg-white/10 hover:text-white active:scale-[.98] disabled:opacity-40"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={pending}
+              className="flex-1 rounded-xl px-5 py-3 text-sm font-extrabold text-black transition-all hover:opacity-90 active:scale-[.98] disabled:opacity-60"
+              style={{ backgroundColor: accent }}
+            >
+              {pending ? "Saving…" : "Save branding"}
+            </button>
+          </div>
         </form>
       </div>
 
