@@ -425,3 +425,20 @@ body {
   animation: rawi-logo-glow 3.5s ease-in-out infinite;
   animation-delay: 1.8s;
 }
+
+/* ─── Hero film-strip marquees ──────────────────────── */
+@keyframes marquee-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+@keyframes marquee-down {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+.marquee-up   { animation: marquee-up   28s linear infinite; }
+.marquee-down { animation: marquee-down 22s linear infinite; }
+
+@keyframes strip-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

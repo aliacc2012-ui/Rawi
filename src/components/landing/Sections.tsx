@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -95,343 +95,232 @@ const DEMO_PROJECTS = [
   },
 ];
 
+const MORPH_WORDS = ["Wedding", "Automotive", "Portrait", "Lifestyle", "Commercial"];
+
+const COL1_IMGS = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80",
+  "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?w=500&q=80",
+  "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=500&q=80",
+  "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=500&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&q=80",
+  "https://images.unsplash.com/photo-1617531653332-bd46c16f4d68?w=500&q=80",
+  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80",
+  "https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=500&q=80",
+];
+
+const COL2_IMGS = [
+  "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80",
+  "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500&q=80",
+  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&q=80",
+  "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=500&q=80",
+  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80",
+  "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=500&q=80",
+  "https://images.unsplash.com/photo-1493238792000-8113da705763?w=500&q=80",
+];
+
 export function Hero() {
   const { dict } = useLocale();
-  const [charState, setCharState] = useState<"idle" | "excited" | "thumbsup">("idle");
+  const [wordIdx, setWordIdx] = useState(0);
   const [thumbs, setThumbs] = useState<{x:number;y:number;id:number}[]>([]);
   const thumbIdRef = useRef(0);
 
-  const handleBtnEnter = () => setCharState("excited");
-  const handleBtnLeave = () => setCharState("idle");
+  useEffect(() => {
+    const t = setInterval(() => setWordIdx(i => (i + 1) % MORPH_WORDS.length), 2800);
+    return () => clearInterval(t);
+  }, []);
+
   const handleBtnClick = (e: React.MouseEvent) => {
     const id = ++thumbIdRef.current;
     setThumbs(prev => [...prev, { x: e.clientX, y: e.clientY, id }]);
-    setCharState("thumbsup");
     setTimeout(() => setThumbs(prev => prev.filter(t => t.id !== id)), 1900);
-    setTimeout(() => setCharState("idle"), 2200);
     trackEvent("signup_started", { source: "hero" });
   };
 
+  // Mouse tilt for film strip
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useTransform(mouseY, [-300, 300], [5, -5]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-5, 5]);
+
   return (
     <>
-    {thumbs.map(t => (
-      <span key={t.id} className="thumbsup-pop" style={{left: t.x - 20, top: t.y - 50}} aria-hidden="true">👍</span>
-    ))}
-    <section className="mx-auto grid min-h-0 w-[min(1240px,calc(100%-32px))] items-center gap-10 overflow-hidden pb-14 pt-8 md:min-h-[760px] md:w-[min(1240px,calc(100%-40px))] md:grid-cols-[.92fr_1.08fr] md:gap-[58px] md:pb-[80px] md:pt-10">
-      <div className="relative">
-        {/* Hero headline glow */}
-        <div className="pointer-events-none absolute -top-32 -left-20 h-[420px] w-[520px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,212,0,0.09),transparent_65%)] blur-3xl" aria-hidden="true" />
-        {/* Floating star particles */}
-        <span aria-hidden="true" className="hero-star" style={{left:"12%", bottom:"38%", animationDelay:"0s"}} />
-        <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"28%", bottom:"55%", animationDelay:"1.2s"}} />
-        <span aria-hidden="true" className="hero-star" style={{left:"5%", bottom:"22%", animationDelay:"2.4s"}} />
-        <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"42%", bottom:"65%", animationDelay:"0.8s"}} />
-        <span aria-hidden="true" className="hero-star" style={{left:"62%", bottom:"30%", animationDelay:"1.8s"}} />
-        <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"55%", bottom:"48%", animationDelay:"3.1s"}} />
-        <div className="editorial-eyebrow hero-e1">
-          <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
-          {dict.hero.eyebrow}
+      {thumbs.map(t => (
+        <span key={t.id} className="thumbsup-pop" style={{left: t.x - 20, top: t.y - 50}} aria-hidden="true">👍</span>
+      ))}
+
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* ── Ambient atmosphere ── */}
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full bg-rawi-yellow/[.06] blur-[140px]" />
+          <div className="absolute top-1/2 right-0 w-[500px] h-[500px] rounded-full bg-violet-600/[.05] blur-[120px]" />
+          <div className="absolute bottom-0 left-1/3 w-[400px] h-[400px] rounded-full bg-cyan-500/[.04] blur-[100px]" />
         </div>
-        <h1 className="display-hero hero-e2 my-6">
-          <span className="hero-word hero-w1">{dict.hero.titlePre}</span>
-          <span className="hero-word hero-w2 better-shimmer-clip">
-            {dict.hero.titleHighlight}
-          </span>
-          <span className="hero-word hero-w3">{dict.hero.titlePost}</span>
-        </h1>
-        <p className="hero-e3 max-w-[590px] text-base leading-relaxed text-white/50 md:text-xl">
-          {dict.hero.body}
-        </p>
-        <div className="hero-e4 mt-8 flex flex-wrap items-center gap-5 md:gap-7">
-          <Link
-            href="/signup"
-            onMouseEnter={handleBtnEnter}
-            onMouseLeave={handleBtnLeave}
-            onClick={handleBtnClick}
-            className="btn-shimmer btn-glow rounded-xl px-6 py-4 text-sm font-extrabold text-black shadow-[0_12px_30px_rgba(255,200,0,.22)] md:px-7 md:text-base"
-          >
-            {dict.hero.startFree}
-          </Link>
-          <a
-            href="/demo/today-drive"
-            className="border-b border-white/50 pb-1 text-sm font-bold text-white/80 md:text-base"
-          >
-            {dict.hero.viewDemo} <span>↘</span>
-          </a>
-        </div>
-        <div className="hero-e5 mt-7 flex flex-wrap gap-x-5 gap-y-2">
-          {dict.hero.trust.map((item) => (
-            <span key={item} className="font-montserrat text-[11px] font-medium tracking-wide text-white/35">✓ {item}</span>
-          ))}
-        </div>
-      </div>
-      <ProductMockup charState={charState} />
-    </section>
-    </>
-  );
-}
 
-function ProductMockup({ charState: _charState }: { charState: "idle" | "excited" | "thumbsup" }) {
-  const [openIdx, setOpenIdx] = useState(-1);
-  const cycleRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+        <div className="relative z-10 mx-auto w-[min(1280px,calc(100%-32px))] grid md:grid-cols-[1.05fr_.95fr] gap-10 md:gap-16 items-center py-20 md:py-0 md:min-h-screen">
 
-  useEffect(() => {
-    let idx = 0;
-    function cycle() {
-      setOpenIdx(idx);
-      cycleRef.current = setTimeout(() => {
-        setOpenIdx(-1);
-        cycleRef.current = setTimeout(() => {
-          idx = (idx + 1) % DEMO_PROJECTS.length;
-          cycle();
-        }, 650);
-      }, 2500);
-    }
-    cycleRef.current = setTimeout(cycle, 800);
-    return () => { if (cycleRef.current) clearTimeout(cycleRef.current); };
-  }, []);
-
-  const openProject = openIdx >= 0 ? DEMO_PROJECTS[openIdx] : null;
-
-  return (
-    <div className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px]">
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute -inset-10 bg-[radial-gradient(circle_at_55%_42%,rgba(255,212,0,.13),transparent_38%)] blur-2xl" />
-
-      {/* Album grid — no browser frame */}
-      <div className="absolute left-0 top-4 z-20 w-[96%]">
-
-        {/* Grid of album cards */}
-        <div className="relative grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-          {DEMO_PROJECTS.map((p, i) => (
+          {/* ── Left: Editorial copy ── */}
+          <div className="relative">
+            {/* Eyebrow */}
             <motion.div
-              key={p.name}
-              className="relative overflow-hidden rounded-2xl cursor-default"
-              animate={{
-                opacity: openIdx >= 0 && openIdx !== i ? 0.25 : 1,
-                scale: openIdx === i ? 1.02 : 1,
-                filter: openIdx >= 0 && openIdx !== i ? "blur(1px)" : "blur(0px)",
-              }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}
+              className="flex items-center gap-2.5 mb-6"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
             >
-              {/* Cover photo */}
-              <div
-                className="w-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('${p.cover}')`,
-                  aspectRatio: "4/3",
-                }}
-              />
-              {/* Bottom strip */}
-              <div className="bg-[#111] px-3 py-2.5 border-t border-white/[.06]">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: p.color }}
-                  />
-                  <span className="text-[9px] font-bold text-white truncate">{p.name}</span>
-                </div>
-                <div className="text-[7px] text-white/35 mt-0.5 pl-4">{p.meta}</div>
-              </div>
+              <span className="h-[1px] w-8 bg-rawi-yellow" />
+              <span className="font-montserrat text-[10px] font-extrabold tracking-[.25em] text-white/40 uppercase">
+                {dict.hero.eyebrow}
+              </span>
             </motion.div>
-          ))}
 
-          {/* Open album overlay */}
-          <AnimatePresence>
-            {openProject && (
-              <motion.div
-                key={openIdx}
-                className="absolute inset-0 z-30 overflow-hidden rounded-2xl bg-[#0A0A0A]"
-                style={{ boxShadow: `0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px ${openProject.color}33` }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.94 }}
-                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {/* Album header */}
-                <div
-                  className="flex items-center justify-between px-4 py-3"
-                  style={{ background: `linear-gradient(135deg, ${openProject.color}22, transparent)`, borderBottom: `1px solid ${openProject.color}22` }}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: openProject.color }} />
-                    <div>
-                      <div className="text-[11px] font-extrabold text-white tracking-wide">{openProject.name}</div>
-                      <div className="text-[8px] text-white/35">{openProject.meta}</div>
-                    </div>
-                  </div>
-                  <span
-                    className="rounded-full px-2.5 py-1 text-[8px] font-bold text-black"
-                    style={{ backgroundColor: openProject.color }}
+            {/* Headline */}
+            <motion.h1
+              className="font-cormorant leading-[1.02] tracking-[-0.02em]"
+              style={{ fontSize: "clamp(52px, 7vw, 90px)" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
+              <span className="block text-white">{dict.hero.titlePre}</span>
+              <span className="block relative h-[1.05em] overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={wordIdx}
+                    className="block italic text-rawi-yellow"
+                    initial={{ y: "100%", opacity: 0 }}
+                    animate={{ y: "0%", opacity: 1 }}
+                    exit={{ y: "-100%", opacity: 0 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    ↥ Download all
-                  </span>
-                </div>
+                    {MORPH_WORDS[wordIdx]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+              <span className="block text-white">{dict.hero.titlePost}</span>
+            </motion.h1>
 
-                {/* Photo masonry grid */}
-                <div className="grid grid-cols-3 gap-[3px] p-[3px]">
-                  {/* Large cover photo */}
-                  <div
-                    className="relative overflow-hidden rounded-lg bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url('${openProject.cover}')`,
-                      gridColumn: "span 2",
-                      aspectRatio: "2/1.15",
-                    }}
-                  />
-                  {/* Side photos */}
-                  <div className="grid grid-rows-2 gap-[3px]">
-                    {openProject.photos.slice(0, 2).map((ph, j) => (
-                      <div
-                        key={j}
-                        className="overflow-hidden rounded-lg bg-cover bg-center"
-                        style={{ backgroundImage: `url('${ph}')`, aspectRatio: "1/0.57" }}
-                      />
-                    ))}
-                  </div>
-                  {/* Bottom row */}
-                  {openProject.photos.slice(2, 5).map((ph, j) => (
-                    <div
-                      key={j}
-                      className="overflow-hidden rounded-lg bg-cover bg-center"
-                      style={{ backgroundImage: `url('${ph}')`, aspectRatio: "1/0.75" }}
-                    />
+            {/* Body */}
+            <motion.p
+              className="mt-6 max-w-[500px] text-base md:text-lg leading-relaxed text-white/45 font-montserrat"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+            >
+              {dict.hero.body}
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              className="mt-9 flex flex-wrap items-center gap-5"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <Link
+                href="/signup"
+                onClick={handleBtnClick}
+                className="btn-shimmer btn-glow rounded-xl px-7 py-4 text-sm font-extrabold text-black shadow-[0_12px_30px_rgba(255,200,0,.22)] hover:brightness-110 transition"
+              >
+                {dict.hero.startFree}
+              </Link>
+              <a
+                href="/demo/today-drive"
+                className="border-b border-white/40 pb-1 text-sm font-bold text-white/70 hover:text-white transition"
+              >
+                {dict.hero.viewDemo} <span>↘</span>
+              </a>
+            </motion.div>
+
+            {/* Trust signals */}
+            <motion.div
+              className="mt-7 flex flex-wrap gap-x-5 gap-y-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.65 }}
+            >
+              {dict.hero.trust.map((item) => (
+                <span key={item} className="font-montserrat text-[11px] font-medium tracking-wide text-white/30">✓ {item}</span>
+              ))}
+            </motion.div>
+
+            {/* Masthead rule */}
+            <motion.div
+              className="mt-10 pt-6 border-t border-white/[.07] flex items-center gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <span className="font-montserrat text-[10px] tracking-[.22em] text-white/20 uppercase">
+                UAE-Born · Photography OS · Est 2024
+              </span>
+              <span className="flex-1 h-[1px] bg-white/[.06]" />
+            </motion.div>
+          </div>
+
+          {/* ── Right: Film strip with 3D tilt ── */}
+          <motion.div
+            className="relative h-[520px] md:h-[700px] overflow-hidden rounded-[28px] select-none"
+            style={{ rotateX, rotateY, perspective: 900, transformStyle: "preserve-3d" }}
+            onMouseMove={e => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              mouseX.set(e.clientX - rect.left - rect.width / 2);
+              mouseY.set(e.clientY - rect.top - rect.height / 2);
+            }}
+            onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.3 }}
+          >
+            {/* Top + bottom gradient fades */}
+            <div className="pointer-events-none absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-rawi-ink to-transparent z-10" />
+            <div className="pointer-events-none absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-rawi-ink to-transparent z-10" />
+            {/* Ambient inner glow */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,212,0,.06),transparent_65%)] z-[5]" />
+
+            <div className="flex gap-3 h-full">
+              {/* Column 1 — scrolls UP */}
+              <div className="flex-1 overflow-hidden">
+                <div className="marquee-up flex flex-col gap-3">
+                  {[...COL1_IMGS, ...COL1_IMGS].map((src, i) => (
+                    <div key={i} className="relative overflow-hidden rounded-2xl shrink-0" style={{ height: "200px" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    </div>
                   ))}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Center floating: live client activity */}
-      <motion.div
-        className="absolute left-1/2 -translate-x-1/2 bottom-[6.5rem] z-20 w-[220px] rounded-2xl border border-white/[.07] bg-[#0d0d0d]/90 backdrop-blur-xl shadow-[0_16px_48px_rgba(0,0,0,.55)] overflow-hidden"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 1.5, ease: "easeOut" }}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-3.5 pt-3 pb-2 border-b border-white/[.05]">
-          <div className="flex items-center gap-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-            </span>
-            <span className="text-[9px] font-bold text-white/70 tracking-[.08em]">LIVE</span>
-          </div>
-          <span className="text-[8px] text-white/25">Client portal</span>
-        </div>
-        {/* Viewer row */}
-        <div className="px-3.5 py-2.5">
-          <div className="text-[10px] font-semibold text-white leading-tight">
-            {openProject ? openProject.name : "Venice Wedding"}
-          </div>
-          <div className="text-[8px] text-white/35 mt-0.5">Sarah is viewing your gallery · now</div>
-          {/* Tiny photo strip */}
-          <div className="flex gap-1 mt-2.5">
-            {(openProject?.photos ?? DEMO_PROJECTS[0]?.photos ?? []).slice(0, 4).map((ph, i) => (
-              <div
-                key={i}
-                className="h-8 w-8 rounded-md bg-cover bg-center border border-white/[.08] flex-shrink-0"
-                style={{ backgroundImage: `url('${ph}')` }}
-              />
-            ))}
-            <div className="h-8 w-8 rounded-md bg-white/[.04] border border-white/[.08] flex items-center justify-center flex-shrink-0">
-              <span className="text-white/30 text-[8px] font-bold">+{openProject ? openProject.meta.split(" ")[0] : "210"}</span>
+              </div>
+              {/* Column 2 — scrolls DOWN */}
+              <div className="flex-1 overflow-hidden">
+                <div className="marquee-down flex flex-col gap-3">
+                  {[...COL2_IMGS, ...COL2_IMGS].map((src, i) => (
+                    <div key={i} className="relative overflow-hidden rounded-2xl shrink-0" style={{ height: "200px" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
-        {/* Download progress bar */}
-        <div className="px-3.5 pb-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[7px] text-white/25">Download progress</span>
-            <span className="text-[7px] text-rawi-yellow font-bold">68%</span>
-          </div>
-          <div className="h-[3px] rounded-full bg-white/[.06] overflow-hidden">
-            <motion.div
-              className="h-full rounded-full bg-rawi-yellow"
-              initial={{ width: "0%" }}
-              animate={{ width: "68%" }}
-              transition={{ duration: 1.8, delay: 2, ease: "easeOut" }}
-            />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Floating: Gallery link sent */}
-      <div
-        className="absolute -left-4 bottom-24 z-30 flex items-center gap-2.5 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
-        style={{ animation: "hero-e3 .6s cubic-bezier(.22,1,.36,1) .9s both" }}
-      >
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#25D366] text-white text-sm">✓</span>
-        <div>
-          <div className="text-[10px] font-bold text-white">Gallery link sent</div>
-          <div className="text-[8px] text-white/40 mt-0.5">via WhatsApp · just now</div>
-        </div>
-      </div>
-
-      {/* Floating: client reaction */}
-      <div
-        className="absolute -right-2 top-[36%] z-30 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
-        style={{ animation: "hero-e4 .6s cubic-bezier(.22,1,.36,1) 1.1s both" }}
-      >
-        <div className="text-[8px] text-white/35 tracking-[.1em]">CLIENT</div>
-        <div className="text-[11px] font-bold text-white mt-1">
-          {openProject ? openProject.name : "Sarah"} ♡ 3 photos
-        </div>
-        <div className="mt-2 flex gap-1">
-          {DEMO_PROJECTS.slice(0, 3).map((p, j) => (
-            <div key={j} className="h-8 w-8 rounded-lg bg-cover bg-center border border-white/10"
-                 style={{ backgroundImage: `url('${p.cover}')` }} />
-          ))}
-        </div>
-      </div>
-
-      {/* Floating: downloads */}
-      <div
-        className="absolute bottom-8 right-4 z-30 flex items-center gap-2 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,.4)] backdrop-blur-sm"
-        style={{ animation: "hero-e5 .5s cubic-bezier(.22,1,.36,1) 1.3s both" }}
-      >
-        <span className="h-6 w-6 grid place-items-center rounded-lg bg-rawi-yellow/20 text-rawi-yellow text-xs">↥</span>
-        <div>
-          <div className="text-[9px] font-bold text-white">12 files downloaded</div>
-          <div className="text-[7px] text-white/35">Client delivered ✓</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
-export function Strip() {
-  return (
-    <section className="bg-rawi-yellow overflow-hidden py-3 md:py-3.5">
-      <div className="flex gap-5 md:gap-8 justify-center text-[11px] md:text-base font-black tracking-[0.08em] whitespace-nowrap">
-        <span>UPLOAD</span>
-        <b>•</b>
-        <span>PRESENT</span>
-        <b>•</b>
-        <span>DELIVER</span>
-        <b>•</b>
-        <span>RAWI</span>
-        <b>•</b>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
 
 const FEATURES = [
   {
-    icon: "↥",
-    title: "Resumable uploads",
-    body: "Resumable delivery for supported photo and video files, with progress that can continue after interruption.",
+    icon: "⌖",
+    title: "Client galleries",
+    body: "Password-protected, branded galleries your clients can open on any device.",
   },
   {
-    icon: "▶",
-    title: "Gallery previews",
-    body: "Polished client previews while original uploaded files remain available to download.",
+    icon: "↓",
+    title: "One-click downloads",
+    body: "Full-resolution downloads — individual photos or the entire gallery in a zip.",
   },
   {
     icon: "✦",
@@ -454,6 +343,23 @@ const FEATURES = [
     body: "Native bilingual experience with right-to-left layouts and regional-first details.",
   },
 ];
+
+export function Strip() {
+  const items = ["Wedding", "Automotive", "Portrait", "Lifestyle", "Commercial", "Corporate", "Fashion", "Editorial"];
+  const row = [...items, ...items, ...items];
+  return (
+    <div className="overflow-hidden border-y border-white/[.07] py-3 bg-rawi-graphite/50">
+      <div className="flex gap-8 whitespace-nowrap" style={{animation:"strip-scroll 22s linear infinite"}}>
+        {row.map((item, i) => (
+          <span key={i} className="font-montserrat text-[11px] tracking-[.2em] uppercase text-white/25 flex items-center gap-3 shrink-0">
+            <span className="text-rawi-yellow">✦</span> {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function Features() {
   return (
     <section
@@ -461,7 +367,7 @@ export function Features() {
       className="py-[72px] w-[min(1180px,calc(100%-40px))] mx-auto"
     >
       <div className="max-w-[760px] mb-8 md:mb-12">
-        <div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">
+        <div className="text-[11px] font-extrabold tracking-[0.17em] text-white/35">
           BUILT AROUND DELIVERY
         </div>
         <h2 className="text-[36px] md:text-[68px] leading-[1.02] tracking-[-0.055em] my-3">
@@ -472,13 +378,13 @@ export function Features() {
         {FEATURES.map((f) => (
           <article
             key={f.title}
-            className="bg-rawi-soft rounded-rawi p-7 min-h-[240px] border border-[#efefed]"
+            className="bg-rawi-panel border border-white/[.07] rounded-[20px] p-7 min-h-[240px] hover:-translate-y-1 transition-transform"
           >
             <div className="w-[42px] h-[42px] rounded-[13px] bg-black text-rawi-yellow grid place-items-center text-xl mb-[42px]">
               {f.icon}
             </div>
             <h3 className="text-xl mb-2.5">{f.title}</h3>
-            <p className="text-gray-500 leading-relaxed">{f.body}</p>
+            <p className="text-white/45 leading-relaxed">{f.body}</p>
           </article>
         ))}
       </div>
@@ -583,7 +489,7 @@ export function Pricing() {
       className="py-[52px] md:py-[80px] w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto"
     >
       <div className="max-w-[760px] mb-12">
-        <div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">
+        <div className="text-[11px] font-extrabold tracking-[0.17em] text-white/35">
           SIMPLE PRICING
         </div>
         <h2 className="text-[36px] md:text-[68px] leading-[1.02] tracking-[-0.055em] my-3">
