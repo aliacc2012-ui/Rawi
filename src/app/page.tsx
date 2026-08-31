@@ -6,7 +6,6 @@ import {
   Strip,
   GalleryDemo,
   Pricing,
-  ClosingCTA,
 } from "@/components/landing/Sections";
 import { WorkflowSection } from "@/components/landing/WorkflowSection";
 import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
@@ -58,8 +57,6 @@ export default function LandingPage() {
       <GalleryDemo />
       <Pricing />
       <FAQ />
-      <ClosingCTA />
-
       {/* Footer */}
       <footer className="border-t border-black/10 bg-[#fbf6ef]">
         <div className="mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] py-10 md:py-14">
