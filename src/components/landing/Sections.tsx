@@ -1,4 +1,5 @@
 "use client";
+import { useState, useRef } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -62,8 +63,26 @@ const DEMO_PROJECTS = [
 
 export function Hero() {
   const { dict } = useLocale();
+  const [charState, setCharState] = useState<"idle" | "excited" | "thumbsup">("idle");
+  const [thumbs, setThumbs] = useState<{x:number;y:number;id:number}[]>([]);
+  const thumbIdRef = useRef(0);
+
+  const handleBtnEnter = () => setCharState("excited");
+  const handleBtnLeave = () => setCharState("idle");
+  const handleBtnClick = (e: React.MouseEvent) => {
+    const id = ++thumbIdRef.current;
+    setThumbs(prev => [...prev, { x: e.clientX, y: e.clientY, id }]);
+    setCharState("thumbsup");
+    setTimeout(() => setThumbs(prev => prev.filter(t => t.id !== id)), 1900);
+    setTimeout(() => setCharState("idle"), 2200);
+    trackEvent("signup_started", { source: "hero" });
+  };
 
   return (
+    <>
+    {thumbs.map(t => (
+      <span key={t.id} className="thumbsup-pop" style={{left: t.x - 20, top: t.y - 50}} aria-hidden="true">👍</span>
+    ))}
     <section className="mx-auto grid min-h-0 w-[min(1240px,calc(100%-32px))] items-center gap-10 overflow-hidden pb-14 pt-8 md:min-h-[760px] md:w-[min(1240px,calc(100%-40px))] md:grid-cols-[.92fr_1.08fr] md:gap-[58px] md:pb-[80px] md:pt-10">
       <div className="relative">
         {/* Hero headline glow */}
@@ -92,7 +111,9 @@ export function Hero() {
         <div className="hero-e4 mt-8 flex flex-wrap items-center gap-5 md:gap-7">
           <Link
             href="/signup"
-            onClick={() => trackEvent("signup_started", { source: "hero" })}
+            onMouseEnter={handleBtnEnter}
+            onMouseLeave={handleBtnLeave}
+            onClick={handleBtnClick}
             className="btn-shimmer btn-glow rounded-xl px-6 py-4 text-sm font-extrabold text-black shadow-[0_12px_30px_rgba(255,200,0,.22)] md:px-7 md:text-base"
           >
             {dict.hero.startFree}
@@ -110,12 +131,13 @@ export function Hero() {
           ))}
         </div>
       </div>
-      <ProductMockup />
+      <ProductMockup charState={charState} />
     </section>
+    </>
   );
 }
 
-function ProductMockup() {
+function ProductMockup({ charState }: { charState: "idle" | "excited" | "thumbsup" }) {
   return (
     <div className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px]">
       <div className="rawi-mockup-glow absolute -inset-10 bg-[radial-gradient(circle_at_55%_45%,rgba(255,212,0,.20),transparent_34%)] blur-2xl pointer-events-none" />
@@ -221,7 +243,7 @@ function ProductMockup() {
         </div>
       </div>
       <div
-        className="rawi-character pointer-events-none absolute -right-3 -bottom-10 z-30 w-[39%] min-w-[180px] max-w-[245px]"
+        className={`pointer-events-none absolute -right-3 -bottom-10 z-30 w-[39%] min-w-[180px] max-w-[245px] char-${charState}`}
         aria-hidden="true"
       >
         <Image
