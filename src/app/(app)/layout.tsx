@@ -8,7 +8,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!workspace) redirect("/onboarding");
 
   return (
-    <div className="min-h-screen bg-[#f4f4f2] md:flex">
+    <div className="min-h-screen bg-rawi-ink text-[#F0EFFF] md:flex">
       <Sidebar storageUsedBytes={workspace.storage_used_bytes} storageLimitBytes={workspace.storage_limit_bytes} />
       <main className="min-w-0 flex-1 overflow-x-hidden p-4 pb-24 sm:p-5 sm:pb-24 md:p-9 md:pb-9">{children}</main>
     </div>

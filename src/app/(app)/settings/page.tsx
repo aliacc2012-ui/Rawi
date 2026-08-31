@@ -67,15 +67,15 @@ export default async function SettingsPage() {
         <h1 className="text-[34px] md:text-[42px] tracking-[-0.05em] leading-none mt-3">
           Branding
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-white/45 mt-2">
           Shape how clients experience your studio before they even see the
           first photo.
         </p>
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-[.9fr_1.1fr] gap-5">
-        <div className="bg-white border border-gray-200 rounded-[22px] p-5 md:p-6 shadow-sm self-start">
-          <h2 className="text-xl font-bold">Studio identity</h2>
-          <p className="text-sm text-gray-400 mt-1 mb-6">
+        <div className="bg-rawi-panel border border-white/[.07] rounded-[22px] p-5 md:p-6 self-start">
+          <h2 className="text-xl font-bold text-[#F0EFFF]">Studio identity</h2>
+          <p className="text-sm text-white/45 mt-1 mb-6">
             Update your public studio name and signature accent.
           </p>
           <BrandingForm
@@ -85,7 +85,7 @@ export default async function SettingsPage() {
           />
         </div>
         <div className="xl:sticky xl:top-6 self-start">
-          <div className="bg-white border border-gray-200 rounded-[22px] p-4 shadow-sm">
+          <div className="bg-rawi-panel border border-white/[.07] rounded-[22px] p-4">
             <div className="relative overflow-hidden rounded-[18px] min-h-[520px] bg-[radial-gradient(circle_at_68%_52%,rgba(255,212,0,.16),transparent_24%),linear-gradient(145deg,#353535,#080808_60%,#252525)] text-white">
               <div className="relative z-10 p-6 md:p-8 min-h-[520px] flex flex-col justify-between">
                 <div className="font-extrabold">
@@ -115,7 +115,7 @@ export default async function SettingsPage() {
       </div>
       <section className="mt-6 space-y-5">
         {showRenewal && (
-          <div className="rounded-[22px] border border-amber-300 bg-amber-50 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="rounded-[22px] border border-amber-400/30 bg-amber-900/[.15] p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="font-extrabold text-lg">
                 Your {PLAN_CONFIG[currentPlan].name} plan expires{" "}
@@ -124,7 +124,7 @@ export default async function SettingsPage() {
                   : `in ${daysLeft} day${daysLeft === 1 ? "" : "s"}`}
                 .
               </div>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-white/55 mt-1">
                 Renew now to keep your{" "}
                 {currentPlan === "pro" ? "1 TB" : "250 GB"} storage and paid
                 features.
@@ -139,15 +139,15 @@ export default async function SettingsPage() {
             </div>
           </div>
         )}
-        <div className="bg-white border border-gray-200 rounded-[24px] p-5 md:p-7 shadow-sm">
-          <h2 className="text-[28px] font-bold">Plan & storage</h2>
+        <div className="bg-rawi-panel border border-white/[.07] rounded-[24px] p-5 md:p-7">
+          <h2 className="text-[28px] font-bold text-[#F0EFFF]">Plan & storage</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-7">
             <div>
-              <div className="text-[40px] font-extrabold uppercase">
+              <div className="text-[40px] font-extrabold uppercase text-[#F0EFFF]">
                 {workspace!.plan}
               </div>
               {periodEnd && (
-                <div className="text-sm text-gray-500 mt-1">
+                <div className="text-sm text-white/40 mt-1">
                   Access until{" "}
                   {periodEnd.toLocaleDateString("en-AE", {
                     day: "numeric",
@@ -166,13 +166,13 @@ export default async function SettingsPage() {
                       : limitGb.toFixed(1) + " GB"}
                   </span>
                 </div>
-                <div className="h-2.5 rounded-full bg-[#efefed] mt-3">
+                <div className="h-2.5 rounded-full bg-white/[.08] mt-3">
                   <div
                     className="h-full rounded-full bg-emerald-500"
                     style={{ width: `${storagePct}%` }}
                   />
                 </div>
-                <div className="text-xs text-gray-500 mt-3">
+                <div className="text-xs text-white/40 mt-3">
                   {freeGb >= 1024
                     ? (freeGb / 1024).toFixed(1) + " TB"
                     : freeGb.toFixed(1) + " GB"}{" "}
@@ -200,7 +200,7 @@ export default async function SettingsPage() {
 function CustomPlanCard() {
   return (
     <div className="relative flex min-h-[390px] flex-col rounded-[22px] border border-gray-200 bg-[linear-gradient(145deg,#171717,#050505)] p-6 text-white">
-      <div className="font-extrabold uppercase">Custom</div>
+      <div className="font-extrabold uppercase text-[#F0EFFF]">Custom</div>
       <div className="mt-5 text-[40px] leading-none tracking-[-.05em]">
         Built for your workflow.
       </div>
@@ -234,24 +234,24 @@ function PlanCard({
 }) {
   return (
     <div
-      className={`relative bg-white rounded-[22px] p-6 min-h-[390px] ${plan.featured ? "border-2 border-black shadow-sm" : "border border-gray-200"}`}
+      className={`relative bg-rawi-panel rounded-[22px] p-6 min-h-[390px] ${plan.featured ? "border-2 border-rawi-yellow" : "border border-white/[.07]"}`}
     >
       {plan.featured && (
-        <div className="absolute -top-3 left-5 rounded-full bg-black px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-white">
+        <div className="absolute -top-3 left-5 rounded-full bg-rawi-yellow px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-black">
           Most Popular
         </div>
       )}
-      <div className="font-extrabold uppercase">{plan.name}</div>
+      <div className="font-extrabold uppercase text-[#F0EFFF]">{plan.name}</div>
       <div className="text-[48px] mt-5">
         {plan.priceAed}
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-white/40">
           {" "}
           AED{plan.priceAed !== 0 ? "/month" : ""}
         </span>
       </div>
       <ul className="mt-6 space-y-3 text-sm">
         {plan.features.map((feature) => (
-          <li key={feature} className="flex gap-2">
+          <li key={feature} className="flex gap-2 text-white/80">
             <span className="font-black">✓</span>
             <span>{feature}</span>
           </li>
