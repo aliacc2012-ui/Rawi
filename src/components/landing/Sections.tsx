@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -139,13 +140,33 @@ export function Hero() {
 }
 
 function ProductMockup({ charState: _charState }: { charState: "idle" | "excited" | "thumbsup" }) {
-  const photos = DEMO_PROJECTS.slice(0, 6);
+  const [openIdx, setOpenIdx] = useState(-1);
+  const cycleRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    let idx = 0;
+    function cycle() {
+      setOpenIdx(idx);
+      cycleRef.current = setTimeout(() => {
+        setOpenIdx(-1);
+        cycleRef.current = setTimeout(() => {
+          idx = (idx + 1) % DEMO_PROJECTS.length;
+          cycle();
+        }, 700);
+      }, 2400);
+    }
+    cycleRef.current = setTimeout(cycle, 900);
+    return () => { if (cycleRef.current) clearTimeout(cycleRef.current); };
+  }, []);
+
+  const openProject = openIdx >= 0 ? DEMO_PROJECTS[openIdx] : null;
+
   return (
     <div className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px]">
       {/* Ambient glow */}
-      <div className="rawi-mockup-glow pointer-events-none absolute -inset-10 bg-[radial-gradient(circle_at_55%_42%,rgba(255,212,0,.18),transparent_38%)] blur-2xl" />
+      <div className="pointer-events-none absolute -inset-10 bg-[radial-gradient(circle_at_55%_42%,rgba(255,212,0,.15),transparent_38%)] blur-2xl" />
 
-      {/* Main gallery frame */}
+      {/* Browser frame */}
       <div className="rawi-dashboard-enter absolute left-0 top-6 z-20 w-[96%] overflow-hidden rounded-[26px] border border-white/[.08] bg-[#0D0D0D] shadow-[0_32px_90px_rgba(0,0,0,.55)]">
         {/* Browser chrome */}
         <div className="flex h-10 items-center justify-between bg-[#161616] px-4 border-b border-white/[.05]">
@@ -156,54 +177,99 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
           </div>
           <div className="flex items-center gap-2 rounded-lg bg-white/[.06] px-3 py-1.5">
             <span className="text-[8px] text-white/30">🔒</span>
-            <span className="text-[9px] text-white/35 tracking-[.04em]">rawi.gallery/today-drive</span>
+            <span className="text-[9px] text-white/35 tracking-[.04em]">rawi.gallery/projects</span>
           </div>
           <div className="w-16" />
         </div>
 
-        {/* Gallery header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[.05]">
-          <div className="flex items-center gap-3">
-            <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-rawi-yellow text-[11px] font-black text-black -rotate-[6deg]">R</span>
-            <div>
-              <div className="text-[11px] font-bold text-white tracking-[.06em]">TODAY DRIVE</div>
-              <div className="text-[9px] text-white/35 mt-0.5">146 photos · by Ali Hassan</div>
-            </div>
-          </div>
+        {/* Projects grid header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[.05]">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-white/[.07] px-3 py-1.5 text-[9px] text-white/50">♡ 12</span>
-            <span className="rounded-full bg-rawi-yellow px-3 py-1.5 text-[9px] font-bold text-black">↥ Download all</span>
+            <span className="grid h-7 w-7 place-items-center rounded-[8px] bg-rawi-yellow text-[10px] font-black text-black -rotate-[6deg]">R</span>
+            <span className="text-[11px] font-bold text-white tracking-[.06em]">My Galleries</span>
           </div>
+          <span className="text-[8px] text-white/30">{DEMO_PROJECTS.length} projects</span>
         </div>
 
-        {/* Photo grid */}
-        <div className="grid grid-cols-3 gap-[3px] p-[3px]">
-          {photos.map((p, i) => (
+        {/* Project cards grid */}
+        <div className="relative grid grid-cols-3 gap-[6px] p-[6px]" style={{ minHeight: 320 }}>
+          {DEMO_PROJECTS.map((p, i) => (
             <div
               key={p.name}
-              className="group relative overflow-hidden"
-              style={{ aspectRatio: i === 0 ? "2/1.1" : "1/0.85", gridColumn: i === 0 ? "span 2" : undefined }}
+              className="group relative overflow-hidden rounded-xl border border-white/[.06] bg-[#161616] transition-all duration-300"
+              style={{
+                opacity: openIdx >= 0 && openIdx !== i ? 0.35 : 1,
+                transform: openIdx === i ? "scale(1.03)" : "scale(1)",
+                transition: "opacity 0.4s, transform 0.4s",
+              }}
             >
               <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                style={{ backgroundImage: `url('${p.image}')` }}
+                className="h-[72px] bg-cover bg-center"
+                style={{ backgroundImage: `linear-gradient(180deg,transparent 40%,rgba(0,0,0,.6)),url('${p.image}')` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-1.5">
-                <span className="rounded-full bg-white/90 px-2 py-1 text-[7px] font-bold text-black">♡</span>
-                <span className="rounded-full bg-white/90 px-2 py-1 text-[7px] font-bold text-black">↥</span>
+              <div className="p-2">
+                <div className="text-[8px] font-bold text-white truncate">{p.name}</div>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-[7px] text-white/35">{p.meta}</span>
+                  <span className="text-[6px] text-emerald-400 font-semibold">● Live</span>
+                </div>
               </div>
-              {i === 0 && (
-                <div className="absolute top-2 right-2 rounded-full bg-rawi-yellow px-2 py-1 text-[7px] font-black text-black">✓ Selected</div>
-              )}
             </div>
           ))}
+
+          {/* Expanding open project overlay */}
+          <AnimatePresence>
+            {openProject && (
+              <motion.div
+                key={openIdx}
+                className="absolute inset-0 z-30 overflow-hidden rounded-xl border border-rawi-yellow/30 bg-[#0D0D0D] shadow-[0_0_40px_rgba(255,212,0,.15)]"
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {/* Project header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/[.07]">
+                  <div>
+                    <div className="text-[10px] font-extrabold text-white tracking-[.04em]">{openProject.name}</div>
+                    <div className="text-[8px] text-white/35 mt-0.5">{openProject.meta} · by Ali Hassan</div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="rounded-full bg-white/[.07] px-2.5 py-1 text-[8px] text-white/40">♡ 12</span>
+                    <span className="rounded-full bg-rawi-yellow px-2.5 py-1 text-[8px] font-bold text-black">↥ Download</span>
+                  </div>
+                </div>
+                {/* Photo grid inside opened project */}
+                <div className="grid grid-cols-3 gap-[3px] p-[3px]">
+                  {DEMO_PROJECTS.filter((_, i2) => i2 !== openIdx).slice(0, 5).map((other, j) => (
+                    <div
+                      key={j}
+                      className="relative overflow-hidden rounded-lg"
+                      style={{ aspectRatio: j === 0 ? "2/1.1" : "1/0.85", gridColumn: j === 0 ? "span 2" : undefined }}
+                    >
+                      <div
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url('${other.image}')` }}
+                      />
+                    </div>
+                  ))}
+                  {/* Cover photo */}
+                  <div className="relative overflow-hidden rounded-lg" style={{ aspectRatio: "1/0.85" }}>
+                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${openProject.image}')` }} />
+                    <div className="absolute top-1 right-1 rounded-full bg-rawi-yellow px-1.5 py-0.5 text-[6px] font-black text-black">✓ Cover</div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       {/* Floating: WhatsApp notification */}
-      <div className="absolute -left-4 bottom-24 z-30 flex items-center gap-2.5 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
-           style={{ animation: "hero-e3 .6s cubic-bezier(.22,1,.36,1) .9s both" }}>
+      <div
+        className="absolute -left-4 bottom-24 z-30 flex items-center gap-2.5 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
+        style={{ animation: "hero-e3 .6s cubic-bezier(.22,1,.36,1) .9s both" }}
+      >
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#25D366] text-white text-sm">✓</span>
         <div>
           <div className="text-[10px] font-bold text-white">Gallery link sent</div>
@@ -212,80 +278,33 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
       </div>
 
       {/* Floating: client reaction */}
-      <div className="absolute -right-2 top-[38%] z-30 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
-           style={{ animation: "hero-e4 .6s cubic-bezier(.22,1,.36,1) 1.1s both" }}>
+      <div
+        className="absolute -right-2 top-[38%] z-30 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
+        style={{ animation: "hero-e4 .6s cubic-bezier(.22,1,.36,1) 1.1s both" }}
+      >
         <div className="text-[8px] text-white/35 tracking-[.1em]">CLIENT</div>
-        <div className="text-[11px] font-bold text-white mt-1">Sarah ♡ 3 photos</div>
+        <div className="text-[11px] font-bold text-white mt-1">
+          {openProject ? openProject.name.split(" ").slice(0, 2).join(" ") : "Sarah"} ♡ 3 photos
+        </div>
         <div className="mt-2 flex gap-1">
-          {[0,1,2].map(j => (
+          {DEMO_PROJECTS.slice(0, 3).map((p, j) => (
             <div key={j} className="h-8 w-8 rounded-lg bg-cover bg-center border border-white/10"
-                 style={{ backgroundImage: `url('${photos[j]?.image}')` }} />
+                 style={{ backgroundImage: `url('${p.image}')` }} />
           ))}
         </div>
       </div>
 
       {/* Floating: download badge */}
-      <div className="absolute bottom-8 right-4 z-30 flex items-center gap-2 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,.4)] backdrop-blur-sm"
-           style={{ animation: "hero-e5 .5s cubic-bezier(.22,1,.36,1) 1.3s both" }}>
+      <div
+        className="absolute bottom-8 right-4 z-30 flex items-center gap-2 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,.4)] backdrop-blur-sm"
+        style={{ animation: "hero-e5 .5s cubic-bezier(.22,1,.36,1) 1.3s both" }}
+      >
         <span className="h-6 w-6 grid place-items-center rounded-lg bg-rawi-yellow/20 text-rawi-yellow text-xs">↥</span>
         <div>
           <div className="text-[9px] font-bold text-white">12 files downloaded</div>
           <div className="text-[7px] text-white/35">Client delivered ✓</div>
         </div>
       </div>
-      <div className="rawi-delivery-enter absolute left-[9%] bottom-[3%] z-40 rounded-2xl bg-white border border-gray-200 shadow-xl p-3 w-[160px] rotate-[-4deg]">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center">
-            ✓
-          </div>
-          <div>
-            <div className="text-[9px] font-black">Client delivered</div>
-            <div className="text-[7px] text-gray-400 mt-0.5">
-              12 files downloaded
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DemoProjectCard({
-  project,
-}: {
-  project: { name: string; image: string; meta: string };
-}) {
-  return (
-    <div className="overflow-hidden rounded-xl border bg-[#fafafa]">
-      <div
-        className="h-[78px] bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(180deg,transparent,rgba(0,0,0,.24)),url('${project.image}')`,
-        }}
-      />
-      <div className="p-1.5">
-        <div className="text-[7px] font-black truncate">{project.name}</div>
-        <div className="text-[6px] text-gray-400 mt-0.5">{project.meta}</div>
-        <div className="text-[6px] text-emerald-600 mt-1">● Published</div>
-      </div>
-    </div>
-  );
-}
-function MiniStat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-xl border bg-white p-2.5">
-      <div className="text-base font-black tracking-[-.04em]">{value}</div>
-      <div className="text-[7px] text-gray-400 mt-1">{label}</div>
-    </div>
-  );
-}
-function ActivityLine({ icon, text }: { icon: string; text: string }) {
-  return (
-    <div className="flex items-center gap-2 text-[8px]">
-      <span className="w-5 h-5 rounded-lg bg-[#fff6cf] grid place-items-center">
-        {icon}
-      </span>
-      <span className="truncate">{text}</span>
     </div>
   );
 }
