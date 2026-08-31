@@ -39,19 +39,7 @@ const DEMO_PROJECTS = [
       "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=400&q=75",
     ],
   },
-  {
-    name: "Sunrise Atlas",
-    cover: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
-    meta: "132 photos",
-    color: "#f0a050",
-    photos: [
-      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=75",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=75",
-      "https://images.unsplash.com/photo-1433838552652-f9a46b332c40?w=400&q=75",
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=75",
-      "https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=400&q=75",
-    ],
-  },
+
   {
     name: "Studio Sessions",
     cover: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80",
