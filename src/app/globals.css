@@ -21,9 +21,8 @@ html {
 }
 
 body {
-  background: #06060F;
-  color: #F0EFFF;
   font-family: var(--font-sans);
+  color: #111;
 }
 
 [dir="rtl"] body {
