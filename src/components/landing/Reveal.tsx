@@ -1,10 +1,9 @@
 "use client";
-
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 interface RevealProps {
   children: ReactNode;
-  delay?: number; // ms
+  delay?: 0 | 1 | 2 | 3 | 4 | 5;
   className?: string;
 }
 
@@ -14,23 +13,26 @@ export function Reveal({ children, delay = 0, className = "" }: RevealProps) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setTimeout(() => el.classList.add("visible"), delay);
-            observer.unobserve(el);
-          }
-        });
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          el.classList.add("visible");
+          observer.disconnect();
+        }
       },
-      { threshold: 0.12 }
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
-  }, [delay]);
+  }, []);
 
   return (
-    <div ref={ref} className={`reveal ${className}`}>
+    <div
+      ref={ref}
+      className={`reveal${delay > 0 ? ` reveal-delay-${delay}` : ""} ${className}`}
+    >
       {children}
     </div>
   );

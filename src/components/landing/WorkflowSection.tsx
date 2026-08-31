@@ -21,15 +21,8 @@ export function WorkflowSection() {
       <div className="relative mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))]">
         <Reveal>
           <div className="mb-8 md:mb-10">
-            <span className="eyebrow-accent text-[11px] font-extrabold tracking-[.17em] text-white/35">
-              FROM EXPORT TO DELIVERY
-            </span>
-            <h2
-              id="rawi-workflow-title"
-              className="mt-3 text-[36px] leading-[1.02] tracking-[-.05em] text-[#F0EFFF] md:text-[58px]"
-            >
-              How RAWI works.
-            </h2>
+            <Reveal><div className="editorial-eyebrow mb-4">FROM EXPORT TO DELIVERY</div></Reveal>
+          <Reveal delay={1}><h2 id="rawi-workflow-title" className="display-section mt-4">How RAWI works.</h2></Reveal>
           </div>
         </Reveal>
 

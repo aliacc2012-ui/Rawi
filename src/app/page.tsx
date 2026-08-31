@@ -10,6 +10,7 @@ import {
 import { WorkflowSection } from "@/components/landing/WorkflowSection";
 import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
 import { Stats } from "@/components/landing/Stats";
+import { EditorialStatement } from "@/components/landing/EditorialStatement";
 import { FAQ } from "@/components/landing/FAQ";
 import { CookieConsent } from "@/components/landing/CookieConsent";
 
@@ -56,6 +57,7 @@ export default function LandingPage() {
       <Nav />
       <Hero />
       <Strip />
+      <EditorialStatement />
       <Stats />
       <WorkflowSection />
       <EnhancedFeatures />

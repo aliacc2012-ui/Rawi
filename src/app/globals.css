@@ -13,6 +13,12 @@
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-arabic: var(--font-noto-kufi-arabic), var(--font-inter), sans-serif;
 
+  --color-rawi-cream: #F2ECD8;
+  --color-rawi-gold-warm: #C9962A;
+
+  --font-cormorant: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-montserrat: var(--font-montserrat), "Montserrat", system-ui, sans-serif;
+
   --radius-rawi: 22px;
 }
 
@@ -351,3 +357,61 @@ body {
 .hero-w1 { animation-delay: 0.16s; }
 .hero-w2 { animation-delay: 0.26s; }
 .hero-w3 { animation-delay: 0.36s; }
+
+/* ── Editorial typography utilities ── */
+.font-cormorant {
+  font-family: var(--font-cormorant, "Cormorant Garamond", Georgia, serif);
+}
+.font-montserrat {
+  font-family: var(--font-montserrat, "Montserrat", system-ui, sans-serif);
+}
+.display-hero {
+  font-family: var(--font-cormorant, "Cormorant Garamond", Georgia, serif);
+  font-size: clamp(52px, 8vw, 108px);
+  font-weight: 300;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+}
+.display-section {
+  font-family: var(--font-cormorant, "Cormorant Garamond", Georgia, serif);
+  font-size: clamp(38px, 6vw, 84px);
+  font-weight: 300;
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+}
+.editorial-eyebrow {
+  font-family: var(--font-montserrat, "Montserrat", system-ui, sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #C9962A;
+}
+.editorial-eyebrow::before {
+  content: "—\00a0";
+  opacity: 0.6;
+}
+.gold-rule {
+  width: 48px;
+  height: 1px;
+  background: #C9962A;
+  opacity: 0.6;
+}
+/* Shimmer text-clip (gold/cream gradient) */
+.better-shimmer-clip {
+  background: linear-gradient(90deg, #FFD400 0%, #F2ECD8 40%, #C9962A 60%, #FFD400 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: better-shimmer-clip-anim 3.5s linear infinite;
+}
+@keyframes better-shimmer-clip-anim {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+/* ── Mobile font overrides ── */
+@media (max-width: 480px) {
+  .display-hero    { font-size: 48px; }
+  .display-section { font-size: 36px; }
+}

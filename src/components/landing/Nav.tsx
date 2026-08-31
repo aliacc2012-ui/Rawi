@@ -25,14 +25,14 @@ export function Nav() {
           <span className="grid h-[30px] w-[30px] shrink-0 -rotate-[8deg] place-items-center rounded-[50%_50%_50%_8px] bg-rawi-yellow text-sm font-black text-black">
             R
           </span>
-          <span className="text-[18px] tracking-[0.1em] text-[#F0EFFF] sm:text-[19px] sm:tracking-[0.12em]">RAWI</span>
+          <span className="font-cormorant text-[22px] font-light tracking-[0.14em] text-[#F2ECD8] sm:text-[24px]">RAWI</span>
           <span className="font-arabic text-xs text-white/35">راوي</span>
         </Link>
 
-        <nav className="hidden gap-8 text-sm text-white/60 md:flex" aria-label="Primary navigation">
-          <a href="#features" className="hover:text-rawi-yellow transition-colors">{dict.nav.features}</a>
-          <a href="#gallery" className="hover:text-rawi-yellow transition-colors">{dict.nav.gallery}</a>
-          <a href="#pricing" className="hover:text-rawi-yellow transition-colors">{dict.nav.pricing}</a>
+        <nav className="hidden gap-8 md:flex" aria-label="Primary navigation">
+          <a href="#features" className="font-montserrat text-[12px] font-medium tracking-[0.08em] text-white/50 transition-colors hover:text-[#C9962A]">{dict.nav.features}</a>
+          <a href="#gallery" className="font-montserrat text-[12px] font-medium tracking-[0.08em] text-white/50 transition-colors hover:text-[#C9962A]">{dict.nav.gallery}</a>
+          <a href="#pricing" className="font-montserrat text-[12px] font-medium tracking-[0.08em] text-white/50 transition-colors hover:text-[#C9962A]">{dict.nav.pricing}</a>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
@@ -41,7 +41,7 @@ export function Nav() {
               type="button"
               onClick={() => setLocale("ar")}
               aria-pressed={locale === "ar"}
-              className={`transition-colors ${locale === "ar" ? "text-rawi-yellow" : "text-white/35 hover:text-white/70"}`}
+              className={`font-montserrat transition-colors ${locale === "ar" ? "text-[#C9962A]" : "text-white/35 hover:text-white/70"}`}
             >
               AR
             </button>
@@ -50,7 +50,7 @@ export function Nav() {
               type="button"
               onClick={() => setLocale("en")}
               aria-pressed={locale === "en"}
-              className={`transition-colors ${locale === "en" ? "text-rawi-yellow" : "text-white/35 hover:text-white/70"}`}
+              className={`font-montserrat transition-colors ${locale === "en" ? "text-[#C9962A]" : "text-white/35 hover:text-white/70"}`}
             >
               ENG
             </button>

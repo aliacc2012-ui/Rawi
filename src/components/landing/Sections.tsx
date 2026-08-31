@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PLAN_CONFIG, PLAN_ORDER } from "@/lib/plans";
 import { trackEvent } from "@/lib/analytics";
+import { Reveal } from "@/components/landing/Reveal";
 
 const HERO_IMAGE =
   "https://hips.hearstapps.com/hmg-prod/images/2024-mclaren-750s-121-66cdd39e16442.jpg?crop=1xw%3A1xh%3Bcenter%2Ctop";
@@ -94,13 +95,13 @@ export function Hero() {
         <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"42%", bottom:"65%", animationDelay:"0.8s"}} />
         <span aria-hidden="true" className="hero-star" style={{left:"62%", bottom:"30%", animationDelay:"1.8s"}} />
         <span aria-hidden="true" className="hero-star hero-star-sm" style={{left:"55%", bottom:"48%", animationDelay:"3.1s"}} />
-        <div className="hero-e1 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[.06] px-3.5 py-2.5 text-[10px] font-extrabold tracking-[.13em] text-white/70 shadow-sm md:text-[11px]">
+        <div className="editorial-eyebrow hero-e1">
           <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
           {dict.hero.eyebrow}
         </div>
-        <h1 className="hero-e2 my-6 text-[48px] font-medium leading-[.96] tracking-[-.062em] sm:text-[56px] md:text-[88px]" style={{perspective: "600px"}}>
+        <h1 className="display-hero hero-e2 my-6">
           <span className="hero-word hero-w1">{dict.hero.titlePre}</span>
-          <span className="hero-word hero-w2 better-shimmer px-[0.06em]">
+          <span className="hero-word hero-w2 better-shimmer-clip">
             {dict.hero.titleHighlight}
           </span>
           <span className="hero-word hero-w3">{dict.hero.titlePost}</span>
@@ -125,9 +126,9 @@ export function Hero() {
             {dict.hero.viewDemo} <span>↘</span>
           </a>
         </div>
-        <div className="hero-e5 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-white/35">
+        <div className="hero-e5 mt-7 flex flex-wrap gap-x-5 gap-y-2">
           {dict.hero.trust.map((item) => (
-            <span key={item}>✓ {item}</span>
+            <span key={item} className="font-montserrat text-[11px] font-medium tracking-wide text-white/35">✓ {item}</span>
           ))}
         </div>
       </div>
@@ -401,13 +402,11 @@ export function GalleryDemo() {
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.78fr_1.22fr] gap-5 lg:gap-14 items-end mb-8 md:mb-12">
           <div>
-            <div className="text-[11px] font-extrabold tracking-[0.17em] text-gray-500">
-              CLIENT EXPERIENCE
-            </div>
-            <h2 className="text-[36px] md:text-[68px] leading-[1.02] tracking-[-0.055em] my-3">
+            <div className="editorial-eyebrow mb-4">CLIENT EXPERIENCE</div>
+            <h2 className="display-section mt-4">
               Not a folder.
               <br />
-              <span className="text-[#d4aa00]">A presentation.</span>
+              <span style={{color:"#C9962A"}}>A presentation.</span>
             </h2>
           </div>
           <p className="text-white/45 max-w-[620px] text-lg leading-relaxed lg:pb-2">
@@ -614,82 +613,76 @@ export function Pricing() {
 }
 
 export function ClosingCTA() {
-  const workflow = [
-    { number: "01", icon: "↥", label: "Collect", detail: "Upload every final" },
-    { number: "02", icon: "⊞", label: "Organize", detail: "Curate the story" },
-    {
-      number: "03",
-      icon: "▷",
-      label: "Present",
-      detail: "Deliver beautifully",
-    },
-  ];
-
   return (
-    <section className="bg-[#fbf6ef] px-4 pb-10 pt-2 md:px-5 md:pb-16 md:pt-5">
-      <div className="relative mx-auto w-full max-w-[1380px] overflow-hidden rounded-[26px] md:rounded-[32px] border border-[#e4dbcf] bg-white/75 px-5 py-8 md:px-10 md:py-12 shadow-[0_24px_80px_rgba(55,42,24,.07)] backdrop-blur-sm md:px-10 md:py-12">
-        <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full border border-[#eadfce]" />
-        <div className="pointer-events-none absolute -right-10 -top-20 h-56 w-56 rounded-full border border-rawi-yellow/25" />
-        <div className="pointer-events-none absolute right-10 top-6 h-24 w-24 bg-[radial-gradient(circle,#d8c9b5_1.2px,transparent_1.2px)] bg-[size:10px_10px] opacity-35" />
+    <section className="relative overflow-hidden bg-[#06060F] py-[100px] md:py-[160px]">
+      {/* Gold glow */}
+      <div
+        className="pointer-events-none absolute -right-32 -top-32 h-[500px] w-[500px] rounded-full opacity-20"
+        style={{ background: "radial-gradient(circle, rgba(201,150,42,.55) 0%, transparent 70%)" }}
+        aria-hidden="true"
+      />
+      {/* Dot grid */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.035]"
+        style={{ backgroundImage: "radial-gradient(circle, #F2ECD8 1px, transparent 1px)", backgroundSize: "36px 36px" }}
+        aria-hidden="true"
+      />
 
-        <div className="relative z-10 grid items-center gap-10 xl:grid-cols-[.88fr_1.35fr_auto]">
-          <div className="max-w-[460px]">
-            <div className="flex items-center gap-2 text-[11px] font-black tracking-[.18em] text-gray-500">
-              <span>RAWI</span>
-              <span className="h-2 w-2 rounded-full bg-rawi-yellow" />
-              <span className="font-arabic tracking-normal">راوي</span>
-            </div>
-            <h2 className="mt-4 text-[34px] leading-[1.02] tracking-[-0.055em] text-black md:text-[48px]">
-              Make delivery part of the creative work.
-            </h2>
+      <div className="relative mx-auto w-[min(960px,calc(100%-32px))] text-center md:w-[min(960px,calc(100%-40px))]">
+        <span className="font-cormorant pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 hidden select-none text-[200px] leading-none text-white/[.022] lg:block" aria-hidden="true">∞</span>
+
+        <Reveal>
+          <div className="editorial-eyebrow mb-10 justify-center" style={{ color: "#C9962A" }}>
+            Your first gallery is free
           </div>
+        </Reveal>
 
-          <div className="grid gap-2.5 sm:grid-cols-3">
-            {workflow.map((step, index) => (
-              <div key={step.number} className="group relative">
-                <article className="relative flex min-h-0 items-center gap-4 rounded-[20px] border border-white bg-white/80 p-4 sm:block sm:min-h-[190px] sm:rounded-[24px] sm:p-5 shadow-[0_14px_40px_rgba(55,42,24,.09)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(55,42,24,.13)]">
-                  <div className="absolute right-4 top-4 flex items-center gap-2 sm:static sm:justify-between">
-                    <span className="text-[10px] font-black text-[#d4aa00]">
-                      {step.number}
-                    </span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-rawi-yellow" />
-                  </div>
-                  <div className="grid h-11 w-11 shrink-0 sm:mt-5 sm:h-12 sm:w-12 place-items-center rounded-[15px] border border-[#eee5da] bg-[#fbf6ef] text-xl font-black text-black shadow-sm">
-                    {step.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-base font-extrabold sm:mt-5">
-                      {step.label}
-                    </h3>
-                    <p className="mt-1 text-[11px] text-gray-400">
-                      {step.detail}
-                    </p>
-                  </div>
-                </article>
-                {index < workflow.length - 1 && (
-                  <span className="absolute -right-2 top-1/2 z-20 hidden -translate-y-1/2 text-[#c9bca9] sm:block">
-                    →
-                  </span>
-                )}
-              </div>
+        <Reveal delay={1}>
+          <h2 className="display-section mb-8 mx-auto text-[#F2ECD8]">
+            Make delivery part<br />
+            of the{" "}
+            <em className="not-italic better-shimmer-clip">creative work.</em>
+          </h2>
+        </Reveal>
+
+        <Reveal delay={2}>
+          <div className="gold-rule mx-auto mb-10" />
+        </Reveal>
+
+        <Reveal delay={3}>
+          <p className="font-montserrat mx-auto mb-14 max-w-[480px] text-[17px] font-light leading-relaxed text-white/35">
+            Stop sending Drive links. Give your clients a gallery that feels as considered as the shoot itself.
+          </p>
+        </Reveal>
+
+        <Reveal delay={4}>
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/signup"
+              onClick={() => trackEvent("signup_started", { source: "closing_cta" })}
+              className="font-montserrat group inline-flex w-full items-center justify-center gap-3 rounded-full bg-rawi-yellow px-8 py-4 text-sm font-bold tracking-wide text-black shadow-[0_16px_48px_rgba(255,200,0,.30)] transition-all hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,200,0,.42)] sm:w-auto md:text-base"
+            >
+              Build your first gallery
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+            <a
+              href="/demo/today-drive"
+              className="font-montserrat inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-8 py-4 text-sm font-medium text-white/50 transition-all hover:border-white/25 hover:text-white/80 sm:w-auto md:text-base"
+            >
+              View live demo
+            </a>
+          </div>
+        </Reveal>
+
+        <Reveal delay={5}>
+          <div className="mt-16 flex flex-wrap items-center justify-center gap-8">
+            {["No credit card needed", "Free forever plan", "Setup in 5 minutes"].map((t) => (
+              <span key={t} className="font-montserrat text-[11px] font-medium tracking-[0.18em] text-white/25 uppercase">✓ {t}</span>
             ))}
           </div>
-
-          <Link
-            href="/signup"
-            onClick={() =>
-              trackEvent("signup_started", { source: "closing_cta" })
-            }
-            className="group inline-flex w-full shrink-0 items-center justify-center gap-3 xl:w-auto rounded-full bg-black px-6 py-4 text-sm font-extrabold text-white shadow-[0_14px_34px_rgba(0,0,0,.18)] transition-transform hover:-translate-y-0.5"
-          >
-            <span className="h-2 w-2 rounded-full bg-rawi-yellow" />
-            Build your first gallery
-            <span className="text-rawi-yellow transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
 }
+
