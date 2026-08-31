@@ -1,3 +1,4 @@
+import React from "react";
 import { getCurrentWorkspace } from "@/lib/workspace";
 import { createClient } from "@/lib/supabase/server";
 import { BillingSettingsForm } from "@/components/app-shell/BillingSettingsForm";
@@ -166,7 +167,7 @@ export default async function AdminPage() {
 }
 
 function MetricTile({ Icon, label, value, detail, color, bg }: {
-  Icon: () => JSX.Element; label: string; value: string; detail: string; color: string; bg: string;
+  Icon: () => React.ReactElement; label: string; value: string; detail: string; color: string; bg: string;
 }) {
   return (
     <div className="rounded-[18px] border border-white/[.07] bg-[#0C0C1A] p-4 hover:border-white/[.12] transition-colors">
