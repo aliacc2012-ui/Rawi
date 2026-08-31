@@ -14,52 +14,82 @@ const HERO_IMAGE =
 
 const DEMO_PROJECTS = [
   {
-    name: "M3 F80 Silver",
-    image:
-      "https://cdn.myportfolio.com/73cfc9a0-30aa-4f01-b629-e720c0fd6095/8f46a7d7-574d-49f7-bf22-7724d30b43c7_rw_3840.jpg?h=aff02d94bbfa6aa57cbc0cc93684aaf6",
+    name: "Venice Wedding",
+    cover: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80",
+    meta: "214 photos",
+    color: "#c9a96e",
+    photos: [
+      "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=75",
+      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&q=75",
+      "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=400&q=75",
+      "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&q=75",
+      "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=400&q=75",
+    ],
+  },
+  {
+    name: "Tokyo Streets",
+    cover: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80",
+    meta: "187 photos",
+    color: "#e05c5c",
+    photos: [
+      "https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=400&q=75",
+      "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=400&q=75",
+      "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=75",
+      "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400&q=75",
+      "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=400&q=75",
+    ],
+  },
+  {
+    name: "Sunrise Atlas",
+    cover: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
     meta: "132 photos",
+    color: "#f0a050",
+    photos: [
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=75",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=75",
+      "https://images.unsplash.com/photo-1433838552652-f9a46b332c40?w=400&q=75",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=75",
+      "https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=400&q=75",
+    ],
   },
   {
-    name: "M3 G80 Orange",
-    image:
-      "https://cdn.bmwblog.com/wp-content/uploads/2021/04/MG_4274-Edit-scaled.jpg",
-    meta: "118 photos",
+    name: "Studio Sessions",
+    cover: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80",
+    meta: "96 photos",
+    color: "#8b7cf6",
+    photos: [
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=75",
+      "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&q=75",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=75",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=75",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=75",
+    ],
   },
   {
-    name: "M2 CS Green",
-    image:
-      "https://images.collectingcars.com/014485/DSC08641.jpg?auto=format%2Ccompress&cs=srgb&fit=fillmax&q=85",
-    meta: "95 photos",
-  },
-  {
-    name: "Porsche GT3 RS Yellow",
-    image:
-      "https://uhdwalls.com/2025/porsche-911-gt3-rs-yellow-beast/porsche-911-gt3-rs-yellow-beast-2048x2048.jpg",
-    meta: "146 photos",
-  },
-  {
-    name: "M3 F80 Red",
-    image:
-      "https://img.goodfon.com/original/2048x1280/2/50/bmw-m3-f80-red-road-autumn-forest.jpg",
-    meta: "84 photos",
-  },
-  {
-    name: "Porsche GT4",
-    image:
-      "https://www.supercars.net/blog/wp-content/uploads/2020/07/2020-Porsche-718-Cayman-GT4-001-1600.jpg",
+    name: "Café Lumière",
+    cover: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80",
     meta: "74 photos",
+    color: "#5cb8a0",
+    photos: [
+      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=75",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=75",
+      "https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=400&q=75",
+      "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=75",
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=75",
+    ],
   },
   {
-    name: "Lamborghini Huracán STO",
-    image:
-      "https://hips.hearstapps.com/hmg-prod/images/2021-lamborghini-huracan-sto-114-1640358044.jpg?crop=1xw%3A1xh%3Bcenter%2Ctop&resize=980%3A%2A",
-    meta: "109 photos",
-  },
-  {
-    name: "Ferrari 296 GTB",
-    image:
-      "https://www.soldoutservice.com/wp-content/uploads/2022/09/ferrari-296-gbt-1.jpg",
-    meta: "91 photos",
+    name: "Aerial Dubai",
+    cover: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80",
+    meta: "118 photos",
+    color: "#4a9eff",
+    photos: [
+      "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=400&q=75",
+      "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?w=400&q=75",
+      "https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=400&q=75",
+      "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&q=75",
+      "https://images.unsplash.com/photo-1560369483-efb5e1ded090?w=400&q=75",
+    ],
   },
 ];
 
@@ -152,10 +182,10 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
         cycleRef.current = setTimeout(() => {
           idx = (idx + 1) % DEMO_PROJECTS.length;
           cycle();
-        }, 700);
-      }, 2400);
+        }, 650);
+      }, 2500);
     }
-    cycleRef.current = setTimeout(cycle, 900);
+    cycleRef.current = setTimeout(cycle, 800);
     return () => { if (cycleRef.current) clearTimeout(cycleRef.current); };
   }, []);
 
@@ -164,100 +194,108 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
   return (
     <div className="relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px]">
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute -inset-10 bg-[radial-gradient(circle_at_55%_42%,rgba(255,212,0,.15),transparent_38%)] blur-2xl" />
+      <div className="pointer-events-none absolute -inset-10 bg-[radial-gradient(circle_at_55%_42%,rgba(255,212,0,.13),transparent_38%)] blur-2xl" />
 
-      {/* Browser frame */}
-      <div className="rawi-dashboard-enter absolute left-0 top-6 z-20 w-[96%] overflow-hidden rounded-[26px] border border-white/[.08] bg-[#0D0D0D] shadow-[0_32px_90px_rgba(0,0,0,.55)]">
-        {/* Browser chrome */}
-        <div className="flex h-10 items-center justify-between bg-[#161616] px-4 border-b border-white/[.05]">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-white/[.12]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-white/[.12]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-rawi-yellow" />
-          </div>
-          <div className="flex items-center gap-2 rounded-lg bg-white/[.06] px-3 py-1.5">
-            <span className="text-[8px] text-white/30">🔒</span>
-            <span className="text-[9px] text-white/35 tracking-[.04em]">rawi.gallery/projects</span>
-          </div>
-          <div className="w-16" />
-        </div>
+      {/* Album grid — no browser frame */}
+      <div className="absolute left-0 top-4 z-20 w-[96%]">
 
-        {/* Projects grid header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/[.05]">
-          <div className="flex items-center gap-2">
-            <span className="grid h-7 w-7 place-items-center rounded-[8px] bg-rawi-yellow text-[10px] font-black text-black -rotate-[6deg]">R</span>
-            <span className="text-[11px] font-bold text-white tracking-[.06em]">My Galleries</span>
-          </div>
-          <span className="text-[8px] text-white/30">{DEMO_PROJECTS.length} projects</span>
-        </div>
-
-        {/* Project cards grid */}
-        <div className="relative grid grid-cols-3 gap-[6px] p-[6px]" style={{ minHeight: 320 }}>
+        {/* Grid of album cards */}
+        <div className="relative grid grid-cols-3 gap-3">
           {DEMO_PROJECTS.map((p, i) => (
-            <div
+            <motion.div
               key={p.name}
-              className="group relative overflow-hidden rounded-xl border border-white/[.06] bg-[#161616] transition-all duration-300"
-              style={{
-                opacity: openIdx >= 0 && openIdx !== i ? 0.35 : 1,
-                transform: openIdx === i ? "scale(1.03)" : "scale(1)",
-                transition: "opacity 0.4s, transform 0.4s",
+              className="relative overflow-hidden rounded-2xl cursor-default"
+              animate={{
+                opacity: openIdx >= 0 && openIdx !== i ? 0.25 : 1,
+                scale: openIdx === i ? 1.02 : 1,
+                filter: openIdx >= 0 && openIdx !== i ? "blur(1px)" : "blur(0px)",
               }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.5)" }}
             >
+              {/* Cover photo */}
               <div
-                className="h-[72px] bg-cover bg-center"
-                style={{ backgroundImage: `linear-gradient(180deg,transparent 40%,rgba(0,0,0,.6)),url('${p.image}')` }}
+                className="w-full bg-cover bg-center"
+                style={{
+                  backgroundImage: `url('${p.cover}')`,
+                  aspectRatio: "4/3",
+                }}
               />
-              <div className="p-2">
-                <div className="text-[8px] font-bold text-white truncate">{p.name}</div>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-[7px] text-white/35">{p.meta}</span>
-                  <span className="text-[6px] text-emerald-400 font-semibold">● Live</span>
+              {/* Bottom strip */}
+              <div className="bg-[#111] px-3 py-2.5 border-t border-white/[.06]">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="h-2 w-2 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: p.color }}
+                  />
+                  <span className="text-[9px] font-bold text-white truncate">{p.name}</span>
                 </div>
+                <div className="text-[7px] text-white/35 mt-0.5 pl-4">{p.meta}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
 
-          {/* Expanding open project overlay */}
+          {/* Open album overlay */}
           <AnimatePresence>
             {openProject && (
               <motion.div
                 key={openIdx}
-                className="absolute inset-0 z-30 overflow-hidden rounded-xl border border-rawi-yellow/30 bg-[#0D0D0D] shadow-[0_0_40px_rgba(255,212,0,.15)]"
-                initial={{ opacity: 0, scale: 0.88 }}
+                className="absolute inset-0 z-30 overflow-hidden rounded-2xl bg-[#0A0A0A]"
+                style={{ boxShadow: `0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px ${openProject.color}33` }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.92 }}
-                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ opacity: 0, scale: 0.94 }}
+                transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
               >
-                {/* Project header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-white/[.07]">
-                  <div>
-                    <div className="text-[10px] font-extrabold text-white tracking-[.04em]">{openProject.name}</div>
-                    <div className="text-[8px] text-white/35 mt-0.5">{openProject.meta} · by Ali Hassan</div>
+                {/* Album header */}
+                <div
+                  className="flex items-center justify-between px-4 py-3"
+                  style={{ background: `linear-gradient(135deg, ${openProject.color}22, transparent)`, borderBottom: `1px solid ${openProject.color}22` }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: openProject.color }} />
+                    <div>
+                      <div className="text-[11px] font-extrabold text-white tracking-wide">{openProject.name}</div>
+                      <div className="text-[8px] text-white/35">{openProject.meta}</div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="rounded-full bg-white/[.07] px-2.5 py-1 text-[8px] text-white/40">♡ 12</span>
-                    <span className="rounded-full bg-rawi-yellow px-2.5 py-1 text-[8px] font-bold text-black">↥ Download</span>
-                  </div>
+                  <span
+                    className="rounded-full px-2.5 py-1 text-[8px] font-bold text-black"
+                    style={{ backgroundColor: openProject.color }}
+                  >
+                    ↥ Download all
+                  </span>
                 </div>
-                {/* Photo grid inside opened project */}
+
+                {/* Photo masonry grid */}
                 <div className="grid grid-cols-3 gap-[3px] p-[3px]">
-                  {DEMO_PROJECTS.filter((_, i2) => i2 !== openIdx).slice(0, 5).map((other, j) => (
+                  {/* Large cover photo */}
+                  <div
+                    className="relative overflow-hidden rounded-lg bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url('${openProject.cover}')`,
+                      gridColumn: "span 2",
+                      aspectRatio: "2/1.15",
+                    }}
+                  />
+                  {/* Side photos */}
+                  <div className="grid grid-rows-2 gap-[3px]">
+                    {openProject.photos.slice(0, 2).map((ph, j) => (
+                      <div
+                        key={j}
+                        className="overflow-hidden rounded-lg bg-cover bg-center"
+                        style={{ backgroundImage: `url('${ph}')`, aspectRatio: "1/0.57" }}
+                      />
+                    ))}
+                  </div>
+                  {/* Bottom row */}
+                  {openProject.photos.slice(2, 5).map((ph, j) => (
                     <div
                       key={j}
-                      className="relative overflow-hidden rounded-lg"
-                      style={{ aspectRatio: j === 0 ? "2/1.1" : "1/0.85", gridColumn: j === 0 ? "span 2" : undefined }}
-                    >
-                      <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{ backgroundImage: `url('${other.image}')` }}
-                      />
-                    </div>
+                      className="overflow-hidden rounded-lg bg-cover bg-center"
+                      style={{ backgroundImage: `url('${ph}')`, aspectRatio: "1/0.75" }}
+                    />
                   ))}
-                  {/* Cover photo */}
-                  <div className="relative overflow-hidden rounded-lg" style={{ aspectRatio: "1/0.85" }}>
-                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${openProject.image}')` }} />
-                    <div className="absolute top-1 right-1 rounded-full bg-rawi-yellow px-1.5 py-0.5 text-[6px] font-black text-black">✓ Cover</div>
-                  </div>
                 </div>
               </motion.div>
             )}
@@ -265,7 +303,7 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
         </div>
       </div>
 
-      {/* Floating: WhatsApp notification */}
+      {/* Floating: Gallery link sent */}
       <div
         className="absolute -left-4 bottom-24 z-30 flex items-center gap-2.5 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
         style={{ animation: "hero-e3 .6s cubic-bezier(.22,1,.36,1) .9s both" }}
@@ -279,22 +317,22 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
 
       {/* Floating: client reaction */}
       <div
-        className="absolute -right-2 top-[38%] z-30 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
+        className="absolute -right-2 top-[36%] z-30 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3.5 py-3 shadow-[0_12px_40px_rgba(0,0,0,.4)] backdrop-blur-sm"
         style={{ animation: "hero-e4 .6s cubic-bezier(.22,1,.36,1) 1.1s both" }}
       >
         <div className="text-[8px] text-white/35 tracking-[.1em]">CLIENT</div>
         <div className="text-[11px] font-bold text-white mt-1">
-          {openProject ? openProject.name.split(" ").slice(0, 2).join(" ") : "Sarah"} ♡ 3 photos
+          {openProject ? openProject.name : "Sarah"} ♡ 3 photos
         </div>
         <div className="mt-2 flex gap-1">
           {DEMO_PROJECTS.slice(0, 3).map((p, j) => (
             <div key={j} className="h-8 w-8 rounded-lg bg-cover bg-center border border-white/10"
-                 style={{ backgroundImage: `url('${p.image}')` }} />
+                 style={{ backgroundImage: `url('${p.cover}')` }} />
           ))}
         </div>
       </div>
 
-      {/* Floating: download badge */}
+      {/* Floating: downloads */}
       <div
         className="absolute bottom-8 right-4 z-30 flex items-center gap-2 rounded-2xl border border-white/[.08] bg-[#111]/90 px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,.4)] backdrop-blur-sm"
         style={{ animation: "hero-e5 .5s cubic-bezier(.22,1,.36,1) 1.3s both" }}
@@ -308,6 +346,7 @@ function ProductMockup({ charState: _charState }: { charState: "idle" | "excited
     </div>
   );
 }
+
 
 export function Strip() {
   return (
