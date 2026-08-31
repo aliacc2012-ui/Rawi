@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { Reveal } from "@/components/landing/Reveal";
+
 
 const faqs = [
   {
@@ -48,14 +50,14 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <section aria-labelledby="faq-title" className="bg-[#0e0e0e] py-[72px] md:py-[100px]">
+    <section aria-labelledby="faq-title" className="relative z-10 bg-[#06060F] py-[72px] md:py-[100px]">
       <div className="mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))]">
         {/* Header */}
         <div className="mb-10 md:mb-14">
           <span className="text-[11px] font-extrabold tracking-[.17em] text-white/35">
             {isAr ? "الأسئلة الشائعة" : "FREQUENTLY ASKED"}
           </span>
-          <h2 id="faq-title" className="mt-3 text-[36px] leading-[1.02] tracking-[-.05em] text-[#f5f5f0] md:text-[58px]">
+          <h2 id="faq-title" className="mt-3 text-[36px] leading-[1.02] tracking-[-.05em] text-[#F0EFFF] md:text-[58px]">
             {isAr ? (
               <>لديك <span className="text-rawi-yellow">سؤال؟</span></>
             ) : (
@@ -65,7 +67,7 @@ export function FAQ() {
         </div>
 
         {/* Accordion */}
-        <div className="divide-y divide-white/8 rounded-[28px] border border-white/10 bg-[#141414] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,.3)]">
+        <div className="divide-y divide-white/8 rounded-[28px] border border-white/10 bg-[#0A0A18] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,.3)]">
           {faqs.map((faq, idx) => {
             const isOpen = open === idx;
             return (
@@ -77,7 +79,7 @@ export function FAQ() {
                   onClick={() => setOpen(isOpen ? null : idx)}
                   className="flex w-full items-center justify-between gap-6 px-6 py-5 text-start transition-colors hover:bg-white/[.03] md:px-8 md:py-6"
                 >
-                  <span className="text-sm font-extrabold leading-snug text-[#f5f5f0] md:text-base">
+                  <span className="text-sm font-extrabold leading-snug text-[#F0EFFF] md:text-base">
                     {isAr ? faq.q_ar : faq.q_en}
                   </span>
                   <span

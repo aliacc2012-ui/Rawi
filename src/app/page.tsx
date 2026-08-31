@@ -47,7 +47,12 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <main id="top" className="bg-[#0e0e0e] text-[#f5f5f0]">
+    <main id="top" className="grain-overlay relative overflow-hidden bg-[#06060F] text-[#F0EFFF]">
+      {/* Ambient glow blobs */}
+      <div className="blob-a" aria-hidden="true" />
+      <div className="blob-b" aria-hidden="true" />
+      <div className="blob-c" aria-hidden="true" />
+
       <Nav />
       <Hero />
       <Strip />
@@ -59,7 +64,7 @@ export default function LandingPage() {
       <FAQ />
 
       {/* Footer */}
-      <footer className="border-t border-white/8 bg-[#080808]">
+      <footer className="relative z-10 border-t border-white/8 bg-[#04040C]">
         <div className="mx-auto w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] py-10 md:py-14">
           {/* Top row */}
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -69,7 +74,7 @@ export default function LandingPage() {
                 <span className="grid h-8 w-8 shrink-0 -rotate-[8deg] place-items-center rounded-[50%_50%_50%_8px] bg-rawi-yellow text-sm font-black text-black">
                   R
                 </span>
-                <span className="text-lg tracking-[0.1em] text-[#f5f5f0]">RAWI</span>
+                <span className="text-lg tracking-[0.1em] text-[#F0EFFF]">RAWI</span>
                 <span className="font-arabic text-xs text-white/35">راوي</span>
               </Link>
               <p className="mt-3 max-w-[320px] text-sm leading-relaxed text-white/45">

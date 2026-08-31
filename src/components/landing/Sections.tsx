@@ -84,7 +84,7 @@ export function Hero() {
           <Link
             href="/signup"
             onClick={() => trackEvent("signup_started", { source: "hero" })}
-            className="rounded-xl bg-rawi-yellow px-6 py-4 text-sm font-extrabold shadow-[0_12px_30px_rgba(255,200,0,.22)] md:px-7 md:text-base"
+            className="btn-shimmer btn-glow rounded-xl px-6 py-4 text-sm font-extrabold text-black shadow-[0_12px_30px_rgba(255,200,0,.22)] md:px-7 md:text-base"
           >
             {dict.hero.startFree}
           </Link>
@@ -102,76 +102,6 @@ export function Hero() {
         </div>
       </div>
       <ProductMockup />
-      <style jsx global>{`
-        @keyframes rawi-dashboard-in {
-          from {
-            opacity: 0;
-            transform: translate3d(42px, 18px, 0) rotate(-2.4deg) scale(0.97);
-          }
-          to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0) rotate(-1.1deg) scale(1);
-          }
-        }
-        @keyframes rawi-phone-in {
-          from {
-            opacity: 0;
-            transform: translate3d(48px, 62px, 0) rotate(7deg) scale(0.92);
-          }
-          to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0) rotate(3deg) scale(1);
-          }
-        }
-        @keyframes rawi-phone-float {
-          0%,
-          100% {
-            transform: translate3d(0, 0, 0) rotate(3deg);
-          }
-          50% {
-            transform: translate3d(0, -7px, 0) rotate(2.4deg);
-          }
-        }
-        @keyframes rawi-delivery-in {
-          from {
-            opacity: 0;
-            transform: translate3d(-24px, 20px, 0) rotate(-7deg) scale(0.92);
-          }
-          to {
-            opacity: 1;
-            transform: translate3d(0, 0, 0) rotate(-4deg) scale(1);
-          }
-        }
-        @keyframes rawi-glow {
-          0%,
-          100% {
-            opacity: 0.62;
-            transform: scale(0.95);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.06);
-          }
-        }
-        .rawi-dashboard-enter {
-          animation: rawi-dashboard-in 0.9s cubic-bezier(0.2, 0.75, 0.2, 1) both;
-        }
-        .rawi-delivery-enter {
-          animation: rawi-delivery-in 0.72s 1.05s cubic-bezier(0.2, 0.8, 0.2, 1)
-            both;
-        }
-        .rawi-mockup-glow {
-          animation: rawi-glow 5.5s ease-in-out infinite;
-          transform-origin: center;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .rawi-dashboard-enter,
-          .rawi-delivery-enter,
-          .rawi-mockup-glow {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
@@ -436,7 +366,7 @@ export function Features() {
 
 export function GalleryDemo() {
   return (
-    <section id="gallery" className="bg-[#0a0a0a] py-[72px] md:py-[110px]">
+    <section id="gallery" className="bg-[#06060F] py-[72px] md:py-[110px]">
       <div className="w-[min(1180px,calc(100%-32px))] md:w-[min(1180px,calc(100%-40px))] mx-auto">
         <div className="grid lg:grid-cols-[.78fr_1.22fr] gap-5 lg:gap-14 items-end mb-8 md:mb-12">
           <div>
@@ -554,7 +484,7 @@ export function Pricing() {
           return (
             <article
               key={id}
-              className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border bg-[#141414] ${p.featured ? "border-2 border-rawi-yellow/60 shadow-[0_20px_60px_rgba(255,212,0,0.08)]" : "border-white/10"}`}
+              className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border bg-[#0A0A18] ${p.featured ? "border-2 border-rawi-yellow/60 shadow-[0_20px_60px_rgba(255,212,0,0.08)]" : "border-white/10"}`}
             >
               {p.featured && (
                 <div className="absolute top-3 right-3 text-[9px] bg-rawi-yellow px-2.5 py-1.5 rounded-full font-black tracking-[0.08em]">
