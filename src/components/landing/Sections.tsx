@@ -489,10 +489,12 @@ export function Pricing() {
               className={`rounded-[24px] p-6 md:p-7 flex flex-col justify-between min-h-0 md:min-h-[450px] relative border bg-[#0A0A18] ${p.featured ? "border-2 border-rawi-yellow/70 shadow-[0_0_0_1px_rgba(255,212,0,0.15),0_20px_80px_rgba(255,212,0,0.18),0_4px_20px_rgba(255,212,0,0.1)]" : "border-white/10"}`}
             >
               {p.featured && (
+                <>
                 <div className="absolute inset-x-0 top-0 h-[3px] rounded-t-[22px] bg-gradient-to-r from-rawi-yellow/0 via-rawi-yellow to-rawi-yellow/0" />
                 <div className="absolute top-3 right-3 text-[9px] bg-rawi-yellow px-2.5 py-1.5 rounded-full font-black tracking-[0.08em]">
                   MOST POPULAR
                 </div>
+                </>
               )}
               <div>
                 <span className="text-[11px] font-black tracking-[0.12em] text-white/45">
