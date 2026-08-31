@@ -6,6 +6,7 @@ import {
   Strip,
   GalleryDemo,
   Pricing,
+  ClosingCTA,
 } from "@/components/landing/Sections";
 import { WorkflowSection } from "@/components/landing/WorkflowSection";
 import { EnhancedFeatures } from "@/components/landing/EnhancedFeatures";
@@ -57,13 +58,14 @@ export default function LandingPage() {
       <Nav />
       <Hero />
       <Strip />
-      <EditorialStatement />
       <Stats />
       <WorkflowSection />
-      <EnhancedFeatures />
       <GalleryDemo />
+      <EditorialStatement />
+      <EnhancedFeatures />
       <Pricing />
       <FAQ />
+      <ClosingCTA />
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/8 bg-[#04040C]">
