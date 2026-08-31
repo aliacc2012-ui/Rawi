@@ -20,22 +20,13 @@ async function getOwnedWorkspace(supabase: AppSupabaseClient, userId: string, wo
 async function ownsWorkspace(supabase: AppSupabaseClient, userId: string, workspaceId: string) { return Boolean(await getOwnedWorkspace(supabase, userId, workspaceId)); }
 async function getOwnedProject(supabase: AppSupabaseClient, userId: string, projectId: string) { const { data } = await supabase.from("projects").select("id, workspace_id, workspaces!inner(owner_id)").eq("id", projectId).eq("workspaces.owner_id", userId).maybeSingle(); return data as { id: string; workspace_id: string } | null; }
 async function getOwnedGalleryContext(supabase: AppSupabaseClient, userId: string, galleryId: string) {
-  const { data } = await supabase
-    .from("galleries")
-    .select(
-      "id,slug,project_id,status,password_enabled,password_hash,downloads_enabled,favorites_enabled,comments_enabled,branding_enabled,expiry_date," +
-      "projects!inner(id,workspace_id,workspaces!inner(id,plan,storage_limit_bytes,owner_id))"
-    )
-    .eq("id", galleryId)
-    .eq("projects.workspaces.owner_id", userId)
-    .maybeSingle();
-  if (!data) return null;
-  type P = { id: string; workspace_id: string; workspaces: OwnedWorkspace & { owner_id: string } };
-  const proj = data.projects as unknown as P;
-  const gallery = { id: data.id, slug: data.slug as string, project_id: data.project_id as string, status: data.status, password_enabled: data.password_enabled, password_hash: data.password_hash, downloads_enabled: data.downloads_enabled, favorites_enabled: data.favorites_enabled, comments_enabled: data.comments_enabled, branding_enabled: data.branding_enabled, expiry_date: data.expiry_date };
-  const project = { id: proj.id, workspace_id: proj.workspace_id };
-  const workspace: OwnedWorkspace = { id: proj.workspaces.id, plan: proj.workspaces.plan as WorkspacePlan, storage_limit_bytes: proj.workspaces.storage_limit_bytes };
-  return { gallery, project, workspace };
+  const { data: gallery } = await supabase.from("galleries").select("id, slug, project_id, status, password_enabled, password_hash, downloads_enabled, favorites_enabled, comments_enabled, branding_enabled, expiry_date").eq("id", galleryId).maybeSingle();
+  if (!gallery) return null;
+  const project = await getOwnedProject(supabase, userId, (gallery as unknown as { project_id: string }).project_id);
+  if (!project) return null;
+  const workspace = await getOwnedWorkspace(supabase, userId, project.workspace_id);
+  if (!workspace) return null;
+  return { gallery: gallery as unknown as { id: string; slug: string; project_id: string; status: string; password_enabled: boolean; password_hash: string | null; downloads_enabled: boolean; favorites_enabled: boolean; comments_enabled: boolean; branding_enabled: boolean; expiry_date: string | null }, project, workspace };
 }
 async function ownsGallery(supabase: AppSupabaseClient, userId: string, galleryId: string) { return Boolean(await getOwnedGalleryContext(supabase, userId, galleryId)); }
 function safeUrl(value: string): string | null | undefined { const clean = value.trim(); if (!clean) return null; const candidate = /^https?:\/\//i.test(clean) ? clean : `https://${clean}`; try { const url = new URL(candidate); if (!["http:", "https:"].includes(url.protocol) || candidate.length > 500) return undefined; return url.toString(); } catch { return undefined; } }
