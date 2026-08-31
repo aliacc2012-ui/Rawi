@@ -16,7 +16,7 @@ const THEMES: {
   {
     id: "clean",
     name: "Clean",
-    description: "Bright, minimal and photo-first.",
+    description: "Bright white, left-aligned, minimal.",
     bg: "bg-[#f6f5f2]",
     bar1: "bg-black/30",
     bar2: "bg-black/10",
@@ -26,7 +26,7 @@ const THEMES: {
   {
     id: "dark",
     name: "Dark",
-    description: "Black cinematic delivery.",
+    description: "Cinematic black, bold 82vh hero.",
     bg: "bg-[#0b0b0b]",
     bar1: "bg-white/20",
     bar2: "bg-white/8",
@@ -36,7 +36,7 @@ const THEMES: {
   {
     id: "editorial",
     name: "Editorial",
-    description: "Warm, spacious magazine feel.",
+    description: "Centered serif, warm beige, magazine.",
     bg: "bg-[#eee9df]",
     bar1: "bg-[#7a6e5f]/50",
     bar2: "bg-[#7a6e5f]/20",
@@ -46,7 +46,7 @@ const THEMES: {
   {
     id: "noir",
     name: "Noir",
-    description: "Deep charcoal, silver light.",
+    description: "Full-bleed 88vh, silver accents.",
     bg: "bg-[#1a1a1e]",
     bar1: "bg-[#b0b0c0]/40",
     bar2: "bg-[#b0b0c0]/12",
@@ -56,7 +56,7 @@ const THEMES: {
   {
     id: "blush",
     name: "Blush",
-    description: "Soft pink, romantic warmth.",
+    description: "Centered serif, airy romantic.",
     bg: "bg-[#f9eff0]",
     bar1: "bg-[#c97a8a]/50",
     bar2: "bg-[#c97a8a]/18",
@@ -66,7 +66,7 @@ const THEMES: {
   {
     id: "forest",
     name: "Forest",
-    description: "Deep green, botanical calm.",
+    description: "85vh full-bleed, organic feel.",
     bg: "bg-[#1b2a22]",
     bar1: "bg-[#6abf7a]/40",
     bar2: "bg-[#6abf7a]/12",
@@ -76,7 +76,7 @@ const THEMES: {
   {
     id: "slate",
     name: "Slate",
-    description: "Cool blue-gray precision.",
+    description: "Architectural, structured grid.",
     bg: "bg-[#e8ecf0]",
     bar1: "bg-[#3d5a72]/50",
     bar2: "bg-[#3d5a72]/15",
@@ -86,7 +86,7 @@ const THEMES: {
   {
     id: "ivory",
     name: "Ivory",
-    description: "Cream luxury, serif elegance.",
+    description: "Centered serif, luxury margins.",
     bg: "bg-[#faf7f0]",
     bar1: "bg-[#8b7355]/45",
     bar2: "bg-[#8b7355]/15",
@@ -96,7 +96,7 @@ const THEMES: {
   {
     id: "midnight",
     name: "Midnight",
-    description: "Deep navy, celestial drama.",
+    description: "86vh immersive, celestial dark.",
     bg: "bg-[#0a0e1a]",
     bar1: "bg-[#6070c0]/45",
     bar2: "bg-[#6070c0]/12",
@@ -106,7 +106,7 @@ const THEMES: {
   {
     id: "ember",
     name: "Ember",
-    description: "Warm amber, sunset tones.",
+    description: "Intimate, fire-lit amber tones.",
     bg: "bg-[#1c1208]",
     bar1: "bg-[#f09030]/50",
     bar2: "bg-[#f09030]/15",
