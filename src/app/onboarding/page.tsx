@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentWorkspace } from "@/lib/workspace";
 import { createWorkspace } from "@/app/(app)/actions";
-import { Field, Input, PrimaryButton } from "@/components/ui/form";
+import { Field, LegacyInput as Input, PrimaryButton } from "@/components/ui/form";
 
 // Depends on the caller's session and Supabase env — never statically prerendered.
 export const dynamic = "force-dynamic";

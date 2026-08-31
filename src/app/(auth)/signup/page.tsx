@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient, SupabaseNotConfiguredError } from "@/lib/supabase/client";
-import { Field, Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
+import { Field, LegacyInput as Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
 import { trackEvent } from "@/lib/analytics";
 
 export default function SignupPage() {

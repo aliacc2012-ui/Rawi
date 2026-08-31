@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient, SupabaseNotConfiguredError } from "@/lib/supabase/client";
-import { Field, Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
+import { Field, LegacyInput as Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
 
 export default function ResetPasswordPage() {
   const router = useRouter();

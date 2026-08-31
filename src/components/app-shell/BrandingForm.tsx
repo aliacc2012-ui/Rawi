@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { updateBranding } from "@/app/(app)/actions";
-import { Field, Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
+import { Field, LegacyInput as Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
 
 export function BrandingForm({
   workspaceId,

@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createProject } from "@/app/(app)/actions";
-import { Field, Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
+import { Field, LegacyInput as Input, PrimaryButton, ErrorNote } from "@/components/ui/form";
 import { clearPendingProjectCreation, markPendingProjectCreation } from "@/lib/analytics";
 
 type ClientOption = { id: string; name: string };
