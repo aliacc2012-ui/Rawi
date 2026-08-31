@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
@@ -46,14 +47,20 @@ export default async function DashboardPage() {
   if (!workspace) redirect("/onboarding");
   const s = await createClient();
 
-  const [{ data: projects }, { data: statsData, error: statsError }] = await Promise.all([
+  const [{ data: projects }, stats] = await Promise.all([
     s.from("projects").select("id,name,status,project_type,created_at")
       .eq("workspace_id", workspace.id).order("created_at", { ascending: false }).limit(6),
-    s.rpc("rawi_dashboard_stats", { target_workspace_id: workspace.id }),
+    unstable_cache(
+      async () => {
+        const { data, error } = await s.rpc("rawi_dashboard_stats", { target_workspace_id: workspace.id });
+        return !error && data ? (data as DashboardStats) : EMPTY;
+      },
+      [`dashboard-stats:${workspace.id}`],
+      { tags: [`workspace-stats:${workspace.id}`], revalidate: 60 }
+    )(),
   ]);
 
   const recentProjects = projects ?? [];
-  const stats = !statsError && statsData ? (statsData as DashboardStats) : EMPTY;
   const feedbackByProject = stats.feedback_by_project ?? {};
   const links = {
     instagram: workspace.instagram_url || "", tiktok: workspace.tiktok_url || "",

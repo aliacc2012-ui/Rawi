@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { unstable_cache } from "next/cache";
 import { hasGalleryAccess, getVisitorComments } from "@/app/g/[slug]/actions";
 import { PasswordGate } from "@/components/gallery/PasswordGate";
 import { GalleryMediaGrid } from "@/components/gallery/GalleryMediaGrid";
@@ -217,16 +218,58 @@ export default async function ClientGalleryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const admin = createAdminClient();
-  const { data: gallery } = await admin
-    .from("galleries")
-    .select(
-      "*,projects(name,project_type,project_date,clients(name),workspaces(name,logo_url,plan,instagram_url,tiktok_url,facebook_url,website_url,whatsapp_url))",
-    )
-    .eq("slug", slug)
-    .single();
-  if (!gallery)
-    return <UnavailableScreen reason="This gallery doesn't exist or the link is wrong." />;
+  // ── Cached data fetch (gallery + sections + signed URLs) ─────────────────
+  const cached = await unstable_cache(
+    async () => {
+      const admin = createAdminClient();
+      const { data: g } = await admin
+        .from("galleries")
+        .select(
+          "*,projects(name,project_type,project_date,clients(name),workspaces(name,logo_url,plan,instagram_url,tiktok_url,facebook_url,website_url,whatsapp_url))",
+        )
+        .eq("slug", slug)
+        .single();
+      if (!g) return null;
+
+      const { data: rawSections } = await admin
+        .from("gallery_sections")
+        .select("*,media(id,media_type,sort_order,storage_path,thumbnail_path)")
+        .eq("gallery_id", g.id)
+        .order("sort_order", { ascending: true });
+
+      type MediaRow = {
+        id: string; media_type: "image" | "video" | "raw";
+        sort_order?: number; storage_path?: string;
+        thumbnail_path?: string | null; thumbnail_url?: string | null;
+      };
+      const sections = (rawSections ?? []).map((s) => ({
+        id: s.id as string,
+        title: s.title as string,
+        media: ((s.media as unknown as MediaRow[]) ?? [])
+          .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
+      }));
+
+      const allM = sections.flatMap((s) => s.media);
+      const paths = [...new Set(allM.map((i) => i.thumbnail_path ?? i.storage_path).filter(Boolean) as string[])];
+      if (paths.length) {
+        // 1-hour TTL matches cache revalidation window
+        const { data: signed } = await admin.storage.from("media").createSignedUrls(paths, 3600);
+        const byPath = new Map((signed ?? []).filter((i) => i.path && i.signedUrl).map((i) => [i.path!, i.signedUrl!]));
+        for (const s of sections)
+          for (const item of s.media) {
+            const p = item.thumbnail_path ?? item.storage_path;
+            if (p) item.thumbnail_url = byPath.get(p) ?? null;
+          }
+      }
+      return { gallery: g, sections };
+    },
+    [`gallery-page:${slug}`],
+    { tags: [`gallery-slug:${slug}`], revalidate: 3600 },
+  )();
+
+  if (!cached) return <UnavailableScreen reason="This gallery doesn't exist or the link is wrong." />;
+  const { gallery, sections: rawTypedSections } = cached;
+
   if (gallery.status !== "published")
     return <UnavailableScreen reason="This gallery isn't published yet." />;
   if (gallery.expiry_date && new Date(gallery.expiry_date) < new Date())
@@ -238,12 +281,6 @@ export default async function ClientGalleryPage({
     if (!hasAccess)
       return <PasswordGate galleryId={gallery.id} title={gallery.title} />;
   }
-
-  const { data: sections } = await admin
-    .from("gallery_sections")
-    .select("*,media(id,media_type,sort_order,storage_path,thumbnail_path)")
-    .eq("gallery_id", gallery.id)
-    .order("sort_order", { ascending: true });
 
   const project = gallery.projects as unknown as {
     name: string; project_type: string; project_date: string | null;
@@ -270,34 +307,7 @@ export default async function ClientGalleryPage({
   const commentsAllowed =
     (plan === "creator" || plan === "pro" || plan === "studio") && gallery.comments_enabled;
 
-  const typedSections = (sections ?? []).map((section) => ({
-    id: section.id as string,
-    title: section.title as string,
-    media: (
-      (section.media as unknown as {
-        id: string; media_type: "image" | "video" | "raw";
-        sort_order?: number; storage_path?: string;
-        thumbnail_path?: string | null; signed_url?: string | null; thumbnail_url?: string | null;
-      }[]) ?? []
-    ).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
-  }));
-
-  const allMedia     = typedSections.flatMap((section) => section.media);
-  const previewPaths = Array.from(
-    new Set(allMedia.map((item) => item.thumbnail_path ?? item.storage_path).filter(Boolean) as string[]),
-  );
-  const signedByPath = new Map<string, string>();
-  if (previewPaths.length) {
-    const { data: signed } = await admin.storage.from("media").createSignedUrls(previewPaths, 60 * 10);
-    for (const item of signed ?? []) {
-      if (item.path && item.signedUrl) signedByPath.set(item.path, item.signedUrl);
-    }
-  }
-  for (const section of typedSections)
-    for (const item of section.media) {
-      const previewPath = item.thumbnail_path ?? item.storage_path;
-      if (previewPath) item.thumbnail_url = signedByPath.get(previewPath) ?? null;
-    }
+  const typedSections = rawTypedSections;
 
   const hasMedia     = allMedia.length > 0;
   const photoCount   = allMedia.filter((i) => i.media_type === "image").length;

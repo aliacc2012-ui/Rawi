@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export type GalleryTheme =
@@ -28,7 +28,7 @@ export async function updateGalleryTheme(galleryId: string, theme: GalleryTheme)
 
   const { data: gallery } = await supabase
     .from("galleries")
-    .select("id,project_id,projects!inner(id,workspace_id,workspaces!inner(owner_id))")
+    .select("id,slug,project_id,projects!inner(id,workspace_id,workspaces!inner(owner_id))")
     .eq("id", galleryId)
     .eq("projects.workspaces.owner_id", user.id)
     .maybeSingle();
@@ -39,6 +39,7 @@ export async function updateGalleryTheme(galleryId: string, theme: GalleryTheme)
 
   const projectId = gallery.project_id;
   revalidatePath(`/projects/${projectId}`);
-  revalidatePath("/g/[slug]", "page");
+  const gSlug = (gallery as unknown as { slug?: string }).slug;
+  if (gSlug) revalidateTag(`gallery-slug:${gSlug}`);
   return { success: true };
 }
