@@ -88,9 +88,13 @@ export default function LandingPage() {
               </p>
               {/* Social */}
               <div className="mt-5 flex gap-3">
-                <a href="https://instagram.com/rawi.gallery" target="_blank" rel="noopener noreferrer" aria-label="RAWI on Instagram"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sm text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
-                  IG
+                <a href="https://www.instagram.com/getrawi" target="_blank" rel="noopener noreferrer" aria-label="RAWI on Instagram"
+                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <circle cx="12" cy="12" r="4"/>
+                    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+                  </svg>
                 </a>
                 <a href="https://x.com/rawiapp" target="_blank" rel="noopener noreferrer" aria-label="RAWI on X"
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sm text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
