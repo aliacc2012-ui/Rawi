@@ -50,7 +50,7 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
   return (
-    <main id="top" className="grain-overlay relative overflow-hidden bg-[#06060F] text-[#F0EFFF]">
+    <main id="top" className="grain-overlay relative overflow-x-hidden bg-[#06060F] text-[#F0EFFF]">
       {/* Ambient glow blobs */}
       <div className="blob-a" aria-hidden="true" />
       <div className="blob-b" aria-hidden="true" />
