@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
     plan?: PaidPlan;
     workspaceId?: string;
     discountCode?: string;
+    billing?: "monthly" | "annual";
   } | null;
   if (
     !body?.plan ||
@@ -68,7 +69,11 @@ export async function POST(request: NextRequest) {
     );
 
   const plan = PLAN_CONFIG[body.plan];
-  const originalAmount = plan.priceAed * 100;
+  const isAnnual = body.billing === "annual";
+  const monthlyAed = plan.priceAed * 100;
+  const originalAmount = isAnnual
+    ? Math.round(monthlyAed * 12 * 0.85)
+    : monthlyAed;
   const normalizedCode = body.discountCode?.trim().toUpperCase() ?? "";
   const codeHash = normalizedCode
     ? createHash("sha256").update(normalizedCode).digest("hex")

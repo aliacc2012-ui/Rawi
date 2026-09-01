@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BrandingForm } from "@/components/app-shell/BrandingForm";
 import { PlanCheckoutButton } from "@/components/billing/PlanCheckoutButton";
 import { CancelPlanButton } from "@/components/billing/CancelPlanButton";
+import { PricingSection } from "@/components/billing/PricingSection";
 import { PLAN_CONFIG, PLAN_ORDER, type PlanId } from "@/lib/plans";
 
 type WorkspaceWithBillingSettings = { renewal_reminder_days?: number | null };
@@ -112,12 +113,7 @@ export default async function SettingsPage() {
         </div>
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          {PLAN_ORDER.map((id) => (
-            <PlanCard key={id} plan={PLAN_CONFIG[id]} current={currentPlan === id} workspaceId={workspace!.id} currentPlanId={currentPlan} />
-          ))}
-          <CustomPlanCard />
-        </div>
+        <PricingSection currentPlanId={currentPlan} workspaceId={workspace!.id} />
       </section>
     </div>
   );

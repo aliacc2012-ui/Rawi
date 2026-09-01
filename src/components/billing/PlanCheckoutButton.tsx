@@ -8,10 +8,12 @@ export function PlanCheckoutButton({
   plan,
   workspaceId,
   featured = false,
+  billing = "monthly",
 }: {
   plan: PaidPlan;
   workspaceId: string;
   featured?: boolean;
+  billing?: "monthly" | "annual";
 }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export function PlanCheckoutButton({
       const response = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, workspaceId, discountCode }),
+        body: JSON.stringify({ plan, workspaceId, discountCode, billing }),
       });
       const result = (await response.json()) as {
         url?: string;
@@ -54,6 +56,9 @@ export function PlanCheckoutButton({
     }
   }
 
+  const label = plan === "creator" ? "Creator" : "Pro";
+  const periodLabel = billing === "annual" ? "annual" : "monthly";
+
   return (
     <div className="mt-6">
       <button
@@ -80,9 +85,7 @@ export function PlanCheckoutButton({
         disabled={loading}
         className={`w-full rounded-full px-5 py-3 text-sm font-extrabold transition disabled:cursor-wait disabled:opacity-60 ${featured ? "bg-rawi-yellow text-black hover:brightness-95" : "border border-white/[.12] bg-white/[.06] text-white hover:bg-white/[.10]"}`}
       >
-        {loading
-          ? "Applying…"
-          : `Choose ${plan === "creator" ? "Creator" : "Pro"}`}
+        {loading ? "Applying…" : `Choose ${label} · ${periodLabel}`}
       </button>
       {message && (
         <p className="mt-2 text-center text-[11px] font-semibold text-amber-700">
