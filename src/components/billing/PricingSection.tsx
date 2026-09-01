@@ -25,24 +25,24 @@ export function PricingSection({
 
   return (
     <div>
-      {/* Toggle */}
-      <div className="flex items-center justify-center gap-3 mb-6">
-        <span className={`text-sm font-bold transition ${billing === "monthly" ? "text-white" : "text-white/40"}`}>Monthly</span>
+      {/* Billing toggle */}
+      <div className="flex items-center justify-center gap-4 mb-6">
+        <span className={`text-base font-bold transition ${billing === "monthly" ? "text-white" : "text-white/40"}`}>Monthly</span>
         <button
           type="button"
           onClick={() => setBilling(billing === "monthly" ? "annual" : "monthly")}
-          className="relative w-12 h-6 rounded-full transition-colors focus:outline-none"
+          className="relative w-16 h-8 rounded-full transition-colors focus:outline-none"
           style={{ background: billing === "annual" ? "#FFD400" : "rgba(255,255,255,0.12)" }}
           aria-label="Toggle billing period"
         >
           <span
-            className="absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform duration-200"
-            style={{ transform: billing === "annual" ? "translateX(24px)" : "translateX(0)" }}
+            className="absolute top-[4px] left-[4px] w-[24px] h-[24px] rounded-full bg-white shadow transition-transform duration-200"
+            style={{ transform: billing === "annual" ? "translateX(32px)" : "translateX(0)" }}
           />
         </button>
-        <span className={`text-sm font-bold transition ${billing === "annual" ? "text-white" : "text-white/40"}`}>
+        <span className={`text-base font-bold transition ${billing === "annual" ? "text-white" : "text-white/40"}`}>
           Annual
-          <span className="ml-1.5 rounded-full bg-emerald-400/20 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 tracking-wide">-15%</span>
+          <span className="ml-2 rounded-full bg-emerald-400/20 text-emerald-400 text-[11px] font-extrabold px-2.5 py-1 tracking-wide">-15%</span>
         </span>
       </div>
 
