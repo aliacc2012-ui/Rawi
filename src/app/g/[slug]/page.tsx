@@ -322,7 +322,10 @@ export default async function ClientGalleryPage({
   const hasMedia     = allMedia.length > 0;
   const photoCount   = allMedia.filter((i) => i.media_type === "image").length;
   const videoCount   = allMedia.filter((i) => i.media_type === "video").length;
-  const coverMedia   = allMedia.find((i) => i.media_type === "image" && i.thumbnail_url);
+  const galleryCoverMediaId = (gallery as unknown as { cover_media_id?: string | null }).cover_media_id ?? null;
+  const coverMedia   = galleryCoverMediaId
+    ? (allMedia.find((i) => i.id === galleryCoverMediaId && i.thumbnail_url) ?? allMedia.find((i) => i.media_type === "image" && i.thumbnail_url))
+    : allMedia.find((i) => i.media_type === "image" && i.thumbnail_url);
   const coverUrl     = coverMedia?.thumbnail_url ?? null;
   // comments are streamed via <CommentsLoader> below
   const projectDate  = project?.project_date

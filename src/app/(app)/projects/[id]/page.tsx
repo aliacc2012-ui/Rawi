@@ -180,6 +180,8 @@ export default async function ProjectDetailPage({
             <h3 className="text-[19px] font-semibold mb-4">Media</h3>
             <SortableMedia
               projectId={project.id}
+              galleryId={gallery?.id ?? ""}
+              initialCoverId={(gallery as unknown as { cover_media_id?: string | null } | null)?.cover_media_id ?? null}
               initialMedia={sortableMedia}
             />
             <MediaUploader workspaceId={workspace!.id} projectId={project.id} />

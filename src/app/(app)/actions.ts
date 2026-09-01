@@ -83,3 +83,18 @@ export async function deleteProjectMedia(projectId: string, mediaId: string) {
   revalidatePath("/settings");
   return { success: true };
 }
+
+export async function setGalleryCover(galleryId: string, mediaId: string | null) {
+  const { supabase, user } = await requireUser();
+  const context = await getOwnedGalleryContext(supabase, user.id, galleryId);
+  if (!context) return { error: "You don't have access to this gallery." };
+  if (mediaId) {
+    const { data } = await supabase.from("media").select("id").eq("id", mediaId).eq("project_id", context.project.id).maybeSingle();
+    if (!data) return { error: "Media not found in this project." };
+  }
+  const { error } = await supabase.from("galleries").update({ cover_media_id: mediaId } as never).eq("id", galleryId);
+  if (error) return { error: error.message };
+  if (context.gallery.slug) revalidateTag(`gallery-slug:${context.gallery.slug}`);
+  revalidatePath(`/projects/${context.project.id}`);
+  return { success: true };
+}
