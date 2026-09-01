@@ -89,7 +89,7 @@ function SortableCard({ item, index, onDelete }: { item: MediaItem; index: numbe
     >
       <div className="relative aspect-[4/3] bg-rawi-panel/[.06]">
         {item.media_type === "image" && item.preview_url
-          ? <img src={item.preview_url} alt={item.original_name} className="h-full w-full object-cover" draggable={false} />
+          ? <img src={item.preview_url} alt={item.original_name} className="h-full w-full object-cover" draggable={false} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display="none"; }} />
           : <div className="grid h-full place-items-center text-3xl text-white/60">{item.media_type === "video" ? "▶" : "▧"}</div>
         }
         <span className="absolute left-2 top-2 rounded-full bg-black/75 px-2 py-1 text-[10px] font-bold text-white">{index + 1}</span>

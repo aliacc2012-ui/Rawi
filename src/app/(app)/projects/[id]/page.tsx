@@ -115,7 +115,7 @@ export default async function ProjectDetailPage({
   if (previewPaths.length) {
     const { data: signed } = await s.storage
       .from("media")
-      .createSignedUrls(previewPaths, 60 * 10);
+      .createSignedUrls(previewPaths, 60 * 60);
     for (const item of signed ?? []) {
       if (item.path && item.signedUrl)
         signedByPath.set(item.path, item.signedUrl);
