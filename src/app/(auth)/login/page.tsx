@@ -17,6 +17,7 @@ export default function LoginPage() {
 function LoginForm() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
+  const [oauthError, setOauthError] = useState<string | null>(null);
   const submittingRef = useRef(false);
 
   async function handleSubmit(data: LoginFormValues) {
@@ -55,6 +56,30 @@ function LoginForm() {
     }
   }
 
+  async function handleOAuthSignIn(provider: "google" | "azure") {
+    setOauthError(null);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) {
+        setOauthError(
+          error.message || "Could not connect to provider. Please try again."
+        );
+      }
+    } catch (err) {
+      if (err instanceof SupabaseNotConfiguredError) {
+        setOauthError("RAWI's backend isn't configured yet.");
+      } else {
+        setOauthError("Something went wrong. Please try again.");
+      }
+    }
+  }
+
   return (
     <AuthFormSplitScreen
       logo={
@@ -71,6 +96,8 @@ function LoginForm() {
       imageAlt="Cinematic mountain landscape at golden hour"
       onSubmit={handleSubmit}
       submitError={error}
+      onOAuthSignIn={handleOAuthSignIn}
+      oauthError={oauthError}
       forgotPasswordHref="/forgot-password"
       createAccountHref="/signup"
     />
