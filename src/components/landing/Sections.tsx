@@ -98,25 +98,25 @@ const DEMO_PROJECTS = [
 const MORPH_WORDS = ["Wedding", "Automotive", "Portrait", "Lifestyle", "Commercial"];
 
 const COL1_IMGS = [
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80",
-  "https://images.unsplash.com/photo-1556800572-1b8aeef2c54f?w=500&q=80",
-  "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=500&q=80",
-  "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=500&q=80",
-  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&q=80",
-  "https://images.unsplash.com/photo-1617531653332-bd46c16f4d68?w=500&q=80",
-  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80",
-  "https://images.unsplash.com/photo-1612544448445-b8232cff3b6c?w=500&q=80",
+  "/landing/l1-synskin.jpg",
+  "/landing/l2-rings.jpg",
+  "/landing/l3-camera.jpg",
+  "/landing/l4-porsche.jpg",
+  "/landing/l5-bmw-m3.jpg",
+  "/landing/l6-bmw-e46.jpg",
+  "/landing/l1-synskin.jpg",
+  "/landing/l4-porsche.jpg",
 ];
 
 const COL2_IMGS = [
-  "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&q=80",
-  "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500&q=80",
-  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80",
-  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&q=80",
-  "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=500&q=80",
-  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80",
-  "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=500&q=80",
-  "https://images.unsplash.com/photo-1493238792000-8113da705763?w=500&q=80",
+  "/landing/l5-bmw-m3.jpg",
+  "/landing/l6-bmw-e46.jpg",
+  "/landing/l2-rings.jpg",
+  "/landing/l3-camera.jpg",
+  "/landing/l4-porsche.jpg",
+  "/landing/l1-synskin.jpg",
+  "/landing/l6-bmw-e46.jpg",
+  "/landing/l5-bmw-m3.jpg",
 ];
 
 export function Hero() {
