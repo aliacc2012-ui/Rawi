@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import NumberFlow from "@number-flow/react";
 import { PLAN_CONFIG, PLAN_ORDER, type PlanId } from "@/lib/plans";
 import { PlanCheckoutButton } from "@/components/billing/PlanCheckoutButton";
 import { CancelPlanButton } from "@/components/billing/CancelPlanButton";
@@ -72,9 +73,10 @@ export function PricingSection({
               ) : (
                 <div>
                   <div className="flex items-end gap-1.5">
-                    <span className="font-cormorant text-[52px] leading-none tracking-[-0.03em] text-[#F0EFFF]">
-                      {annualMonthlyAed}
-                    </span>
+                    <NumberFlow
+                      value={annualMonthlyAed}
+                      className="font-cormorant text-[52px] leading-none tracking-[-0.03em] text-[#F0EFFF] tabular-nums"
+                    />
                     <div className="mb-1.5">
                       <div className="text-sm font-sans text-white/35">AED/mo</div>
                       <div className="text-[11px] font-semibold text-white/30">{usdLabel(annualMonthlyAed)}/mo</div>
