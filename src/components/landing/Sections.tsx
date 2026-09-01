@@ -92,6 +92,32 @@ const DEMO_PROJECTS = [
       "https://images.unsplash.com/photo-1542362567-b07e54358753?w=400&q=75",
     ],
   },
+  {
+    name: "Neon Nights",
+    cover: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=600&q=80",
+    meta: "88 photos",
+    color: "#e040fb",
+    photos: [
+      "https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=400&q=75",
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&q=75",
+      "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400&q=75",
+      "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=75",
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=75",
+    ],
+  },
+  {
+    name: "Alpine Rally",
+    cover: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&q=80",
+    meta: "121 photos",
+    color: "#26a69a",
+    photos: [
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&q=75",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=75",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75",
+      "https://images.unsplash.com/photo-1542362567-b07e54358753?w=400&q=75",
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=400&q=75",
+    ],
+  },
 ];
 
 const MORPH_WORDS = ["Wedding", "Automotive", "Portrait", "Lifestyle", "Commercial"];
