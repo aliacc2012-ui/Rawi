@@ -62,3 +62,24 @@ export async function publishGallery(galleryId: string, publish: boolean) { cons
 
 export async function updateBranding(workspaceId: string, formData: FormData) { const { supabase, user } = await requireUser(); if (!(await ownsWorkspace(supabase, user.id, workspaceId))) return { error: "You don't have access to this workspace." }; const { error } = await supabase.from("workspaces").update({ name: String(formData.get("studioName") || ""), accent_color: String(formData.get("accentColor") || "#FFD400") }).eq("id", workspaceId).eq("owner_id", user.id); if (error) return { error: error.message }; revalidatePath("/settings"); return { success: true }; }
 export async function signOut() { const supabase = await createClient(); await supabase.auth.signOut(); redirect("/login"); }
+
+export async function deleteProjectMedia(projectId: string, mediaId: string) {
+  const { supabase, user } = await requireUser();
+  const project = await getOwnedProject(supabase, user.id, projectId);
+  if (!project) return { error: "You don't have access to this project." };
+  const { data: media } = await supabase.from("media").select("id, storage_path, thumbnail_path, file_size").eq("id", mediaId).eq("project_id", projectId).maybeSingle();
+  if (!media) return { error: "Media not found." };
+  const pathsToDelete = [media.storage_path, media.thumbnail_path].filter((p): p is string => !!p);
+  if (pathsToDelete.length) await supabase.storage.from("media").remove(pathsToDelete);
+  const { error } = await supabase.from("media").delete().eq("id", mediaId);
+  if (error) return { error: error.message };
+  const workspace = await getOwnedWorkspace(supabase, user.id, project.workspace_id);
+  if (workspace) {
+    const newUsage = Math.max(0, (workspace.storage_used_bytes ?? 0) - (media.file_size ?? 0));
+    await supabase.from("workspaces").update({ storage_used_bytes: newUsage }).eq("id", workspace.id).eq("owner_id", user.id);
+  }
+  revalidatePath(`/projects/${projectId}`);
+  revalidatePath("/dashboard");
+  revalidatePath("/settings");
+  return { success: true };
+}

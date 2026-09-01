@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { DndContext, PointerSensor, KeyboardSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { reorderProjectMedia } from "@/app/(app)/actions";
+import { reorderProjectMedia, deleteProjectMedia } from "@/app/(app)/actions";
 
 type MediaItem = {
   id: string;
@@ -45,6 +45,18 @@ export function SortableMedia({ projectId, initialMedia }: { projectId: string; 
     });
   }
 
+  function handleDelete(mediaId: string) {
+    const previous = items;
+    setItems((curr) => curr.filter((i) => i.id !== mediaId));
+    startTransition(async () => {
+      const result = await deleteProjectMedia(projectId, mediaId);
+      if (result?.error) {
+        setItems(previous);
+        setMessage(result.error);
+      }
+    });
+  }
+
   if (!items.length) return <p className="text-sm text-white/45">No media yet — upload photos or video below.</p>;
 
   return <div>
@@ -55,25 +67,78 @@ export function SortableMedia({ projectId, initialMedia }: { projectId: string; 
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
       <SortableContext items={items.map((item) => item.id)} strategy={rectSortingStrategy}>
         <div className={`grid grid-cols-2 gap-3 sm:grid-cols-3 ${isPending ? "opacity-80" : ""}`}>
-          {items.map((item, index) => <SortableCard key={item.id} item={item} index={index} />)}
+          {items.map((item, index) => (
+            <SortableCard key={item.id} item={item} index={index} onDelete={() => handleDelete(item.id)} />
+          ))}
         </div>
       </SortableContext>
     </DndContext>
   </div>;
 }
 
-function SortableCard({ item, index }: { item: MediaItem; index: number }) {
+function SortableCard({ item, index, onDelete }: { item: MediaItem; index: number; onDelete: () => void }) {
+  const [confirming, setConfirming] = useState(false);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   const style = { transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 20 : undefined };
-  return <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={`group cursor-grab overflow-hidden rounded-2xl border bg-rawi-panel active:cursor-grabbing ${isDragging ? "border-[#FFD400] shadow-xl" : "border-white/[.07]"}`}>
-    <div className="relative aspect-[4/3] bg-rawi-panel/[.06]">
-      {item.media_type === "image" && item.preview_url ? <img src={item.preview_url} alt={item.original_name} className="h-full w-full object-cover" draggable={false}/> : <div className="grid h-full place-items-center text-3xl text-white/60">{item.media_type === "video" ? "▶" : "▧"}</div>}
-      <span className="absolute left-2 top-2 rounded-full bg-black/75 px-2 py-1 text-[10px] font-bold text-white">{index + 1}</span>
-      <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-black/65 text-sm text-white opacity-80">⠿</span>
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`group relative cursor-grab overflow-hidden rounded-2xl border bg-rawi-panel active:cursor-grabbing ${isDragging ? "border-[#FFD400] shadow-xl" : "border-white/[.07]"}`}
+    >
+      <div className="relative aspect-[4/3] bg-rawi-panel/[.06]">
+        {item.media_type === "image" && item.preview_url
+          ? <img src={item.preview_url} alt={item.original_name} className="h-full w-full object-cover" draggable={false} />
+          : <div className="grid h-full place-items-center text-3xl text-white/60">{item.media_type === "video" ? "▶" : "▧"}</div>
+        }
+        <span className="absolute left-2 top-2 rounded-full bg-black/75 px-2 py-1 text-[10px] font-bold text-white">{index + 1}</span>
+        <span className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-black/65 text-sm text-white opacity-80">⠿</span>
+
+        {/* Delete button — stops pointer so it doesn't trigger drag */}
+        {!confirming ? (
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); setConfirming(true); }}
+            className="absolute bottom-2 right-2 grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white opacity-0 transition group-hover:opacity-100 hover:bg-red-600"
+            title="Delete photo"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
+        ) : (
+          <div
+            onPointerDown={(e) => e.stopPropagation()}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/80"
+          >
+            <p className="text-center text-xs font-semibold text-white">Delete this photo?</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                className="rounded-full bg-red-600 px-3 py-1 text-xs font-bold text-white hover:bg-red-500"
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setConfirming(false); }}
+                className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white hover:bg-white/25"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="p-2.5">
+        <div className="truncate text-xs font-semibold text-white/65">{item.original_name}</div>
+        <div className="mt-1 text-[10px] capitalize text-white/45">{item.processing_status}</div>
+      </div>
     </div>
-    <div className="p-2.5">
-      <div className="truncate text-xs font-semibold text-white/65">{item.original_name}</div>
-      <div className="mt-1 text-[10px] capitalize text-white/45">{item.processing_status}</div>
-    </div>
-  </div>;
+  );
 }
