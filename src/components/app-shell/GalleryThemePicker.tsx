@@ -66,7 +66,7 @@ export function GalleryThemePicker({ galleryId, initialTheme }: { galleryId: str
     });
   }
 
-  const current = THEMES.find((t) => t.id === theme) ?? THEMES[0];
+  const current = THEMES.find((t) => t.id === theme) ?? THEMES[0]!;
 
   return (
     <div className="mt-5 rounded-[20px] border border-white/[.07] bg-rawi-panel p-5">
