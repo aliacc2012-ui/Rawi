@@ -285,7 +285,7 @@ export function Hero() {
                   {[...COL1_IMGS, ...COL1_IMGS].map((src, i) => (
                     <div key={i} className="relative overflow-hidden rounded-2xl shrink-0" style={{ height: "200px" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" onError={(e) => { const el = e.currentTarget; el.style.display="none"; el.parentElement!.style.background="#1a1a2e"; }} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                     </div>
                   ))}
@@ -297,7 +297,7 @@ export function Hero() {
                   {[...COL2_IMGS, ...COL2_IMGS].map((src, i) => (
                     <div key={i} className="relative overflow-hidden rounded-2xl shrink-0" style={{ height: "200px" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                      <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" onError={(e) => { const el = e.currentTarget; el.style.display="none"; el.parentElement!.style.background="#1a1a2e"; }} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                     </div>
                   ))}
