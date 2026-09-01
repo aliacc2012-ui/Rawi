@@ -9,8 +9,7 @@ import { PLAN_CONFIG, PLAN_ORDER } from "@/lib/plans";
 import { trackEvent } from "@/lib/analytics";
 import { Reveal } from "@/components/landing/Reveal";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1614026480209-cd9934144671?w=800&q=80";
+const HERO_IMAGE = "/landing/l-demo-cover.jpg";
 
 const DEMO_PROJECTS = [
   {
