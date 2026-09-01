@@ -98,3 +98,19 @@ export async function setGalleryCover(galleryId: string, mediaId: string | null)
   revalidatePath(`/projects/${context.project.id}`);
   return { success: true };
 }
+
+export async function setGalleryCoverImage(galleryId: string, path: string | null) {
+  const { supabase, user } = await requireUser();
+  const context = await getOwnedGalleryContext(supabase, user.id, galleryId);
+  if (!context) return { error: "You don't have access to this gallery." };
+  // Remove old cover from storage if replacing
+  const oldPath = (context.gallery as unknown as { cover_image_path?: string | null }).cover_image_path;
+  if (oldPath && oldPath !== path) {
+    await supabase.storage.from("media").remove([oldPath]);
+  }
+  const { error } = await supabase.from("galleries").update({ cover_image_path: path } as never).eq("id", galleryId);
+  if (error) return { error: error.message };
+  if (context.gallery.slug) revalidateTag(`gallery-slug:${context.gallery.slug}`);
+  revalidatePath(`/projects/${context.project.id}`);
+  return { success: true };
+}

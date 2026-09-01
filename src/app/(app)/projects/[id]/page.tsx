@@ -8,6 +8,7 @@ import { GallerySettings } from "@/components/app-shell/GallerySettings";
 import { FeedbackInbox } from "@/components/app-shell/FeedbackInbox";
 import { SortableMedia } from "@/components/app-shell/SortableMedia";
 import { GalleryThemePicker } from "@/components/app-shell/GalleryThemePicker";
+import { BannerUploader } from "@/components/app-shell/BannerUploader";
 import { AnimateIn } from "@/components/app-shell/AnimateIn";
 import { ComingSoonGalleryTools } from "@/components/app-shell/ComingSoonGalleryTools";
 import type { GalleryTheme } from "@/app/(app)/projects/[id]/theme-actions";
@@ -180,8 +181,6 @@ export default async function ProjectDetailPage({
             <h3 className="text-[19px] font-semibold mb-4">Media</h3>
             <SortableMedia
               projectId={project.id}
-              galleryId={gallery?.id ?? ""}
-              initialCoverId={(gallery as unknown as { cover_media_id?: string | null } | null)?.cover_media_id ?? null}
               initialMedia={sortableMedia}
             />
             <MediaUploader workspaceId={workspace!.id} projectId={project.id} />
@@ -213,6 +212,14 @@ export default async function ProjectDetailPage({
               initialTheme={galleryTheme}
             />
           )}{" "}
+          {gallery && (
+            <BannerUploader
+              galleryId={gallery.id}
+              workspaceId={workspace!.id}
+              projectId={project.id}
+              initialPath={(gallery as unknown as { cover_image_path?: string | null }).cover_image_path ?? null}
+            />
+          )}
           {gallery && (
             <GallerySettings
               galleryId={gallery.id}

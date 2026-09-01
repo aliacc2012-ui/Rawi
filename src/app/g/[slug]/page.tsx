@@ -270,14 +270,21 @@ export default async function ClientGalleryPage({
             if (p) item.thumbnail_url = byPath.get(p) ?? null;
           }
       }
-      return { gallery: g, sections };
+      // Banner cover image
+    const bannerPath = (g as unknown as { cover_image_path?: string | null }).cover_image_path ?? null;
+    let bannerUrl: string | null = null;
+    if (bannerPath) {
+      const { data: bData } = await admin.storage.from("media").createSignedUrl(bannerPath, 3600);
+      bannerUrl = bData?.signedUrl ?? null;
+    }
+    return { gallery: g, sections, bannerUrl };
     },
     [`gallery-page:${slug}`],
     { tags: [`gallery-slug:${slug}`], revalidate: 3600 },
   )();
 
   if (!cached) return <UnavailableScreen reason="This gallery doesn't exist or the link is wrong." />;
-  const { gallery, sections: rawTypedSections } = cached;
+  const { gallery, sections: rawTypedSections, bannerUrl } = cached;
 
   if (gallery.status !== "published")
     return <UnavailableScreen reason="This gallery isn't published yet." />;
@@ -322,11 +329,8 @@ export default async function ClientGalleryPage({
   const hasMedia     = allMedia.length > 0;
   const photoCount   = allMedia.filter((i) => i.media_type === "image").length;
   const videoCount   = allMedia.filter((i) => i.media_type === "video").length;
-  const galleryCoverMediaId = (gallery as unknown as { cover_media_id?: string | null }).cover_media_id ?? null;
-  const coverMedia   = galleryCoverMediaId
-    ? (allMedia.find((i) => i.id === galleryCoverMediaId && i.thumbnail_url) ?? allMedia.find((i) => i.media_type === "image" && i.thumbnail_url))
-    : allMedia.find((i) => i.media_type === "image" && i.thumbnail_url);
-  const coverUrl     = coverMedia?.thumbnail_url ?? null;
+  const coverMedia   = allMedia.find((i) => i.media_type === "image" && i.thumbnail_url);
+  const coverUrl     = bannerUrl ?? coverMedia?.thumbnail_url ?? null;
   // comments are streamed via <CommentsLoader> below
   const projectDate  = project?.project_date
     ? new Intl.DateTimeFormat("en", { day: "numeric", month: "short", year: "numeric" })
