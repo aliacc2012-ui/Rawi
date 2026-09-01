@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { BrandingForm } from "@/components/app-shell/BrandingForm";
 import { PlanCheckoutButton } from "@/components/billing/PlanCheckoutButton";
+import { CancelPlanButton } from "@/components/billing/CancelPlanButton";
 import { PLAN_CONFIG, PLAN_ORDER, type PlanId } from "@/lib/plans";
 
 type WorkspaceWithBillingSettings = { renewal_reminder_days?: number | null };
@@ -113,7 +114,7 @@ export default async function SettingsPage() {
         {/* Plan cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {PLAN_ORDER.map((id) => (
-            <PlanCard key={id} plan={PLAN_CONFIG[id]} current={currentPlan === id} workspaceId={workspace!.id} />
+            <PlanCard key={id} plan={PLAN_CONFIG[id]} current={currentPlan === id} workspaceId={workspace!.id} currentPlanId={currentPlan} />
           ))}
           <CustomPlanCard />
         </div>
@@ -143,7 +144,7 @@ function CustomPlanCard() {
   );
 }
 
-function PlanCard({ plan, current, workspaceId }: { plan: (typeof PLAN_CONFIG)[PlanId]; current: boolean; workspaceId: string }) {
+function PlanCard({ plan, current, workspaceId, currentPlanId }: { plan: (typeof PLAN_CONFIG)[PlanId]; current: boolean; workspaceId: string; currentPlanId: PlanId }) {
   return (
     <div className={`relative flex flex-col min-h-[390px] rounded-[22px] p-6 overflow-hidden ${plan.featured ? "border-2 border-rawi-yellow bg-rawi-yellow/[.04]" : "border border-white/[.07] bg-rawi-panel"}`}>
       {plan.featured && (
@@ -165,6 +166,9 @@ function PlanCard({ plan, current, workspaceId }: { plan: (typeof PLAN_CONFIG)[P
       ) : plan.id !== "free" ? (
         <div className="mt-6"><PlanCheckoutButton plan={plan.id} workspaceId={workspaceId} featured={Boolean(plan.featured)} /></div>
       ) : null}
+      {current && currentPlanId !== "free" && (
+        <CancelPlanButton workspaceId={workspaceId} />
+      )}
     </div>
   );
 }
