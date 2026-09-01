@@ -100,7 +100,7 @@ export default function LandingPage() {
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sm text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
                   𝕏
                 </a>
-                <a href="https://linkedin.com/company/getrawi" target="_blank" rel="noopener noreferrer" aria-label="RAWI on LinkedIn"
+                <a href="https://www.linkedin.com/company/getrawi" target="_blank" rel="noopener noreferrer" aria-label="RAWI on LinkedIn"
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sm text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
                   in
                 </a>
