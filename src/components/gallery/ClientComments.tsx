@@ -60,7 +60,7 @@ export function ClientComments({ galleryId, initialComments = [] }: { galleryId:
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
-            className="feedback-input h-12 w-full rounded-2xl border border-black/[.10] bg-[#fafafa] px-4 text-sm"
+            className="feedback-input h-12 w-full rounded-2xl border border-black/[.10] bg-[#fafafa] px-4 text-sm text-black placeholder:text-black/30"
           />
           <div className="relative">
             <textarea
@@ -71,7 +71,7 @@ export function ClientComments({ galleryId, initialComments = [] }: { galleryId:
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Write your feedback…"
-              className="feedback-input w-full resize-none rounded-2xl border border-black/[.10] bg-[#fafafa] p-4 pb-8 text-sm"
+              className="feedback-input w-full resize-none rounded-2xl border border-black/[.10] bg-[#fafafa] p-4 pb-8 text-sm text-black placeholder:text-black/30"
             />
             <span className="absolute bottom-3 left-4 text-[10px] text-black/25">{text.length}/2000</span>
           </div>
