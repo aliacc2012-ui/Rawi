@@ -96,10 +96,6 @@ export default function LandingPage() {
                     <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
                   </svg>
                 </a>
-                <a href="https://x.com/rawiapp" target="_blank" rel="noopener noreferrer" aria-label="RAWI on X"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sm text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
-                  𝕏
-                </a>
                 <a href="https://www.linkedin.com/company/getrawi" target="_blank" rel="noopener noreferrer" aria-label="RAWI on LinkedIn"
                   className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-sm text-white/50 transition hover:border-rawi-yellow hover:text-rawi-yellow">
                   in
