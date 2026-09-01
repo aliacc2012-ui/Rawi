@@ -104,19 +104,16 @@ const COL1_IMGS = [
   "/landing/l4-porsche.jpg",
   "/landing/l5-bmw-m3.jpg",
   "/landing/l6-bmw-e46.jpg",
-  "/landing/l1-synskin.jpg",
-  "/landing/l4-porsche.jpg",
+  "/landing/l7-mustang.jpg",
 ];
 
 const COL2_IMGS = [
-  "/landing/l5-bmw-m3.jpg",
-  "/landing/l6-bmw-e46.jpg",
-  "/landing/l2-rings.jpg",
-  "/landing/l3-camera.jpg",
-  "/landing/l4-porsche.jpg",
-  "/landing/l1-synskin.jpg",
-  "/landing/l6-bmw-e46.jpg",
-  "/landing/l5-bmw-m3.jpg",
+  "/landing/l8-drift.jpg",
+  "/landing/l9-f1.jpg",
+  "/landing/l10-redbull.jpg",
+  "/landing/l11-porsche992.jpg",
+  "/landing/l12-audi-r8.jpg",
+  "/landing/l13-amg.jpg",
 ];
 
 export function Hero() {
