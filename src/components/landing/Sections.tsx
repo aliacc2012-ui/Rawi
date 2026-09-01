@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { PLAN_CONFIG, PLAN_ORDER } from "@/lib/plans";
 import { trackEvent } from "@/lib/analytics";
+import NumberFlow from "@number-flow/react";
 import { Reveal } from "@/components/landing/Reveal";
 
 const HERO_IMAGE = "/landing/l-demo-cover.jpg";
@@ -505,6 +506,7 @@ const PLAN_DESCRIPTIONS = {
   pro: "For serious creators and teams.",
 } as const;
 export function Pricing() {
+  const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   return (
     <section
       id="pricing"
@@ -518,9 +520,34 @@ export function Pricing() {
           Start free. Grow when your archive does.
         </h2>
       </div>
+
+      {/* Billing toggle */}
+      <div className="flex items-center gap-3 mb-8">
+        <span className={`text-sm font-bold transition ${billing === "monthly" ? "text-white" : "text-white/40"}`}>Monthly</span>
+        <button
+          type="button"
+          onClick={() => setBilling(billing === "monthly" ? "annual" : "monthly")}
+          className="relative w-12 h-6 rounded-full transition-colors focus:outline-none"
+          style={{ background: billing === "annual" ? "#FFD400" : "rgba(255,255,255,0.12)" }}
+          aria-label="Toggle billing period"
+        >
+          <span
+            className="absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow transition-transform duration-200"
+            style={{ transform: billing === "annual" ? "translateX(24px)" : "translateX(0)" }}
+          />
+        </button>
+        <span className={`text-sm font-bold transition ${billing === "annual" ? "text-white" : "text-white/40"}`}>
+          Annual
+          <span className="ml-1.5 rounded-full bg-emerald-400/20 text-emerald-400 text-[10px] font-extrabold px-2 py-0.5 tracking-wide">-15%</span>
+        </span>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 items-stretch">
         {PLAN_ORDER.map((id) => {
           const p = PLAN_CONFIG[id];
+          const monthlyAed = p.priceAed;
+          const displayAed = billing === "annual" && monthlyAed > 0 ? Math.round(monthlyAed * 0.85) : monthlyAed;
+          const usd = Math.round(displayAed * 0.2723);
           return (
             <article
               key={id}
@@ -538,12 +565,24 @@ export function Pricing() {
                 <span className="text-[11px] font-black tracking-[0.12em] text-white/45">
                   {p.name.toUpperCase()}
                 </span>
-                <h3 className="text-[46px] md:text-[54px] my-4 tracking-[-0.06em]">
-                  {p.priceAed}{" "}
-                  <small className="text-[13px] text-white/40 tracking-normal">
-                    {p.priceAed === 0 ? "AED" : "AED/mo"}
+                <h3 className="text-[46px] md:text-[54px] my-4 tracking-[-0.06em] flex items-baseline gap-2">
+                  {monthlyAed === 0 ? (
+                    <span>0</span>
+                  ) : (
+                    <NumberFlow value={displayAed} className="tabular-nums" />
+                  )}
+                  <small className="text-[13px] text-white/40 tracking-normal font-normal">
+                    {monthlyAed === 0 ? "AED" : "AED/mo"}
                   </small>
+                  {monthlyAed > 0 && (
+                    <small className="text-[11px] text-white/25 tracking-normal font-normal">~${usd}</small>
+                  )}
                 </h3>
+                {billing === "annual" && monthlyAed > 0 && (
+                  <p className="text-[11px] text-emerald-400 font-semibold -mt-2 mb-2">
+                    Billed {Math.round(monthlyAed * 12 * 0.85)} AED/year
+                  </p>
+                )}
                 <p className="text-white/45">{PLAN_DESCRIPTIONS[id]}</p>
                 <ul className="p-0 my-6 list-none">
                   {p.features.map((f) => (
@@ -557,11 +596,12 @@ export function Pricing() {
                 </ul>
               </div>
               <Link
-                href={`/signup?plan=${id}`}
+                href={`/signup?plan=${id}&billing=${billing}`}
                 onClick={() =>
                   trackEvent("pricing_click", {
                     plan: id,
-                    price_aed: p.priceAed,
+                    price_aed: displayAed,
+                    billing,
                   })
                 }
                 className={`text-center rounded-full px-5 py-[13px] font-extrabold ${p.featured ? "bg-rawi-yellow text-black" : "bg-white/8 border border-white/15 text-white"}`}
