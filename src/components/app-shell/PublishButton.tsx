@@ -27,18 +27,39 @@ export function PublishButton({ galleryId, isPublished }: { galleryId: string; i
   }
 
   return (
-    <div className="flex items-center gap-2">
-      {error && <span className="text-xs text-red-600">{error}</span>}
-      <button
-        type="button"
-        onClick={toggle}
-        disabled={pending}
-        className={`rounded-full px-4 py-2.5 text-sm font-extrabold disabled:opacity-60 ${
-          published ? "bg-rawi-panel border border-white/[.10] text-black" : "bg-rawi-yellow text-black"
-        }`}
-      >
-        {pending ? "…" : published ? "Unpublish" : "Publish"}
-      </button>
+    <div className="flex items-center gap-3">
+      {error && <span className="text-xs text-red-500">{error}</span>}
+
+      {published ? (
+        <div className="flex items-center gap-2.5">
+          {/* Live indicator */}
+          <span className="flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-emerald-400">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            </span>
+            Live
+          </span>
+          {/* Unpublish button */}
+          <button
+            type="button"
+            onClick={toggle}
+            disabled={pending}
+            className="rounded-full border border-white/[.12] bg-white/[.05] px-4 py-2 text-sm font-bold text-white/70 transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50"
+          >
+            {pending ? "…" : "Unpublish"}
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={toggle}
+          disabled={pending}
+          className="rounded-full bg-rawi-yellow px-5 py-2.5 text-sm font-extrabold text-black transition hover:bg-yellow-300 disabled:opacity-60"
+        >
+          {pending ? "…" : "Publish"}
+        </button>
+      )}
     </div>
   );
 }
