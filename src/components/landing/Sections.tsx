@@ -10,7 +10,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Reveal } from "@/components/landing/Reveal";
 
 const HERO_IMAGE =
-  "https://hips.hearstapps.com/hmg-prod/images/2024-mclaren-750s-121-66cdd39e16442.jpg?crop=1xw%3A1xh%3Bcenter%2Ctop";
+  "https://images.unsplash.com/photo-1614026480209-cd9934144671?w=800&q=80";
 
 const DEMO_PROJECTS = [
   {
