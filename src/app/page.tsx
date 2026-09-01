@@ -39,17 +39,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_AE",
     alternateLocale: "ar_AE",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "RAWI — Your work deserves better than a Drive link." }],
   },
   twitter: {
     card: "summary_large_image",
     title: "RAWI — Cinematic Client Galleries",
     description:
       "UAE-first gallery platform for photographers and filmmakers. Start free.",
+    images: ["/opengraph-image"],
   },
 };
 
 export default function LandingPage() {
   return (
+    <>
+      {/* Preload LCP hero image */}
+      <link rel="preload" as="image" href="/landing/l-demo-cover.jpg" />
     <main id="top" className="grain-overlay relative overflow-x-hidden bg-[#06060F] text-[#F0EFFF]">
       {/* Ambient glow blobs */}
       <div className="blob-a" aria-hidden="true" />
@@ -138,5 +143,6 @@ export default function LandingPage() {
 
       <CookieConsent />
     </main>
+    </>
   );
 }
