@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWorkspace } from "@/lib/workspace";
 import { HomeSocialLinks } from "@/components/app-shell/HomeSocialLinks";
@@ -44,8 +43,14 @@ function getGreeting(hour: number) {
 
 export default async function DashboardPage() {
   const { profile, workspace } = await getCurrentWorkspace();
+  if (!workspace) {
+    return (
+      <div className="flex items-center justify-center h-64 text-white/40 text-sm">
+        Setting up your workspace…
+      </div>
+    );
+  }
 
-  
   const s = await createClient();
 
   const [{ data: projects }, stats] = await Promise.all([
