@@ -8,8 +8,8 @@ const stats = [
     value_ar: "صُنع هنا", color: "#8b5cf6", glow: "rgba(139,92,246,0.18)",
   },
   {
-    value_en: "500+", label_en: "Active creators", label_ar: "مبدع نشط",
-    value_ar: "+500", color: "#06b6d4", glow: "rgba(6,182,212,0.15)",
+    value_en: "2024", label_en: "Launched in the UAE", label_ar: "أُطلق في الإمارات",
+    value_ar: "2024", color: "#06b6d4", glow: "rgba(6,182,212,0.15)",
   },
   {
     value_en: "500 MB", label_en: "Max file size", label_ar: "أقصى حجم للملف",

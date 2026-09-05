@@ -24,23 +24,9 @@ export function EditorialStatement() {
           <div className="gold-rule mb-8" aria-hidden="true" style={{ opacity: 0.5 }} />
         </Reveal>
         <Reveal delay={3}>
-          <p className="font-montserrat mb-14 max-w-[560px] text-[17px] font-light leading-relaxed text-white/40">
+          <p className="font-montserrat max-w-[560px] text-[17px] font-light leading-relaxed text-white/40">
             Most UAE photographers send a Google Drive link. Their clients download files in a chaotic folder — no context, no brand, no experience. RAWI changes the delivery, not the work.
           </p>
-        </Reveal>
-        <Reveal delay={4}>
-          <div className="grid grid-cols-3 border-t border-white/[.08]">
-            {[
-              { num: "3,800+", label: "Galleries Created" },
-              { num: "180K+", label: "Client Downloads" },
-              { num: "4.9★", label: "Creator Rating" },
-            ].map((s, i) => (
-              <div key={s.num} className={"pb-2 pt-8 " + (i < 2 ? "sm:mr-10 sm:border-r sm:border-white/[.08] sm:pr-10" : "")}>
-                <div className="font-cormorant text-[38px] sm:text-[60px] font-light leading-none text-[#F2ECD8]">{s.num}</div>
-                <div className="font-montserrat mt-3 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">{s.label}</div>
-              </div>
-            ))}
-          </div>
         </Reveal>
       </div>
     </section>
