@@ -8,8 +8,8 @@ const WORKFLOW = [
     title: "Upload",
     body: "Drag in your final photos and films. Files up to 500 MB, no compression, no watermarks.",
     icon: "↥",
-    color: "#8b5cf6",
-    glow: "rgba(139,92,246,0.20)",
+    color: "#C9962A",
+    glow: "rgba(201,150,42,0.22)",
   },
   {
     number: "02",
@@ -24,16 +24,16 @@ const WORKFLOW = [
     title: "Share",
     body: "One link. Send it on WhatsApp, email, or embed it anywhere. Password-protect optional.",
     icon: "↗",
-    color: "#06b6d4",
-    glow: "rgba(6,182,212,0.20)",
+    color: "#E8C97A",
+    glow: "rgba(232,201,122,0.20)",
   },
   {
     number: "04",
     title: "Deliver",
     body: "Clients browse, favorite their picks, leave feedback and download. Zero friction.",
     icon: "✓",
-    color: "#10b981",
-    glow: "rgba(16,185,129,0.20)",
+    color: "#FFD400",
+    glow: "rgba(255,212,0,0.22)",
   },
 ] as const;
 

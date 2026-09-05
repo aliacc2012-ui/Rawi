@@ -93,13 +93,18 @@ export function FAQ() {
                     +
                   </span>
                 </button>
-                {isOpen && (
-                  <div id={`faq-answer-${idx}`} className="px-6 pb-6 md:px-8 md:pb-7">
+                <div
+                  id={`faq-answer-${idx}`}
+                  className="overflow-hidden transition-all duration-300 ease-in-out"
+                  style={{ maxHeight: isOpen ? "220px" : "0px", opacity: isOpen ? 1 : 0 }}
+                  aria-hidden={!isOpen}
+                >
+                  <div className="px-6 pb-6 md:px-8 md:pb-7">
                     <p className="max-w-[680px] text-sm leading-relaxed text-white/45">
                       {isAr ? faq.a_ar : faq.a_en}
                     </p>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
