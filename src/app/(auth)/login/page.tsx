@@ -60,16 +60,19 @@ function LoginForm() {
     setOauthError(null);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: `https://getrawi.ae/auth/callback`,
+          queryParams: { prompt: "select_account" },
         },
       });
       if (error) {
         setOauthError(
           error.message || "Could not connect to provider. Please try again."
         );
+      } else if (data?.url) {
+        window.location.href = data.url;
       }
     } catch (err) {
       if (err instanceof SupabaseNotConfiguredError) {
