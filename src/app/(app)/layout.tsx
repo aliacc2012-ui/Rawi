@@ -16,9 +16,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // Auto-create a workspace on first login so the user goes straight to dashboard
   if (!workspace) {
     const supabase = await createClient();
-    const name =
-      (user.user_metadata?.full_name as string | undefined)?.trim() ||
-      (user.email ?? "My Studio").split("@")[0];
+    const name: string =
+      ((user.user_metadata?.full_name as string | undefined)?.trim()) ||
+      (user.email?.split("@")[0]) ||
+      "my-studio";
     const slug = `${slugify(name)}-${user.id.slice(0, 6)}`;
     const { data } = await supabase
       .from("workspaces")

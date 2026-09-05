@@ -44,6 +44,7 @@ function getGreeting(hour: number) {
 
 export default async function DashboardPage() {
   const { profile, workspace } = await getCurrentWorkspace();
+  if (!workspace) redirect("/login");
   
   const s = await createClient();
 
