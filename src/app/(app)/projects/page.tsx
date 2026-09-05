@@ -32,9 +32,9 @@ export default async function ProjectsPage() {
   const supabase = await createClient();
 
   const [{ data: projects }, { data: clients }, { data: statsData }] = await Promise.all([
-    supabase.from("projects").select("id, name, status, project_type, created_at").eq("workspace_id", workspace!.id).order("created_at", { ascending: false }),
-    supabase.from("clients").select("id, name").eq("workspace_id", workspace!.id).order("name"),
-    supabase.rpc("rawi_dashboard_stats", { target_workspace_id: workspace!.id }),
+    supabase.from("projects").select("id, name, status, project_type, created_at").eq("workspace_id", workspace.id).order("created_at", { ascending: false }),
+    supabase.from("clients").select("id, name").eq("workspace_id", workspace.id).order("name"),
+    supabase.rpc("rawi_dashboard_stats", { target_workspace_id: workspace.id }),
   ]);
 
   const stats = (statsData ?? {}) as Partial<DashboardStats>;
@@ -67,7 +67,7 @@ export default async function ProjectsPage() {
           <h1 className="font-cormorant text-[56px] md:text-[72px] tracking-[-0.03em] leading-none mt-2 text-[#F0EFFF]">Projects</h1>
           <p className="text-white/40 mt-2 text-sm">Create, publish and manage every client delivery from one place.</p>
         </div>
-        <NewProjectForm workspaceId={workspace!.id} clients={clients ?? []} />
+        <NewProjectForm workspaceId={workspace.id} clients={clients ?? []} />
       </div>
 
       {/* Stat tiles */}
@@ -196,7 +196,7 @@ export default async function ProjectsPage() {
             <p className="text-sm text-white/35 max-w-md mx-auto mt-2 mb-6">
               Start a project, upload your work and publish a client-ready gallery in minutes.
             </p>
-            <NewProjectForm workspaceId={workspace!.id} clients={clients ?? []} />
+            <NewProjectForm workspaceId={workspace.id} clients={clients ?? []} />
           </div>
         )}
       </div>
