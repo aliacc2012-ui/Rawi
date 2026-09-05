@@ -2,3 +2,7 @@ node_modules/
 .next/
 .env*.local
 .env
+
+# Stray nested project copies
+rawi-project/
+vercel_files.json
