@@ -4,6 +4,7 @@ import { AnalyticsView } from "@/components/app-shell/AnalyticsView";
 
 export default async function AnalyticsPage() {
   const { workspace } = await getCurrentWorkspace();
+  if (!workspace) return <div className="flex items-center justify-center h-64 text-white/40 text-sm">Setting up your workspace…</div>;
   const supabase = await createClient();
   const paidAnalytics = workspace!.plan !== "free";
 

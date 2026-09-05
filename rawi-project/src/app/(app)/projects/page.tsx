@@ -28,7 +28,6 @@ const STAT_CFG = [
 
 export default async function ProjectsPage() {
   const { workspace } = await getCurrentWorkspace();
-  if (!workspace) return <div className="flex items-center justify-center h-64 text-white/40 text-sm">Setting up your workspace…</div>;
   const supabase = await createClient();
 
   const [{ data: projects }, { data: clients }, { data: statsData }] = await Promise.all([
@@ -73,7 +72,7 @@ export default async function ProjectsPage() {
       {/* Stat tiles */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {STATS.map(({ label, value, Icon, idx, alert }) => {
-          const s = STAT_CFG[idx] ?? { iconCls: "text-white/40", shadow: "", hoverBorder: "" };
+          const s = STAT_CFG[idx];
           return (
             <div
               key={label}
@@ -110,7 +109,7 @@ export default async function ProjectsPage() {
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {projects.map((p, index) => {
               const newCount = newFeedbackByProject[p.id] ?? 0;
-              const theme = CARD_THEMES[index % CARD_THEMES.length] ?? CARD_THEMES[0]!;
+              const theme = CARD_THEMES[index % CARD_THEMES.length];
               return (
                 <div
                   key={p.id}

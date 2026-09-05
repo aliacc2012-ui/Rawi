@@ -11,6 +11,7 @@ type WorkspaceWithBillingSettings = { renewal_reminder_days?: number | null };
 
 export default async function SettingsPage() {
   const { workspace } = await getCurrentWorkspace();
+  if (!workspace) return <div className="flex items-center justify-center h-64 text-white/40 text-sm">Setting up your workspace…</div>;
   const accent = workspace!.accent_color || "#FFD400";
   const supabase = await createClient();
   const { data: subscription } = await supabase

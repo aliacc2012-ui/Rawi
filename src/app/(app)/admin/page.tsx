@@ -22,6 +22,7 @@ function LinkIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="curren
 
 export default async function AdminPage() {
   const { workspace } = await getCurrentWorkspace();
+  if (!workspace) return <div className="flex items-center justify-center h-64 text-white/40 text-sm">Setting up your workspace…</div>;
   const supabase = await createClient();
   const billingWorkspace = workspace as WorkspaceWithBillingSettings;
   const days = Number(billingWorkspace?.renewal_reminder_days ?? 3);

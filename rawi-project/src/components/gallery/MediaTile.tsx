@@ -1,0 +1,510 @@
+"use client";
+
+import { useEffect, useState, useTransition } from "react";
+import {
+  addGalleryComment,
+  getSignedMediaUrl,
+  toggleFavorite,
+} from "@/app/g/[slug]/actions";
+
+type DisplayMode = "grid" | "masonry" | "large" | "slideshow";
+
+const mediaUrlCache = new Map<string, string>();
+const mediaUrlRequests = new Map<string, Promise<string | null>>();
+
+async function getCachedMediaUrl(mediaId: string) {
+  const cached = mediaUrlCache.get(mediaId);
+  if (cached) return cached;
+
+  const existing = mediaUrlRequests.get(mediaId);
+  if (existing) return existing;
+
+  const request = getSignedMediaUrl(mediaId, false)
+    .then((res) => {
+      const signed = "url" in res && res.url ? res.url : null;
+      if (signed) mediaUrlCache.set(mediaId, signed);
+      return signed;
+    })
+    .finally(() => mediaUrlRequests.delete(mediaId));
+
+  mediaUrlRequests.set(mediaId, request);
+  return request;
+}
+
+export function MediaTile({
+  mediaId,
+  galleryId,
+  mediaType,
+  initialUrl,
+  initialThumbnailUrl,
+  favoritesEnabled,
+  downloadsEnabled,
+  commentsEnabled = false,
+  initiallyFavorited,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
+  onDownloadComplete,
+  displayMode = "grid",
+}: {
+  mediaId: string;
+  galleryId: string;
+  mediaType: "image" | "video" | "raw";
+  initialUrl?: string | null;
+  initialThumbnailUrl?: string | null;
+  favoritesEnabled: boolean;
+  downloadsEnabled: boolean;
+  commentsEnabled?: boolean;
+  initiallyFavorited: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
+  onDownloadComplete?: () => void;
+  displayMode?: DisplayMode;
+}) {
+  const [url, setUrl] = useState<string | null>(
+    () => initialUrl || mediaUrlCache.get(mediaId) || null,
+  );
+  const displayUrl =
+    mediaType === "image"
+      ? initialThumbnailUrl || url
+      : mediaType === "video"
+        ? initialThumbnailUrl || null
+        : url;
+  const [favorited, setFavorited] = useState(initiallyFavorited);
+  const [error, setError] = useState<string | null>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerLoading, setViewerLoading] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [commentOpen, setCommentOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [comment, setComment] = useState("");
+  const [commentStatus, setCommentStatus] = useState("");
+  const [pending, startTransition] = useTransition();
+
+  // Do not request the original file when a gallery tile mounts. The gallery
+  // page already supplies lightweight signed thumbnails in one batch.
+  useEffect(() => {
+    if (!initialUrl) return;
+    mediaUrlCache.set(mediaId, initialUrl);
+    setUrl(initialUrl);
+  }, [mediaId, initialUrl]);
+
+  useEffect(() => {
+    if (!viewerOpen) return;
+    function key(e: KeyboardEvent) {
+      if (e.key === "Escape") closeViewer();
+      if (mediaType === "image" && (e.key === "+" || e.key === "="))
+        setZoom((v) => Math.min(3, v + 0.25));
+      if (mediaType === "image" && e.key === "-")
+        setZoom((v) => Math.max(0.5, v - 0.25));
+    }
+    const old = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", key);
+    return () => {
+      document.body.style.overflow = old;
+      window.removeEventListener("keydown", key);
+    };
+  }, [viewerOpen, mediaType]);
+
+  async function handleFavorite() {
+    const r = await toggleFavorite(galleryId, mediaId, favorited);
+    if (!("error" in r)) setFavorited(Boolean(r.favorited));
+  }
+
+  async function handleDownload() {
+    const r = await getSignedMediaUrl(mediaId, true);
+    if ("error" in r) {
+      setError(r.error ?? null);
+      return;
+    }
+    const anchor = document.createElement("a");
+    anchor.href = r.url!;
+    anchor.rel = "noopener";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    onDownloadComplete?.();
+  }
+
+  async function openViewer() {
+    if (mediaType === "raw" || viewerLoading) return;
+
+    let fullUrl = url || mediaUrlCache.get(mediaId) || null;
+    if (!fullUrl) {
+      setViewerLoading(true);
+      setError(null);
+      fullUrl = await getCachedMediaUrl(mediaId);
+      setViewerLoading(false);
+      if (!fullUrl) {
+        setError("Couldn't load this file.");
+        return;
+      }
+      setUrl(fullUrl);
+    }
+
+    setZoom(1);
+    setVideoError(null);
+    setVideoLoading(mediaType === "video");
+    setViewerOpen(true);
+  }
+
+  function closeViewer() {
+    setViewerOpen(false);
+    setZoom(1);
+    setVideoLoading(false);
+    setVideoError(null);
+  }
+
+  function submitComment(e: React.FormEvent) {
+    e.preventDefault();
+    setCommentStatus("");
+    startTransition(async () => {
+      const r = await addGalleryComment(galleryId, name, comment, mediaId);
+      if ("error" in r) {
+        setCommentStatus(r.error ?? "Couldn't send comment.");
+        return;
+      }
+      setComment("");
+      setCommentStatus("Sent ✓");
+      setTimeout(() => setCommentOpen(false), 700);
+    });
+  }
+
+  const isFluid = displayMode === "masonry" || displayMode === "large";
+  const isShowcase = displayMode === "large" || displayMode === "slideshow";
+  const thumbnailLoading = displayMode === "slideshow" ? "eager" : "lazy";
+  const thumbnailPriority = displayMode === "slideshow" ? "high" : "low";
+  const thumbnailSizes =
+    displayMode === "large" || displayMode === "slideshow"
+      ? "(max-width: 768px) 100vw, 90vw"
+      : displayMode === "masonry"
+        ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw";
+  const shellClass = isFluid
+    ? "relative rounded-xl overflow-hidden bg-[#111] group ring-offset-2 ring-offset-[#090909] transition"
+    : `relative rounded-xl overflow-hidden bg-[#111] ${
+        displayMode === "slideshow"
+          ? "aspect-[16/10] md:aspect-[16/9]"
+          : "aspect-[4/3]"
+      } group ring-offset-2 ring-offset-[#090909] transition`;
+  const mediaClass = isFluid
+    ? "w-full h-auto object-contain"
+    : "w-full h-full object-cover";
+  const offscreenStyle =
+    displayMode === "slideshow"
+      ? undefined
+      : { contentVisibility: "auto" as const, containIntrinsicSize: "320px" };
+
+  const videoPoster =
+    mediaType === "video" && displayUrl ? (
+      <button
+        type="button"
+        onClick={openViewer}
+        aria-label="Play video"
+        className={`relative block w-full ${isFluid ? "h-auto" : "h-full"}`}
+      >
+        <img
+          src={displayUrl}
+          alt=""
+          loading={thumbnailLoading}
+          fetchPriority={thumbnailPriority}
+          decoding="async"
+          sizes={thumbnailSizes}
+          className={mediaClass}
+        />
+        <span className="absolute inset-0 grid place-items-center bg-black/10 transition group-hover:bg-black/20">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-black/65 pl-1 text-xl text-white shadow-xl backdrop-blur">
+            {viewerLoading ? "…" : "▶"}
+          </span>
+        </span>
+      </button>
+    ) : null;
+
+  return (
+    <>
+      <div
+        className={`${shellClass} ${selected ? "ring-2 ring-rawi-yellow" : "ring-0"}`}
+        style={offscreenStyle}
+      >
+        {mediaType === "video" ? (
+          videoPoster || (
+            <button
+              type="button"
+              onClick={openViewer}
+              className={`${isFluid ? "min-h-48" : "h-full"} grid w-full place-items-center bg-[#111] text-white`}
+            >
+              <span className="grid h-14 w-14 place-items-center rounded-full bg-white/15 pl-1 text-xl">
+                {viewerLoading ? "…" : "▶"}
+              </span>
+            </button>
+          )
+        ) : displayUrl ? (
+          mediaType === "raw" ? (
+            <div
+              className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center text-sm text-gray-400`}
+            >
+              RAW file
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={openViewer}
+              aria-label="View image"
+              className={`block w-full ${isFluid ? "h-auto" : "h-full"} cursor-zoom-in`}
+            >
+              <img
+                src={displayUrl}
+                alt=""
+                loading={thumbnailLoading}
+                fetchPriority={thumbnailPriority}
+                decoding="async"
+                sizes={thumbnailSizes}
+                className={mediaClass}
+              />
+            </button>
+          )
+        ) : error ? (
+          <div
+            className={`${isFluid ? "min-h-48" : "w-full h-full"} grid place-items-center p-2 text-center text-xs text-gray-500`}
+          >
+            {error}
+          </div>
+        ) : (
+          <div
+            className={`${isFluid ? "min-h-48" : "w-full h-full"} animate-pulse bg-[#1a1a1a]`}
+          />
+        )}
+
+        {selectable && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSelect?.();
+            }}
+            aria-label={selected ? "Deselect file" : "Select file"}
+            className={`absolute top-2 left-2 z-10 w-8 h-8 rounded-full grid place-items-center border text-sm font-black backdrop-blur ${
+              selected
+                ? "bg-rawi-yellow border-rawi-yellow text-black"
+                : "bg-black/50 border-white/40 text-white"
+            }`}
+          >
+            {selected ? "✓" : ""}
+          </button>
+        )}
+
+        <div
+          className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}
+        >
+          {mediaType !== "raw" && (url || initialThumbnailUrl) && (
+            <button
+              type="button"
+              onClick={openViewer}
+              className="w-8 h-8 rounded-full bg-black/50 text-white backdrop-blur"
+              aria-label="Open viewer"
+            >
+              {viewerLoading ? "…" : "⛶"}
+            </button>
+          )}
+          {commentsEnabled && (
+            <button
+              type="button"
+              onClick={() => setCommentOpen(true)}
+              aria-label="Comment"
+              className="w-8 h-8 rounded-full bg-black/50 text-white backdrop-blur"
+            >
+              💬
+            </button>
+          )}
+          {favoritesEnabled && (
+            <button
+              type="button"
+              onClick={handleFavorite}
+              className={`w-8 h-8 rounded-full ${favorited ? "bg-rawi-yellow text-black" : "bg-black/50 text-white"}`}
+            >
+              {favorited ? "♥" : "♡"}
+            </button>
+          )}
+          {downloadsEnabled && (
+            <button
+              type="button"
+              onClick={handleDownload}
+              className="w-8 h-8 rounded-full bg-black/50 text-white"
+            >
+              ↓
+            </button>
+          )}
+        </div>
+      </div>
+
+      {commentOpen && (
+        <div
+          className="fixed inset-0 z-[110] grid place-items-center bg-black/70 p-4"
+          onClick={() => setCommentOpen(false)}
+        >
+          <form
+            onSubmit={submitComment}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-[22px] bg-white p-6 text-black shadow-2xl"
+          >
+            <div className="flex justify-between">
+              <div>
+                <span className="text-[10px] font-extrabold tracking-[.16em] text-[#b59600]">
+                  MEDIA FEEDBACK
+                </span>
+                <h3 className="mt-1 text-xl font-semibold">
+                  Comment on this item
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCommentOpen(false)}
+                className="h-8 w-8 rounded-full bg-black/5"
+              >
+                ×
+              </button>
+            </div>
+            <input
+              required
+              maxLength={120}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="mt-5 h-11 w-full rounded-xl border border-black/10 px-3 text-sm outline-none"
+            />
+            <textarea
+              required
+              maxLength={2000}
+              rows={4}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="What would you like changed or noted?"
+              className="mt-3 w-full resize-none rounded-xl border border-black/10 p-3 text-sm outline-none"
+            />
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span
+                className={`text-xs ${commentStatus === "Sent ✓" ? "text-emerald-600" : "text-red-600"}`}
+              >
+                {commentStatus}
+              </span>
+              <button
+                disabled={pending || !name.trim() || !comment.trim()}
+                className="rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white disabled:opacity-40"
+              >
+                {pending ? "Sending…" : "Send comment"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {viewerOpen && url && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          onClick={closeViewer}
+        >
+          <div className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-white/10">
+            <span className="text-white/60 text-xs">RAWI Viewer</span>
+            <div
+              className="flex items-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {mediaType === "image" && (
+                <>
+                  <button
+                    onClick={() => setZoom((v) => Math.max(0.5, v - 0.25))}
+                    className="h-9 min-w-9 rounded-full bg-white/10 text-white"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => setZoom(1)}
+                    className="h-9 px-3 rounded-full bg-white/10 text-white text-xs"
+                  >
+                    {Math.round(zoom * 100)}%
+                  </button>
+                  <button
+                    onClick={() => setZoom((v) => Math.min(3, v + 0.25))}
+                    className="h-9 min-w-9 rounded-full bg-white/10 text-white"
+                  >
+                    +
+                  </button>
+                </>
+              )}
+              {downloadsEnabled && (
+                <button
+                  onClick={handleDownload}
+                  className="h-9 px-4 rounded-full bg-white/10 text-white text-xs"
+                >
+                  Download
+                </button>
+              )}
+              <button
+                onClick={closeViewer}
+                className="h-9 min-w-9 rounded-full bg-white text-black font-bold"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          <div
+            className="relative flex-1 overflow-auto grid place-items-center p-4 md:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {mediaType === "video" ? (
+              <>
+                <video
+                  src={url}
+                  poster={initialThumbnailUrl || undefined}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  onLoadStart={() => setVideoLoading(true)}
+                  onCanPlay={() => setVideoLoading(false)}
+                  onPlaying={() => setVideoLoading(false)}
+                  onWaiting={() => setVideoLoading(true)}
+                  onError={() => {
+                    setVideoLoading(false);
+                    setVideoError(
+                      "This video couldn't be played. Try again or download the original file.",
+                    );
+                  }}
+                  className="max-w-full max-h-[calc(100vh-7rem)] bg-black"
+                />
+                {videoLoading && !videoError && (
+                  <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                    <div className="rounded-full bg-black/70 px-4 py-2 text-xs font-semibold text-white backdrop-blur">
+                      Loading video…
+                    </div>
+                  </div>
+                )}
+                {videoError && (
+                  <div className="absolute bottom-8 left-1/2 w-[min(90%,32rem)] -translate-x-1/2 rounded-xl bg-black/80 px-4 py-3 text-center text-sm text-white shadow-xl backdrop-blur">
+                    {videoError}
+                  </div>
+                )}
+              </>
+            ) : (
+              <img
+                src={url}
+                alt=""
+                draggable={false}
+                decoding="async"
+                fetchPriority="high"
+                style={{ transform: `scale(${zoom})` }}
+                className="max-w-full max-h-[calc(100vh-7rem)] object-contain transition-transform"
+              />
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

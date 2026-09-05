@@ -1,0 +1,31 @@
+name: Authenticated E2E
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 */6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "tests/e2e-auth.mjs"
+      - ".github/workflows/authenticated-e2e.yml"
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Run authenticated RAWI smoke
+        env:
+          RAWI_BASE_URL: https://rawi-five.vercel.app
+          RAWI_E2E_EMAIL: ${{ secrets.RAWI_E2E_EMAIL }}
+          RAWI_E2E_PASSWORD: ${{ secrets.RAWI_E2E_PASSWORD }}
+        run: node tests/e2e-auth.mjs

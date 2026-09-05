@@ -1,0 +1,23 @@
+import type { SVGProps } from "react";
+
+type P = SVGProps<SVGSVGElement>;
+const base = { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.9, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
+export const ProjectIcon=(p:P)=><svg {...base}{...p}><rect x="3" y="5" width="18" height="15" rx="2"/><path d="m3 9 5-4 3 4"/><circle cx="16.5" cy="13.5" r="2.5"/><path d="m5 18 5-5 4 4 2-2 3 3"/></svg>;
+export const PhotoIcon=(p:P)=><svg {...base}{...p}><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m4 17 5-5 4 4 2-2 5 5"/></svg>;
+export const GalleryIcon=(p:P)=><svg {...base}{...p}><rect x="5" y="3" width="14" height="14" rx="2"/><path d="M3 7v12a2 2 0 0 0 2 2h12"/><path d="m7 14 3-3 2.5 2.5L15 11l2 2"/></svg>;
+export const DownloadIcon=(p:P)=><svg {...base}{...p}><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>;
+export const HeartIcon=(p:P)=><svg {...base}{...p}><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>;
+export const FeedbackIcon=(p:P)=><svg {...base}{...p}><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/></svg>;
+export const StorageIcon=(p:P)=><svg {...base}{...p}><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>;
+export const EyeIcon=(p:P)=><svg {...base}{...p}><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></svg>;
+export const PublishIcon=(p:P)=><svg {...base}{...p}><circle cx="12" cy="12" r="8"/><path d="m8.5 12 2.2 2.2 4.8-5"/></svg>;
+export const DraftIcon=(p:P)=><svg {...base}{...p}><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6"/><path d="M8 14h8M8 18h5"/></svg>;
+export const ChartIcon=(p:P)=><svg {...base}{...p}><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>;
+export const TrendIcon=(p:P)=><svg {...base}{...p}><path d="m3 17 6-6 4 4 7-8"/><path d="M15 7h5v5"/></svg>;
+export const PaletteIcon=(p:P)=><svg {...base}{...p}><path d="M12 3a9 9 0 1 0 0 18h1.5a2 2 0 0 0 0-4H12a1.5 1.5 0 0 1 0-3h2a7 7 0 0 0-2-11Z"/><circle cx="7.5" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="10" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1" fill="currentColor" stroke="none"/></svg>;
+export const CardIcon=(p:P)=><svg {...base}{...p}><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/></svg>;
+export const UploadIcon=(p:P)=><svg {...base}{...p}><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg>;
+export const LockIcon=(p:P)=><svg {...base}{...p}><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>;
+export const ShieldIcon=(p:P)=><svg {...base}{...p}><path d="M12 3 4.5 6v5c0 5 3.2 8.3 7.5 10 4.3-1.7 7.5-5 7.5-10V6L12 3Z"/><path d="M9 12.5 11 14l4-4"/></svg>;
+export const UsersIcon=(p:P)=><svg {...base}{...p}><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 5.5a3 3 0 0 1 0 5.5M17 14a5 5 0 0 1 4 5"/></svg>;
+export const SettingsIcon=(p:P)=><svg {...base}{...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.1A1.7 1.7 0 0 0 8 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 3.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2V9.6h.1A1.7 1.7 0 0 0 3.6 8a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 8 3.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V2h4v.1A1.7 1.7 0 0 0 15 3.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 8c.14.38.36.72.66 1 .3.28.68.45 1.09.5H21v4h-.1A1.7 1.7 0 0 0 19.4 15Z"/></svg>;
