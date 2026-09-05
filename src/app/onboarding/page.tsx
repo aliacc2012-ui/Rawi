@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentWorkspace } from "@/lib/workspace";
-import { createWorkspace } from "@/app/(app)/actions";
+import { createWorkspace, signOut } from "@/app/(app)/actions";
 import { Field, LegacyInput as Input, PrimaryButton } from "@/components/ui/form";
 
 // Depends on the caller's session and Supabase env — never statically prerendered.
@@ -28,7 +28,12 @@ export default async function OnboardingPage() {
           </Field>
           <PrimaryButton type="submit">Create my workspace</PrimaryButton>
         </form>
-      </div>
+          <form action={signOut} className="mt-6 text-center">
+            <button type="submit" className="text-xs text-white/30 hover:text-white/60 transition">
+              Sign out
+            </button>
+          </form>
+        </div>
     </div>
   );
 }
