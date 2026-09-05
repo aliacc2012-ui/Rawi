@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient, SupabaseNotConfiguredError } from "@/lib/supabase/client";
-import { Field, LegacyInput as Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
+import { Field, Input, PrimaryButton, ErrorNote, SuccessNote } from "@/components/ui/form";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
     try {
       const supabase = createClient();
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `https://getrawi.ae/reset-password`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
       if (resetError) {
         setError(resetError.message);

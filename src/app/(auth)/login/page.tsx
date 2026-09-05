@@ -63,7 +63,7 @@ function LoginForm() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `https://getrawi.ae/auth/callback`,
         },
       });
       if (error) {

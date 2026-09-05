@@ -1,0 +1,177 @@
+"use client";
+
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+
+const MAX = 1200;
+const QUALITY = 0.68;
+const BATCH = 25;
+
+async function makeThumb(blob: Blob) {
+  try {
+    const bitmap = await createImageBitmap(blob);
+    const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) {
+      bitmap.close();
+      return null;
+    }
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close();
+    return await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", QUALITY)
+    );
+  } catch {
+    return null;
+  }
+}
+
+export function ThumbnailBackfill({
+  workspaceId,
+  initialPending,
+}: {
+  workspaceId: string;
+  initialPending: number;
+}) {
+  const [pending, setPending] = useState(initialPending);
+  const [done, setDone] = useState(0);
+  const [failed, setFailed] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [message, setMessage] = useState("");
+
+  async function run() {
+    if (running || pending === 0) return;
+    setRunning(true);
+    setMessage("Finding gallery images…");
+    const supabase = createClient();
+
+    try {
+      const { data: projects, error: projectError } = await supabase
+        .from("projects")
+        .select("id")
+        .eq("workspace_id", workspaceId);
+      if (projectError) throw projectError;
+      const ids = (projects ?? []).map((p) => p.id);
+      if (!ids.length) {
+        setPending(0);
+        setMessage("Nothing to optimize.");
+        return;
+      }
+
+      let totalDone = 0;
+      let totalFailed = 0;
+      let offset = 0;
+
+      while (true) {
+        const { data: media, error } = await supabase
+          .from("media")
+          .select("id,project_id,storage_path,thumbnail_path")
+          .in("project_id", ids)
+          .eq("media_type", "image")
+          .order("created_at", { ascending: true })
+          .range(offset, offset + BATCH - 1);
+        if (error) throw error;
+        if (!media?.length) break;
+
+        for (const item of media) {
+          setMessage(`Optimizing ${totalDone + totalFailed + 1} of ${initialPending} images…`);
+          const { data: original, error: downloadError } = await supabase.storage
+            .from("media")
+            .download(item.storage_path);
+          if (downloadError || !original) {
+            totalFailed++;
+            setFailed(totalFailed);
+            continue;
+          }
+
+          const thumb = await makeThumb(original);
+          if (!thumb) {
+            totalFailed++;
+            setFailed(totalFailed);
+            continue;
+          }
+
+          const thumbPath = `${workspaceId}/${item.project_id}/thumbs/optimized-v2-${item.id}.webp`;
+          const { error: uploadError } = await supabase.storage.from("media").upload(
+            thumbPath,
+            thumb,
+            { contentType: "image/webp", cacheControl: "31536000", upsert: true }
+          );
+          if (uploadError) {
+            totalFailed++;
+            setFailed(totalFailed);
+            continue;
+          }
+
+          const { error: updateError } = await supabase
+            .from("media")
+            .update({ thumbnail_path: thumbPath })
+            .eq("id", item.id)
+            .eq("project_id", item.project_id);
+          if (updateError) {
+            await supabase.storage.from("media").remove([thumbPath]);
+            totalFailed++;
+            setFailed(totalFailed);
+            continue;
+          }
+
+          if (item.thumbnail_path && item.thumbnail_path !== thumbPath) {
+            await supabase.storage.from("media").remove([item.thumbnail_path]);
+          }
+
+          totalDone++;
+          setDone(totalDone);
+          setPending((v) => Math.max(0, v - 1));
+        }
+
+        offset += media.length;
+        if (media.length < BATCH) break;
+      }
+
+      setMessage(
+        totalFailed
+          ? `Optimized ${totalDone}. ${totalFailed} could not be processed.`
+          : `All ${totalDone} gallery images optimized ✓`
+      );
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Thumbnail optimization failed.");
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  return (
+    <div className="rounded-[22px] border border-gray-200 bg-white p-5 md:p-6 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <span className="text-[10px] font-extrabold tracking-[.16em] text-amber-600">PERFORMANCE</span>
+          <h2 className="mt-1 text-xl font-bold">Optimize gallery images</h2>
+          <p className="mt-1 max-w-xl text-sm leading-6 text-gray-400">
+            Rebuild gallery previews as smaller 1200px WebP images for faster mobile loading. Originals are never changed.
+          </p>
+        </div>
+        <div className="rounded-full bg-gray-100 px-3 py-2 text-xs font-bold text-gray-600">
+          {pending} images
+        </div>
+      </div>
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={run}
+          disabled={running || pending === 0}
+          className="rounded-full bg-black px-5 py-3 text-sm font-extrabold text-white disabled:opacity-40"
+        >
+          {running ? "Optimizing…" : pending === 0 ? "All optimized" : "Optimize gallery images"}
+        </button>
+        {done > 0 && <span className="text-xs font-bold text-emerald-600">{done} completed</span>}
+        {failed > 0 && <span className="text-xs font-bold text-red-500">{failed} failed</span>}
+      </div>
+      {message && <p className="mt-4 text-xs text-gray-500">{message}</p>}
+    </div>
+  );
+}

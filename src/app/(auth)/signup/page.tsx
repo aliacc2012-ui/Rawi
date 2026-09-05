@@ -78,7 +78,7 @@ export default function SignupPage() {
         password,
         options: {
           data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `https://getrawi.ae/auth/callback`,
         },
       });
       if (signUpError) { setError(signUpError.message); return; }
@@ -114,7 +114,7 @@ export default function SignupPage() {
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
+        options: { redirectTo: `https://getrawi.ae/auth/callback` },
       });
       if (error) setOauthError(error.message || "Could not connect. Please try again.");
     } catch {
