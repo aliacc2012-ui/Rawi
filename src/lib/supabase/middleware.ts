@@ -8,7 +8,6 @@ const PROTECTED_PREFIXES = [
   "/builder",
   "/analytics",
   "/settings",
-  "/onboarding",
 ];
 
 export async function updateSession(request: NextRequest) {

@@ -44,7 +44,7 @@ function getGreeting(hour: number) {
 
 export default async function DashboardPage() {
   const { profile, workspace } = await getCurrentWorkspace();
-  if (!workspace) redirect("/onboarding");
+  
   const s = await createClient();
 
   const [{ data: projects }, stats] = await Promise.all([
