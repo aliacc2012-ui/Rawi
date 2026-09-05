@@ -34,7 +34,7 @@ export function LegacyInput(props: React.InputHTMLAttributes<HTMLInputElement>) 
   return (
     <input
       {...props}
-      className={`w-full mt-2 border border-white/[.10] rounded-xl px-3.5 py-3 bg-white/[.05] text-white font-normal text-sm placeholder:text-white/30 focus-visible:outline-2 focus-visible:outline-rawi-yellow focus-visible:border-rawi-yellow/60 transition ${props.className ?? ""}`}
+      className={`w-full mt-2 border border-black/10 rounded-xl px-3.5 py-3 bg-black/5 text-foreground font-normal text-sm placeholder:text-foreground/40 focus-visible:outline-2 focus-visible:outline-rawi-yellow focus-visible:border-rawi-yellow/60 transition dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/30 ${props.className ?? ""}`}
     />
   );
 }
