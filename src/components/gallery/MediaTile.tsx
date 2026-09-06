@@ -306,10 +306,10 @@ export function MediaTile({
             aria-hidden="true"
             style={{
               backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-                `<svg xmlns='http://www.w3.org/2000/svg' width='220' height='140'><text x='110' y='70' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='14' font-weight='700' letter-spacing='2' fill='white' fill-opacity='0.28' transform='rotate(-30 110 70)'>${watermarkText}</text></svg>`
+                `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='120'><text x='100' y='60' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='15' font-weight='800' letter-spacing='2' fill='white' fill-opacity='0.40' transform='rotate(-30 100 60)'>${watermarkText}</text></svg>`
               )}")`,
               backgroundRepeat: "repeat",
-              backgroundSize: "220px 140px",
+              backgroundSize: "200px 120px",
             }}
           />
         )}
@@ -524,10 +524,10 @@ export function MediaTile({
                 aria-hidden="true"
                 style={{
                   backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-                    `<svg xmlns='http://www.w3.org/2000/svg' width='280' height='160'><text x='140' y='80' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='18' font-weight='700' letter-spacing='3' fill='white' fill-opacity='0.22' transform='rotate(-30 140 80)'>${watermarkText}</text></svg>`
+                    `<svg xmlns='http://www.w3.org/2000/svg' width='260' height='150'><text x='130' y='75' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='20' font-weight='800' letter-spacing='3' fill='white' fill-opacity='0.38' transform='rotate(-30 130 75)'>${watermarkText}</text></svg>`
                   )}")`,
                   backgroundRepeat: "repeat",
-                  backgroundSize: "280px 160px",
+                  backgroundSize: "260px 150px",
                 }}
               />
             )}

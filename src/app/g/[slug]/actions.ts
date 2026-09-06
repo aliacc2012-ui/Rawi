@@ -154,6 +154,13 @@ export async function toggleFavorite(
   return error ? { error: error.message } : { favorited: true };
 }
 export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
+  // For downloads, route through our watermarking proxy endpoint.
+  // The proxy validates access, records the download, applies the watermark, and streams the file.
+  if (forDownload) {
+    return { url: `/api/g/download?mediaId=${encodeURIComponent(mediaId)}` };
+  }
+
+  // For viewer display URLs, return a short-lived Supabase signed URL as before.
   const admin = createAdminClient();
   const { data: media } = await admin
     .from("media")
@@ -168,27 +175,11 @@ export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
   } | null;
   const galleryId = section?.gallery_id;
   if (!galleryId) return { error: "This gallery is unavailable." };
-  const access = await validateGalleryAccess(
-    galleryId,
-    forDownload ? "downloads" : undefined,
-  );
+  const access = await validateGalleryAccess(galleryId, undefined);
   if ("error" in access) return { error: access.error };
-  if (forDownload) {
-    const session = await getVisitorSession();
-    await admin
-      .from("downloads")
-      .insert({
-        gallery_id: galleryId,
-        media_id: mediaId,
-        download_type: "original",
-        visitor_session: session,
-      });
-  }
   const { data, error } = await admin.storage
     .from("media")
-    .createSignedUrl(media.storage_path, 60 * 10, {
-      download: forDownload ? media.original_name : false,
-    });
+    .createSignedUrl(media.storage_path, 60 * 10, { download: false });
   return error || !data
     ? { error: "Couldn't prepare that file. Try again." }
     : { url: data.signedUrl };
