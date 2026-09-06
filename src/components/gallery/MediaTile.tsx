@@ -504,13 +504,6 @@ export function MediaTile({
                   </div>
                 )}
               </>
-              {watermarkText && (
-                <div className="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center z-10" aria-hidden="true">
-                  <span className="text-white/25 text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full bg-black/30 backdrop-blur select-none">
-                    {watermarkText}
-                  </span>
-                </div>
-              )}
             ) : (
               <img
                 src={url}
@@ -521,6 +514,13 @@ export function MediaTile({
                 style={{ transform: `scale(${zoom})` }}
                 className="max-w-full max-h-[calc(100vh-7rem)] object-contain transition-transform"
               />
+            )}
+            {watermarkText && (
+              <div className="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center z-10" aria-hidden="true">
+                <span className="text-white/25 text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full bg-black/30 backdrop-blur select-none">
+                  {watermarkText}
+                </span>
+              </div>
             )}
           </div>
         </div>
