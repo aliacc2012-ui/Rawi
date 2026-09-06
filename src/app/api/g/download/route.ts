@@ -36,11 +36,12 @@ export async function GET(req: NextRequest) {
   if (!media) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const galleryId = (media.gallery_sections as unknown as { gallery_id: string }).gallery_id;
 
-  const { data: gallery } = await admin
+  type GalleryRow = { id: string; status: string; expiry_date: string | null; password_enabled: boolean; password_hash: string | null; downloads_enabled: boolean; watermark_text: string | null; projects: { workspaces: { plan: string } | null } | null };
+  const { data: gallery } = await (admin
     .from("galleries")
     .select("id,status,expiry_date,password_enabled,password_hash,downloads_enabled,watermark_text,projects!inner(workspaces!inner(plan))")
     .eq("id", galleryId)
-    .single();
+    .single() as unknown as Promise<{ data: GalleryRow | null; error: unknown }>);
 
   if (!gallery || gallery.status !== "published")
     return NextResponse.json({ error: "Unavailable" }, { status: 403 });
@@ -58,11 +59,11 @@ export async function GET(req: NextRequest) {
   }
 
   // Determine watermark text
-  const project = gallery.projects as unknown as { workspaces?: { plan?: string } } | null;
+  const project = gallery.projects;
   const plan = project?.workspaces?.plan ?? "free";
   const paid = plan !== "free";
   const wmText: string | null = paid
-    ? ((gallery as unknown as { watermark_text?: string | null }).watermark_text || null)
+    ? (gallery.watermark_text || null)
     : "Delivered by RAWI";
 
   // Get signed URL for original file (short TTL — we fetch immediately)
