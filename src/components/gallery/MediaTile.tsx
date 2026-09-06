@@ -302,13 +302,16 @@ export function MediaTile({
 
         {watermarkText && mediaType === "image" && (displayUrl || url) && (
           <div
-            className="pointer-events-none absolute inset-0 flex items-end justify-center pb-2 z-[5]"
+            className="pointer-events-none absolute inset-0 z-[5] select-none"
             aria-hidden="true"
-          >
-            <span className="text-white/30 text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-black/20 backdrop-blur-sm select-none truncate max-w-[90%]">
-              {watermarkText}
-            </span>
-          </div>
+            style={{
+              backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
+                `<svg xmlns='http://www.w3.org/2000/svg' width='220' height='140'><text x='110' y='70' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='14' font-weight='700' letter-spacing='2' fill='white' fill-opacity='0.28' transform='rotate(-30 110 70)'>${watermarkText}</text></svg>`
+              )}")`,
+              backgroundRepeat: "repeat",
+              backgroundSize: "220px 140px",
+            }}
+          />
         )}
         <div
           className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}
@@ -516,11 +519,17 @@ export function MediaTile({
               />
             )}
             {watermarkText && (
-              <div className="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center z-10" aria-hidden="true">
-                <span className="text-white/25 text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full bg-black/30 backdrop-blur select-none">
-                  {watermarkText}
-                </span>
-              </div>
+              <div
+                className="pointer-events-none absolute inset-0 z-10 select-none"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
+                    `<svg xmlns='http://www.w3.org/2000/svg' width='280' height='160'><text x='140' y='80' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='18' font-weight='700' letter-spacing='3' fill='white' fill-opacity='0.22' transform='rotate(-30 140 80)'>${watermarkText}</text></svg>`
+                  )}")`,
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "280px 160px",
+                }}
+              />
             )}
           </div>
         </div>
