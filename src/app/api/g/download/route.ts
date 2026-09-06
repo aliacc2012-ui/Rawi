@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
     await admin.from("downloads").insert({
       gallery_id: galleryId, media_id: mediaId,
       download_type: "original", visitor_session: session,
-    }).catch(() => {});
+    }).then(() => {}, () => {});
   }
 
   // Non-images or no watermark → redirect to signed URL
