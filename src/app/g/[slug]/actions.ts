@@ -362,7 +362,11 @@ export async function getVisitorComments(galleryId: string) {
   if ("error" in access) return [];
   const planCheck = await validateCommentPlan(galleryId);
   if ("error" in planCheck) return [];
-  const session = await getVisitorSession();
+  // Read-only: don't create a new session cookie here (this may be called
+  // from a Server Component where cookie writes are not allowed).
+  const store = await cookies();
+  const session = store.get(VISITOR_COOKIE)?.value;
+  if (!session) return [];
   const admin = createAdminClient();
   const { data } = await admin
     .from("gallery_comments")
