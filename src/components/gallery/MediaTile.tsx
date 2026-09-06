@@ -46,6 +46,7 @@ export function MediaTile({
   onToggleSelect,
   onDownloadComplete,
   displayMode = "grid",
+  watermarkText,
 }: {
   mediaId: string;
   galleryId: string;
@@ -61,6 +62,7 @@ export function MediaTile({
   onToggleSelect?: () => void;
   onDownloadComplete?: () => void;
   displayMode?: DisplayMode;
+  watermarkText?: string | null;
 }) {
   const [url, setUrl] = useState<string | null>(
     () => initialUrl || mediaUrlCache.get(mediaId) || null,
@@ -297,6 +299,17 @@ export function MediaTile({
           </button>
         )}
 
+
+        {watermarkText && mediaType === "image" && (displayUrl || url) && (
+          <div
+            className="pointer-events-none absolute inset-0 flex items-end justify-center pb-2 z-[5]"
+            aria-hidden="true"
+          >
+            <span className="text-white/30 text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded bg-black/20 backdrop-blur-sm select-none truncate max-w-[90%]">
+              {watermarkText}
+            </span>
+          </div>
+        )}
         <div
           className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}
         >
@@ -491,6 +504,13 @@ export function MediaTile({
                   </div>
                 )}
               </>
+              {watermarkText && (
+                <div className="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center z-10" aria-hidden="true">
+                  <span className="text-white/25 text-xs font-bold tracking-[0.2em] uppercase px-4 py-1.5 rounded-full bg-black/30 backdrop-blur select-none">
+                    {watermarkText}
+                  </span>
+                </div>
+              )}
             ) : (
               <img
                 src={url}

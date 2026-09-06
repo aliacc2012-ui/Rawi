@@ -24,6 +24,7 @@ export function GallerySettings({
     favorites_enabled: boolean;
     comments_enabled: boolean;
     branding_enabled: boolean;
+    watermark_text: string | null;
     expiry_date: string | null;
   };
 }) {
@@ -35,6 +36,7 @@ export function GallerySettings({
   const [favorites, setFavorites] = useState(initial.favorites_enabled);
   const [comments, setComments] = useState(initial.comments_enabled);
   const [branding, setBranding] = useState(initial.branding_enabled);
+  const [watermarkText, setWatermarkText] = useState(initial.watermark_text ?? "");
   const paid = plan !== "free";
 
   function save() {
@@ -47,6 +49,7 @@ export function GallerySettings({
         favoritesEnabled: favorites,
         commentsEnabled: comments,
         brandingEnabled: branding,
+        watermarkText: paid ? watermarkText.trim() : "",
       });
       if ("error" in r && typeof r.error === "string") {
         setMsg(r.error);
@@ -98,6 +101,33 @@ export function GallerySettings({
           onChange={setComments}
           locked={!paid}
         />
+        <div className={!paid ? "opacity-50 pointer-events-none" : ""}>
+          <div className="flex items-start gap-2.5 py-3">
+            <span className="text-white/30 text-sm mt-2.5 w-4 flex-shrink-0">◈</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-sm font-semibold text-white/80">Custom watermark text</span>
+                {!paid && (
+                  <span className="text-[9px] font-extrabold tracking-widest uppercase rounded-full bg-rawi-yellow/8 border border-rawi-yellow/20 text-rawi-yellow/70 px-2 py-0.5">
+                    UPGRADE
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-white/30 mb-2">
+                Shown as a subtle overlay on all gallery images. Free galleries show "Delivered by RAWI".
+              </p>
+              <input
+                type="text"
+                maxLength={60}
+                disabled={!paid}
+                value={watermarkText}
+                onChange={(e) => setWatermarkText(e.target.value)}
+                placeholder={paid ? "e.g. Ali Photography © 2026" : "Upgrade to add your own watermark"}
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-rawi-yellow/40 disabled:opacity-40 transition-colors"
+              />
+            </div>
+          </div>
+        </div>
         <Toggle
           icon="✦"
           label="Remove RAWI branding"

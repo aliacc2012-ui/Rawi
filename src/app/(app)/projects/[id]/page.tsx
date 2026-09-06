@@ -231,6 +231,7 @@ export default async function ProjectDetailPage({
                 favorites_enabled: gallery.favorites_enabled,
                 comments_enabled: gallery.comments_enabled,
                 branding_enabled: gallery.branding_enabled,
+                watermark_text: (gallery as unknown as { watermark_text?: string | null }).watermark_text ?? null,
                 expiry_date: gallery.expiry_date,
               }}
             />

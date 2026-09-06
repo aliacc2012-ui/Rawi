@@ -30,6 +30,7 @@ export function GalleryMediaGrid({
   clientName,
   defaultViewMode = "grid",
   gridCols = "grid-cols-2 md:grid-cols-3",
+  watermarkText,
 }: {
   galleryId: string;
   sections: GallerySection[];
@@ -40,6 +41,7 @@ export function GalleryMediaGrid({
   clientName?: string;
   defaultViewMode?: "grid" | "masonry" | "large";
   gridCols?: string;
+  watermarkText?: string | null;
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [downloading, setDownloading] = useState(false),
@@ -169,6 +171,7 @@ export function GalleryMediaGrid({
       onToggleSelect={() => toggleSelected(item.id)}
       onDownloadComplete={offerReview}
       displayMode={mode}
+      watermarkText={watermarkText ?? null}
     />
   );
   const labelClass = light ? "text-black/35" : "text-white/35",
