@@ -154,13 +154,7 @@ export async function toggleFavorite(
   return error ? { error: error.message } : { favorited: true };
 }
 export async function getSignedMediaUrl(mediaId: string, forDownload: boolean) {
-  // For downloads, route through our watermarking proxy endpoint.
-  // The proxy validates access, records the download, applies the watermark, and streams the file.
-  if (forDownload) {
-    return { url: `/api/g/download?mediaId=${encodeURIComponent(mediaId)}` };
-  }
-
-  // For viewer display URLs, return a short-lived Supabase signed URL as before.
+  // Return a short-lived signed URL for viewer display or download.
   const admin = createAdminClient();
   const { data: media } = await admin
     .from("media")

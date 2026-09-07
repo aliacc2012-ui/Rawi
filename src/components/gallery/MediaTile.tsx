@@ -46,7 +46,6 @@ export function MediaTile({
   onToggleSelect,
   onDownloadComplete,
   displayMode = "grid",
-  watermarkText,
 }: {
   mediaId: string;
   galleryId: string;
@@ -62,7 +61,6 @@ export function MediaTile({
   onToggleSelect?: () => void;
   onDownloadComplete?: () => void;
   displayMode?: DisplayMode;
-  watermarkText?: string | null;
 }) {
   const [url, setUrl] = useState<string | null>(
     () => initialUrl || mediaUrlCache.get(mediaId) || null,
@@ -304,21 +302,6 @@ export function MediaTile({
             {selected ? "✓" : ""}
           </button>
         )}
-
-
-        {watermarkText && mediaType === "image" && (displayUrl || url) && (
-          <div
-            className="pointer-events-none absolute inset-0 z-[5] select-none"
-            aria-hidden="true"
-            style={{
-              backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-                `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='120'><text x='100' y='60' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='15' font-weight='800' letter-spacing='2' fill='white' fill-opacity='0.60' stroke='rgba(0,0,0,0.55)' stroke-width='0.6' paint-order='stroke fill' transform='rotate(-30 100 60)'>${watermarkText}</text></svg>`
-              )}")`,
-              backgroundRepeat: "repeat",
-              backgroundSize: "200px 120px",
-            }}
-          />
-        )}
         <div
           className={`absolute top-2 right-2 flex gap-1.5 ${isShowcase ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity`}
         >
@@ -524,19 +507,6 @@ export function MediaTile({
                 fetchPriority="high"
                 style={{ transform: `scale(${zoom})` }}
                 className="max-w-full max-h-[calc(100vh-7rem)] object-contain transition-transform"
-              />
-            )}
-            {watermarkText && (
-              <div
-                className="pointer-events-none absolute inset-0 z-10 select-none"
-                aria-hidden="true"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-                    `<svg xmlns='http://www.w3.org/2000/svg' width='260' height='150'><text x='130' y='75' text-anchor='middle' dominant-baseline='middle' font-family='system-ui,sans-serif' font-size='20' font-weight='800' letter-spacing='3' fill='white' fill-opacity='0.60' stroke='rgba(0,0,0,0.55)' stroke-width='0.6' paint-order='stroke fill' transform='rotate(-30 130 75)'>${watermarkText}</text></svg>`
-                  )}")`,
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "260px 150px",
-                }}
               />
             )}
           </div>

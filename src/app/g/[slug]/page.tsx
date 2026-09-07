@@ -323,9 +323,6 @@ export default async function ClientGalleryPage({
   const commentsAllowed =
     (plan === "creator" || plan === "pro" || plan === "studio") && gallery.comments_enabled;
   const paid = plan !== "free";
-  const watermarkText: string | null = paid
-    ? ((gallery as unknown as { watermark_text?: string | null }).watermark_text || null)
-    : "Delivered by RAWI";
 
   const typedSections = rawTypedSections;
   const allMedia = typedSections.flatMap((s) => s.media);
@@ -704,7 +701,6 @@ export default async function ClientGalleryPage({
               clientName={project?.clients?.name ?? undefined}
               defaultViewMode={t.defaultView}
               gridCols={t.gridCols}
-              watermarkText={watermarkText}
             />
           ) : (
             <div className={`py-24 text-center ${t.muted}`}>
