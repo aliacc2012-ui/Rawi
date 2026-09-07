@@ -6,3 +6,5 @@ node_modules/
 # Stray nested project copies
 rawi-project/
 vercel_files.json
+.DS_Store
+Claude outputs/
