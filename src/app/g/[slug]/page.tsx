@@ -377,10 +377,12 @@ export default async function ClientGalleryPage({
   const OverlayLeftHero = (
     <section
       className={`relative overflow-hidden text-white ${t.heroHeight}`}
-      style={coverUrl ? { backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
     >
+      {coverUrl
+        ? <Image src={coverUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
+        : <div className={`absolute inset-0 ${t.heroFallback}`} />
+      }
       <div className={`absolute inset-0 ${t.heroOverlay}`} />
-      {!coverUrl && <div className={`absolute inset-0 ${t.heroFallback}`} />}
       <div className={`relative z-10 flex flex-col px-6 py-6 md:px-10 md:py-8 lg:px-14 ${t.heroHeight}`}>
         {StudioBar}
         <div className="my-auto py-16 max-w-xl">
@@ -413,10 +415,12 @@ export default async function ClientGalleryPage({
   const OverlayCenterHero = (
     <section
       className={`relative overflow-hidden text-white ${t.heroHeight}`}
-      style={coverUrl ? { backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
     >
+      {coverUrl
+        ? <Image src={coverUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
+        : <div className={`absolute inset-0 ${t.heroFallback}`} />
+      }
       <div className={`absolute inset-0 ${t.heroOverlay}`} />
-      {!coverUrl && <div className={`absolute inset-0 ${t.heroFallback}`} />}
       <div className={`relative z-10 flex flex-col px-6 py-6 md:px-10 md:py-8 lg:px-14 ${t.heroHeight}`}>
         {StudioBar}
         <div className="my-auto py-16 mx-auto w-full max-w-3xl text-center">
@@ -449,10 +453,12 @@ export default async function ClientGalleryPage({
   const OverlayBottomHero = (
     <section
       className={`relative overflow-hidden text-white ${t.heroHeight}`}
-      style={coverUrl ? { backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}
     >
+      {coverUrl
+        ? <Image src={coverUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
+        : <div className={`absolute inset-0 ${t.heroFallback}`} />
+      }
       <div className={`absolute inset-0 ${t.heroOverlay}`} />
-      {!coverUrl && <div className={`absolute inset-0 ${t.heroFallback}`} />}
       <div className={`relative z-10 flex flex-col px-6 py-6 md:px-10 md:py-8 lg:px-14 ${t.heroHeight}`}>
         {StudioBar}
         {/* Text lives at the very bottom */}
@@ -509,7 +515,7 @@ export default async function ClientGalleryPage({
       {/* Right: cover image */}
       <div className="relative h-[50vw] md:h-auto md:flex-1 overflow-hidden">
         {coverUrl
-          ? <div className="absolute inset-0" style={{ backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+          ? <Image src={coverUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
           : <div className={`absolute inset-0 ${t.heroFallback}`} />
         }
         <div className={`absolute inset-0 ${t.heroOverlay}`} />
@@ -523,7 +529,7 @@ export default async function ClientGalleryPage({
       {/* Left: cover image */}
       <div className="relative h-[50vw] md:h-auto md:w-[55%] overflow-hidden">
         {coverUrl
-          ? <div className="absolute inset-0" style={{ backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+          ? <Image src={coverUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
           : <div className={`absolute inset-0 ${t.heroFallback}`} />
         }
         <div className={`absolute inset-0 ${t.heroOverlay}`} />
@@ -564,7 +570,7 @@ export default async function ClientGalleryPage({
       {/* Full-width image banner */}
       <div className={`relative w-full overflow-hidden ${t.stackBannerH}`}>
         {coverUrl
-          ? <div className="absolute inset-0" style={{ backgroundImage: `url(${coverUrl})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+          ? <Image src={coverUrl} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
           : <div className={`absolute inset-0 ${t.heroFallback}`} />
         }
         <div className={`absolute inset-0 ${t.heroOverlay}`} />
@@ -674,6 +680,7 @@ export default async function ClientGalleryPage({
 
   return (
     <div className={`min-h-screen ${t.page}`}>
+      {coverUrl && <link rel="preload" as="image" href={coverUrl} fetchPriority="high" />}
       {heroMap[t.heroLayout]}
 
       {/* ── Media grid ── */}

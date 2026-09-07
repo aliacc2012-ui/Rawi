@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Kufi_Arabic } from "next/font/google";
+import {
+  Inter,
+  Noto_Kufi_Arabic,
+  Cormorant_Garamond,
+  Montserrat,
+} from "next/font/google";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { ClientErrorReporter } from "@/components/system/ClientErrorReporter";
 import { GoogleAnalytics } from "@/components/system/GoogleAnalytics";
@@ -15,6 +20,22 @@ const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic"],
   display: "swap",
   variable: "--font-noto-kufi-arabic",
+});
+
+// Display font used throughout the app (headings, project titles, plan names)
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-cormorant",
+});
+
+// UI accent font used for labels, eyebrows, and trust signals on the landing page
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-montserrat",
 });
 
 
@@ -56,8 +77,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" dir="ltr" className={`${inter.variable} ${notoKufiArabic.variable}`}>
+    <html lang="en" dir="ltr" className={`${inter.variable} ${notoKufiArabic.variable} ${cormorant.variable} ${montserrat.variable}`}>
       <body>
+        {/* Preconnect to Supabase CDN so image requests start sooner */}
+        <link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://qpvuqgzfobjtrzuumtbn.supabase.co"} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://qpvuqgzfobjtrzuumtbn.supabase.co"} />
         <ClientErrorReporter />
         <LocaleProvider>{children}</LocaleProvider>
         <GoogleAnalytics />
