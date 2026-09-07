@@ -37,6 +37,7 @@ export function GallerySettings({
   const [comments, setComments] = useState(initial.comments_enabled);
   const [branding, setBranding] = useState(initial.branding_enabled);
   const [watermarkText, setWatermarkText] = useState(initial.watermark_text ?? "");
+  const [watermarkEnabled, setWatermarkEnabled] = useState(!!(initial.watermark_text));
   const paid = plan !== "free";
 
   function save() {
@@ -49,7 +50,7 @@ export function GallerySettings({
         favoritesEnabled: favorites,
         commentsEnabled: comments,
         brandingEnabled: branding,
-        watermarkText: paid ? watermarkText.trim() : "",
+        watermarkText: paid && watermarkEnabled ? watermarkText.trim() : "",
       });
       if ("error" in r && typeof r.error === "string") {
         setMsg(r.error);
@@ -125,13 +126,24 @@ export function GallerySettings({
                 placeholder={paid ? "e.g. Ali Photography © 2026" : "Upgrade to add your own watermark"}
                 className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder:text-white/20 outline-none focus:border-rawi-yellow/40 disabled:opacity-40 transition-colors"
               />
+              {paid && watermarkText.trim() && (
+                <label className="mt-2 flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={watermarkEnabled}
+                    onChange={(e) => setWatermarkEnabled(e.target.checked)}
+                    className="accent-rawi-yellow"
+                  />
+                  <span className="text-[11px] text-white/40">Show watermark on gallery images</span>
+                </label>
+              )}
             </div>
           </div>
         </div>
         <Toggle
           icon="✦"
           label="Remove RAWI branding"
-          description="Hide the RAWI watermark from your gallery"
+          description="Hide 'Delivered with RAWI' from gallery footer"
           checked={!branding}
           onChange={(v) => setBranding(!v)}
           locked={!paid}
