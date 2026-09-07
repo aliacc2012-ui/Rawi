@@ -216,6 +216,9 @@ export function MediaTile({
           fetchPriority={thumbnailPriority}
           decoding="async"
           sizes={thumbnailSizes}
+          draggable={false}
+          onContextMenu={downloadsEnabled ? undefined : (e) => e.preventDefault()}
+          onDragStart={downloadsEnabled ? undefined : (e) => e.preventDefault()}
           className={mediaClass}
         />
         <span className="absolute inset-0 grid place-items-center bg-black/10 transition group-hover:bg-black/20">
@@ -265,6 +268,9 @@ export function MediaTile({
                 fetchPriority={thumbnailPriority}
                 decoding="async"
                 sizes={thumbnailSizes}
+                draggable={false}
+                onContextMenu={downloadsEnabled ? undefined : (e) => e.preventDefault()}
+                onDragStart={downloadsEnabled ? undefined : (e) => e.preventDefault()}
                 className={mediaClass}
               />
             </button>
@@ -512,6 +518,8 @@ export function MediaTile({
                 src={url}
                 alt=""
                 draggable={false}
+                onContextMenu={downloadsEnabled ? undefined : (e) => e.preventDefault()}
+                onDragStart={downloadsEnabled ? undefined : (e) => e.preventDefault()}
                 decoding="async"
                 fetchPriority="high"
                 style={{ transform: `scale(${zoom})` }}
